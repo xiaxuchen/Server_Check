@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxyz.check.dao.StudentDao">
+    <select id="getStuById" resultType="Student" parameterType="String">
+        select
+        *,grade_id 'grade.id'
+        from tb_stu
+        where _id = #{id}
+    </select>
+    <select id="getStusByGrade" resultType="Student" parameterType="int">
+        select
+        *,grade_id 'grade.id'
+        from tb_stu
+        where grade_id = #{grade}
+        order by _id
+    </select>
+</mapper>

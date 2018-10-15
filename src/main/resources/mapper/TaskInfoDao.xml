@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxyz.check.dao.TaskInfoDao">
+    <select id="getTaskInfos" parameterType="int" resultType="TaskInfo">
+        select
+        _id,_name,sponsor_id 'sponsor.id',
+        checker_id 'checker.id',
+        grade_id 'grade.id',type,
+        s_type 'sponsor.type',c_type 'checker.type',
+        room_id 'room.id'
+        from tb_taskinfo
+        where grade_id=#{id};
+    </select>
+</mapper>
