@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxyz.check.dao.TaskCompletionDao">
+    <update id="updateCompState" parameterType="int" >
+        update tb_completion set state = #{state} where _id=#{id}
+    </update>
+
+   <select id="selectOne" resultType="TaskCompletion">
+       select
+       c.*
+       from tb_completion c,tb_taskinfo t
+       where c.taskinfo_id=t._id
+       and t.grade_id=#{grade}
+       and #{time} between t.start_time and t.end_time
+       and #{date}=c._date
+   </select>
+
+</mapper>

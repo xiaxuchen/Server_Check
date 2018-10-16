@@ -1,9 +1,7 @@
 package com.cxyz.check.entity;
 
 
-import com.cxyz.check.util.date.Date;
-import com.cxyz.check.util.date.DateTime;
-
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,9 +15,8 @@ public class TaskInfo {
 	private String name;//考勤任务名称
     private User sponsor = new User();//考勤任务发起人
     private User checker = new User();//考勤任务考勤人
-    private DateTime start;//考勤开始时间
-    private DateTime len;//考勤时限
-    private Date end;//最后一次的考勤日期(预留)
+    private Timestamp start;//考勤开始时间
+    private Timestamp end;//考勤时限
     private ClassRoom room;//考勤所在地
     private Integer type;//考勤任务类型，临时任务或者课程
     private Grade grade = new Grade();//考勤班级
@@ -60,28 +57,28 @@ public class TaskInfo {
 		this.checker = checker;
 	}
 
-	public DateTime getStart() {
+	public Timestamp getStart() {
 		return start;
 	}
 
-	public void setStart(DateTime start) {
+	public void setStart(Timestamp start) {
 		this.start = start;
 	}
 
-	public DateTime getLen() {
-		return len;
-	}
-
-	public void setLen(DateTime len) {
-		this.len = len;
-	}
-
-	public Date getEnd() {
+	public Timestamp getEnd() {
 		return end;
 	}
 
-	public void setEnd(Date end) {
+	public void setEnd(Timestamp end) {
 		this.end = end;
+	}
+
+	public ClassRoom getRoom() {
+		return room;
+	}
+
+	public void setRoom(ClassRoom room) {
+		this.room = room;
 	}
 
 	public Integer getType() {
@@ -108,14 +105,6 @@ public class TaskInfo {
 		this.completions = completions;
 	}
 
-	public ClassRoom getRoom() {
-		return room;
-	}
-
-	public void setRoom(ClassRoom room) {
-		this.room = room;
-	}
-
 	@Override
 	public String toString() {
 		return "TaskInfo{" +
@@ -124,7 +113,6 @@ public class TaskInfo {
 				", sponsor=" + sponsor +
 				", checker=" + checker +
 				", start=" + start +
-				", len=" + len +
 				", end=" + end +
 				", room=" + room +
 				", type=" + type +
