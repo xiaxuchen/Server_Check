@@ -3,7 +3,7 @@ package com.cxyz.check.exception;
 /**
  * 班级操作时可能会抛出的异常
  */
-public class GradeException extends RuntimeException{
+public class GradeException extends BaseException{
     public GradeException() {
     }
 

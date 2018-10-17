@@ -6,23 +6,7 @@ package com.cxyz.check.entity;
  * Created by 夏旭晨 on 2018/9/23.
  */
 public class CheckRecord {
-	/**
-	 * 请假
-	 */
-	public static final int VACATE = 1;
-	/**
-	 * 早退
-	 */
-	public static final int EARLYLEAVE = 4;
-	/**
-	 * 迟到
-	 */
-	public static final int LATE = 0;
-	/**
-	 * 缺勤
-	 */
-	public static final int ABSENTEEISM = 3;
-	
+
 	/**
 	 * 撤销
 	 */
@@ -30,11 +14,11 @@ public class CheckRecord {
 	/**
 	 * 考勤记录的id
 	 */
-    private int _id;
+    private int id;
     /**
      * 所属学生
      */
-    private Student student;
+    private Student stu;
     /**
      * 考勤结果
      */
@@ -42,47 +26,60 @@ public class CheckRecord {
     /**
      * 完成情况，一般只需要装填id
      */
-    private TaskCompletion taskCompletion;
+    private TaskCompletion comp;
     /**
      * 考勤描述信息
      */
     private String des;
-	public int get_id() {
-		return _id;
+
+	public int getId() {
+		return id;
 	}
-	public void set_id(int _id) {
-		this._id = _id;
+
+	public void setId(int id) {
+		this.id = id;
 	}
-	public Student getStudent() {
-		return student;
+
+	public Student getStu() {
+		return stu;
 	}
-	public void setStudent(Student student) {
-		this.student = student;
+
+	public void setStu(Student stu) {
+		this.stu = stu;
 	}
+
 	public int getResult() {
 		return result;
 	}
+
 	public void setResult(int result) {
 		this.result = result;
 	}
-	public TaskCompletion getTaskCompletion() {
-		return taskCompletion;
+
+	public TaskCompletion getComp() {
+		return comp;
 	}
-	public void setTaskCompletion(TaskCompletion taskCompletion) {
-		this.taskCompletion = taskCompletion;
+
+	public void setComp(TaskCompletion comp) {
+		this.comp = comp;
 	}
+
 	public String getDes() {
 		return des;
 	}
+
 	public void setDes(String des) {
 		this.des = des;
 	}
+
 	@Override
 	public String toString() {
-		return "CheckRecord [_id=" + _id + ", student=" + student + ", result="
-				+ result + ", taskCompletion=" + taskCompletion + "des="+des+"]";
+		return "CheckRecord{" +
+				"id=" + id +
+				", stu=" + stu +
+				", result=" + result +
+				", comp=" + comp +
+				", des='" + des + '\'' +
+				'}';
 	}
-	
-	
-
 }

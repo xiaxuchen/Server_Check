@@ -9,14 +9,7 @@ import java.util.Date;
  * 一个考勤完成情况就是一次考勤
  */
 public class TaskCompletion{
-	/**
-	 * 正常考勤
-	 */
-	public static final int NORMAL = 0;
-	/**
-	 * 特殊情况
-	 */
-	public static final int OTHER = -1;
+
     private Integer id;//考勤完成情况id
     private TaskInfo taskInfo;//所属任务id
     private Date date;//考勤日期

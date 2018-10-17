@@ -1,21 +1,10 @@
 package com.cxyz.check.dto;
 
-import com.cxyz.check.entity.Student;
-import com.cxyz.check.entity.Teacher;
+import java.io.Serializable;
 
-public class UserDto {
+public class LoginDto implements Serializable {
 
-    /**
-     * 用户类别为学生
-     */
-    public static final int STUDENT = 0;
 
-    /**
-     * 用户类别为老师
-     */
-    public static final int TEACHER = 1;
-
-    private String id;//编号
     private String name;//姓名
     private String sex;//性别
     private String phone;//电话号码
@@ -31,12 +20,12 @@ public class UserDto {
      * 55为校级管理员权限
      * 100为超级管理员权限
      */
-    private int power;
+    private Integer power;
 
     /**
      * 该dto的类型
      */
-    private int type;
+    private Integer type;
 
     /**
      * dto为STUDENT和TEACHER时候拥有的学院名称
@@ -45,60 +34,17 @@ public class UserDto {
     /**
      * dto为TEACHER时候拥有的学院id
      */
-    private String collegeId;
+    private Integer collegeId;
 
     /**
      * dto为Student时候拥有的班级id
      */
-    private int gradeId;
+    private Integer gradeId;
 
     /**
      * dto为STUDENT是拥有的班级名称
      */
     private String gradeName;
-
-    /**
-     * 成功返回老师数据时使用的方法
-     * @param teacher
-     */
-    public UserDto(Teacher teacher) {
-        this.setType(UserDto.TEACHER);
-        this.setId(teacher.getId());
-        this.setId(teacher.getId());
-        this.setName(teacher.getName());
-        this.setSex(teacher.getSex());
-        this.setPhone(teacher.getPhone());
-        this.setPhoto(teacher.getPhoto());
-        this.setCollegeId(teacher.getId());
-        this.setCollegeName(teacher.getCollege().getName());
-        this.setPower(teacher.getPower());
-    }
-
-    /**
-     * 成功返回学生时返回的方法
-     * @param student
-     */
-    public UserDto(Student student)
-    {
-        this.setType(UserDto.STUDENT);
-        this.setId(student.getId());
-        this.setName(student.getName());
-        this.setSex(student.getSex());
-        this.setPhone(student.getPhone());
-        this.setPhoto(student.getPhoto());
-        this.setGradeId(student.getGrade().getId());
-        this.setGradeName(student.getGrade().getName());
-        this.setCollegeName(student.getCollegeName());
-        this.setPower(student.getPower());
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
@@ -140,11 +86,11 @@ public class UserDto {
         this.power = power;
     }
 
-    public int getType() {
+    public Integer getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 
@@ -156,19 +102,19 @@ public class UserDto {
         CollegeName = collegeName;
     }
 
-    public String getCollegeId() {
+    public Integer getCollegeId() {
         return collegeId;
     }
 
-    public void setCollegeId(String collegeId) {
+    public void setCollegeId(Integer collegeId) {
         this.collegeId = collegeId;
     }
 
-    public int getGradeId() {
+    public Integer getGradeId() {
         return gradeId;
     }
 
-    public void setGradeId(int gradeId) {
+    public void setGradeId(Integer gradeId) {
         this.gradeId = gradeId;
     }
 
@@ -182,16 +128,15 @@ public class UserDto {
 
     @Override
     public String toString() {
-        return "UserDto{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
+        return "LoginDto{" +
+                "name='" + name + '\'' +
                 ", sex='" + sex + '\'' +
                 ", phone='" + phone + '\'' +
                 ", photo='" + photo + '\'' +
                 ", power=" + power +
                 ", type=" + type +
                 ", CollegeName='" + CollegeName + '\'' +
-                ", collegeId='" + collegeId + '\'' +
+                ", collegeId=" + collegeId +
                 ", gradeId=" + gradeId +
                 ", gradeName='" + gradeName + '\'' +
                 '}';

@@ -7,14 +7,44 @@
         update tb_completion set state = #{state} where _id=#{id}
     </update>
 
-   <select id="selectOne" resultType="TaskCompletion">
+   <select id="selectList" resultType="TaskCompletion">
        select
-       c.*
+       c._date,
+       c.state,
+       c.update_time,
+       t._name 'taskInfo.name',
+       t.sponsor_id 'taskInfo.sponsor.id',
+       t.start_time 'taskInfo.start',
+       t.end_time 'taskInfo.end',
+       t.s_type 'taskInfo.sponsor.type',
+       t.room_id 'taskInfo.room.id'
        from tb_completion c,tb_taskinfo t
        where c.taskinfo_id=t._id
        and t.grade_id=#{grade}
        and #{time} between t.start_time and t.end_time
        and #{date}=c._date
+       and #{checker}=t.checker_id
+       and #{c_type}=t.c_type
+       and #{type}=t.type
    </select>
+
+    <select id="findById" resultType="TaskCompletion" >
+        select
+        c._date,
+        c.state,
+        c.update_time,
+        t._name 'taskInfo.name',
+        t.sponsor_id 'taskInfo.sponsor.id',
+        t.start_time 'taskInfo.start',
+        t.end_time 'taskInfo.end',
+        t.s_type 'taskInfo.sponsor.type',
+        t.checker_id 'taskInfo.checker.id',
+        t.c_type 'taskInfo.checker.type',
+        t.room_id 'taskInfo.room.id',
+        t.type 'taskInfo.type'
+        from tb_completion c,tb_taskinfo t
+        where c._id=#{id}
+        and t._id = c.taskinfo_id;
+    </select>
 
 </mapper>

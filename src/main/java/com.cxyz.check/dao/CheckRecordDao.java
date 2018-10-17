@@ -2,6 +2,8 @@ package com.cxyz.check.dao;
 
 import com.cxyz.check.entity.CheckRecord;
 
+import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 
 public interface CheckRecordDao {
@@ -13,7 +15,9 @@ public interface CheckRecordDao {
      * @param len 查询条目数
      * @return
      */
-    List<CheckRecord> getRecordByStuId(String id, int start, int len);
+    List<CheckRecord> getRecordByStuId(@Param("id") String id,
+                                       @Param("start") int start,
+                                       @Param("len") int len);
 
     /**
      * 加载详细考勤信息
@@ -24,7 +28,7 @@ public interface CheckRecordDao {
 
     /**
      * 提交考勤记录
-     * @param list 考勤记录
+     * @param records 考勤记录
      */
-    void addRecords(List<CheckRecord> list);
+    int addRecords(@Param("records") List<CheckRecord> records);
 }

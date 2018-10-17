@@ -1,12 +1,10 @@
 package com.cxyz.check.service;
 
-import com.cxyz.check.dto.UserDto;
+import com.cxyz.check.dto.LoginDto;
 import com.cxyz.check.exception.GradeNotFoundException;
 import com.cxyz.check.exception.PasswordErrorException;
 import com.cxyz.check.exception.UserException;
 import com.cxyz.check.exception.UserNotFoundException;
-
-import java.util.List;
 
 public interface UserService {
 
@@ -20,7 +18,7 @@ public interface UserService {
      * @throws PasswordErrorException 密码错误时抛出
      * @throws UserException
      */
-    UserDto login(String id,String password,int type)
+    LoginDto login(String id, String password, int type)
     throws UserNotFoundException, PasswordErrorException, UserException;
 
     /**
@@ -29,6 +27,6 @@ public interface UserService {
      * @return 一个班的学生用户信息
      * @throws GradeNotFoundException 当在数据库中查询不到任何记录时抛出
      */
-    List<UserDto> getGradeStus(int gradeId)
-    throws GradeNotFoundException;
+    /*List<LoginDto> getGradeStus(int gradeId)
+    throws GradeNotFoundException;*/
 }
