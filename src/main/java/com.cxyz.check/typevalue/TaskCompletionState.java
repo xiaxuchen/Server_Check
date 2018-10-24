@@ -1,9 +1,9 @@
-package com.cxyz.check.entity.typevalue;
+package com.cxyz.check.typevalue;
 
 /**
  * 考勤任务完成情况状态
  */
-public interface TaskState {
+public interface TaskCompletionState {
     /**
      * 待考勤
      */
@@ -15,9 +15,9 @@ public interface TaskState {
     /**
      * 未考勤
      */
-    public static final int NOTCHECKED = -2;
+    public static final int NOTCHECKED = -1;
     /**
      * 特殊情况
      */
-    public static final int OTHERSTATE = -1;
+    public static final int OTHERSTATE = -2;
 }

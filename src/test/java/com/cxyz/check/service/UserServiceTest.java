@@ -1,6 +1,6 @@
 package com.cxyz.check.service;
 
-import com.cxyz.check.entity.typevalue.UserType;
+import com.cxyz.check.typevalue.UserType;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

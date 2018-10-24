@@ -1,4 +1,4 @@
-package com.cxyz.check.entity.typevalue;
+package com.cxyz.check.typevalue;
 
 /**
  * 用户类型

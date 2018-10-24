@@ -2,8 +2,8 @@ package com.cxyz.check.service;
 
 import com.cxyz.check.dto.CheckCommitDto;
 import com.cxyz.check.dto.normal.RecordDto;
-import com.cxyz.check.entity.typevalue.ResultType;
-import com.cxyz.check.entity.typevalue.TaskState;
+import com.cxyz.check.typevalue.CheckRecordResult;
+import com.cxyz.check.typevalue.TaskCompletionState;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,11 +27,11 @@ public class CheckServiceTest {
     public void getMineRecords() {
         CheckCommitDto checkCommitDto = new CheckCommitDto();
         checkCommitDto.setCompId(1);
-        checkCommitDto.setType(TaskState.COMPLE);
+        checkCommitDto.setType(TaskCompletionState.COMPLE);
         RecordDto recordDto = new RecordDto();
         recordDto.setDes("qusiba");
         recordDto.setId("17478888");
-        recordDto.setResult(ResultType.LATE);
+        recordDto.setResult(CheckRecordResult.LATE);
         List<RecordDto> recordDtos = new ArrayList<RecordDto>();
         recordDtos.add(recordDto);
         checkCommitDto.setRecordDtos(recordDtos);

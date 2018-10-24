@@ -18,7 +18,7 @@ public class StudentDaoTest {
         System.out.print(studentDao.getStuById("17478093"));
         //测试结果：
         /*
-        Student{User{id='17478093', name='夏旭晨', sex='男',
+        Student{OldUser{id='17478093', name='夏旭晨', sex='男',
          pwd='123456', phone='17779911413', photo='111', power=5,
          type=0}grade=Grade [name=null, college=null,
         headTeacher=null, classRoom=null, id=122],
@@ -31,18 +31,18 @@ public class StudentDaoTest {
         System.out.print(studentDao.getStusByGrade(122));
         //测试结果:
         /*
-        [Student{User{id='17478063', name='陈宸',
+        [Student{OldUser{id='17478063', name='陈宸',
          sex='男', pwd='123456', phone='null', photo='null'
          , power=0, type=0}grade=Grade [name=null, college=null
          , headTeacher=null, classRoom=null, id=122], collegeName='null'
-         }, Student{User{id='17478090', name='张奕文', sex='null', pwd='123456'
+         }, Student{OldUser{id='17478090', name='张奕文', sex='null', pwd='123456'
          , phone='null', photo='null', power=0, type=0}grade=Grade [name=null,
           college=null, headTeacher=null, classRoom=null, id=122],
-          collegeName='null'}, Student{User{id='17478091', name='喻济生',
+          collegeName='null'}, Student{OldUser{id='17478091', name='喻济生',
            sex='男', pwd='123456', phone='null', photo='null', power=0,
             type=0}grade=Grade [name=null, college=null, headTeacher=null,
              classRoom=null, id=122], collegeName='null'},
-             Student{User{id='17478093', name='夏旭晨', sex='男',
+             Student{OldUser{id='17478093', name='夏旭晨', sex='男',
               pwd='123456', phone='17779911413', photo='111', power=5,
                type=0}grade=Grade [name=null, college=null, headTeacher=null
                , classRoom=null, id=122], collegeName='信计学院'}

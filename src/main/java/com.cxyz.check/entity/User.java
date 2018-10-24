@@ -1,16 +1,28 @@
 package com.cxyz.check.entity;
+
 /**
  * Created by 夏旭晨 on 2018/9/23.
  */
 
-public class User {
-	private String id;//编号
-    private String name;//姓名
-    private String sex;//性别
-    private String pwd;//密码
-    private String phone;//电话号码
-    private String photo;//照片的url
-    
+public class User{
+
+    //班级信息，学生和班主任仅有
+    private Grade grade;
+    //学院信息
+    private College college;
+    //用户id
+    private String id;
+    //用户名
+    private String name;
+    //性别
+    private String sex;
+    //密码
+    private String pwd;
+    //电话号码
+    private String phone;
+    //照片地址
+    private String photo;
+
     /**
      * power属性用来区分权限
      * 0为普通学生权限
@@ -20,84 +32,124 @@ public class User {
      * 45为系部管理员权限
      * 55为校级管理员权限
      * 100为超级管理员权限
+     * 默认为普通学生权限
      */
-    private Integer power;
+    private Integer power = 0;
+    /**
+     * type属性用来区分学生和老师！
+     * 0为学生
+     * 1为老师
+     */
+    private Integer type;
 
-	/**
-	 * 用户类型
-	 */
-	private Integer type;
+    public User(){}
 
-	public String getId() {
-		return id;
-	}
+    public User(String id)
+    {
+        setId(id);
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public User(String id,Integer type)
+    {
+        setId(id);
+        setType(type);
+    }
 
-	public String getName() {
-		return name;
-	}
+    public Grade getGrade() {
+        return grade;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setGrade(Grade grade) {
+        this.grade = grade;
+    }
 
-	public String getSex() {
-		return sex;
-	}
+    public College getCollege() {
+        return college;
+    }
 
-	public void setSex(String sex) {
-		this.sex = sex;
-	}
+    public void setCollege(College college) {
+        this.college = college;
+    }
 
-	public String getPwd() {
-		return pwd;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public void setPwd(String pwd) {
-		this.pwd = pwd;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public String getPhone() {
-		return phone;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getPhoto() {
-		return photo;
-	}
+    public String getSex() {
+        return sex;
+    }
 
-	public void setPhoto(String photo) {
-		this.photo = photo;
-	}
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
 
-	public Integer getPower() {
-		return power;
-	}
+    public String getPwd() {
+        return pwd;
+    }
 
-	public void setPower(Integer power) {
-		this.power = power;
-	}
+    public void setPwd(String pwd) {
+        this.pwd = pwd;
+    }
 
+    public String getPhone() {
+        return phone;
+    }
 
-	@Override
-	public String toString() {
-		return "User{" +
-				"id='" + id + '\'' +
-				", name='" + name + '\'' +
-				", sex='" + sex + '\'' +
-				", pwd='" + pwd + '\'' +
-				", phone='" + phone + '\'' +
-				", photo='" + photo + '\'' +
-				", power=" + power +
-				", type=" + type +
-				'}';
-	}
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
+    public Integer getPower() {
+        return power;
+    }
+
+    public void setPower(Integer power) {
+        this.power = power;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "grade=" + grade +
+                ", college=" + college +
+                ", id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", sex='" + sex + '\'' +
+                ", pwd='" + pwd + '\'' +
+                ", phone='" + phone + '\'' +
+                ", photo='" + photo + '\'' +
+                ", power=" + power +
+                ", type=" + type +
+                '}';
+    }
 }
 
 

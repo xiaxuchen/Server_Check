@@ -9,7 +9,16 @@ public class ClassRoom {
     private String name;//教室名称
     private College college;//所属学院
     private Integer state;//是否空闲状态(预留字段)
-    
+
+	public String getDes() {
+		return des;
+	}
+
+	public void setDes(String des) {
+		this.des = des;
+	}
+
+	private String des;//教室描述信息
     public ClassRoom(){}
     
     public ClassRoom(Integer id){
@@ -55,6 +64,7 @@ public class ClassRoom {
 				", name='" + name + '\'' +
 				", college=" + college +
 				", state=" + state +
+				", des='" + des + '\'' +
 				'}';
 	}
 }

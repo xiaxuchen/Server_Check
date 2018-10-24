@@ -9,9 +9,9 @@ import com.cxyz.check.dataparse.RecordDtoParse;
 import com.cxyz.check.dto.CheckCommitDto;
 import com.cxyz.check.dto.normal.RecordDto;
 import com.cxyz.check.entity.CheckRecord;
-import com.cxyz.check.entity.typevalue.TaskState;
 import com.cxyz.check.exception.CommitFailException;
 import com.cxyz.check.service.CheckService;
+import com.cxyz.check.typevalue.TaskCompletionState;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,7 +43,7 @@ public class CheckServiceImpl implements CheckService {
     @Override
     @Transactional
     public boolean CommitRecord(CheckCommitDto commitDto) {
-        if(commitDto.getType() == TaskState.COMPLE)
+        if(commitDto.getType() == TaskCompletionState.COMPLE)
         {
             List<RecordDto> recordDtos = commitDto.getRecordDtos();
             List<CheckRecord> checkRecords = new ArrayList<CheckRecord>();

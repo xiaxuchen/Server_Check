@@ -8,8 +8,8 @@ public class Grade {
 	private Integer id;//班级编号
 	private String name;//班级名称
 	private College college;//所属学院
-	private Teacher headTeacher;//班主任
-	private ClassRoom classRoom;//晚自习教室
+	private Teacher manager;//班主任
+	private ClassRoom room;//晚自习教室
 	
 	public Grade(){}
 
@@ -36,25 +36,35 @@ public class Grade {
 	public College getCollege() {
 		return college;
 	}
+
 	public void setCollege(College college) {
 		this.college = college;
 	}
-	public Teacher getHeadTeacher() {
-		return headTeacher;
+
+	public Teacher getManager() {
+		return manager;
 	}
-	public void setHeadTeacher(Teacher headTeacher) {
-		this.headTeacher = headTeacher;
+
+	public void setManager(Teacher manager) {
+		this.manager = manager;
 	}
-	public ClassRoom getClassRoom() {
-		return classRoom;
+
+	public ClassRoom getRoom() {
+		return room;
 	}
-	public void setClassRoom(ClassRoom classRoom) {
-		this.classRoom = classRoom;
+
+	public void setRoom(ClassRoom room) {
+		this.room = room;
 	}
+
 	@Override
 	public String toString() {
-		return "Grade [name=" + name + ", college=" + college
-				+ ", headTeacher=" + headTeacher + ", classRoom=" + classRoom
-				+ ", id=" + id + "]";
+		return "Grade{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", college=" + college +
+				", manager=" + manager +
+				", room=" + room +
+				'}';
 	}
 }

@@ -8,13 +8,9 @@ package com.cxyz.check.entity;
 public class CheckRecord {
 
 	/**
-	 * 撤销
-	 */
-	public static final int CANCLE = -5;
-	/**
 	 * 考勤记录的id
 	 */
-    private int id;
+    private Integer id;
     /**
      * 所属学生
      */
@@ -22,7 +18,7 @@ public class CheckRecord {
     /**
      * 考勤结果
      */
-    private int result;
+    private Integer result;
     /**
      * 完成情况，一般只需要装填id
      */
@@ -32,11 +28,11 @@ public class CheckRecord {
      */
     private String des;
 
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -48,11 +44,11 @@ public class CheckRecord {
 		this.stu = stu;
 	}
 
-	public int getResult() {
+	public Integer getResult() {
 		return result;
 	}
 
-	public void setResult(int result) {
+	public void setResult(Integer result) {
 		this.result = result;
 	}
 

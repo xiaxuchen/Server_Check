@@ -11,9 +11,9 @@ public class RecordDetail {
 	//完成情况id
 	private int _id;
 	//考勤发起人，一般为课任老师
-	private User sponsor;
+	private OldUser sponsor;
 	//考勤人，一般为副班长
-	private User checker;
+	private OldUser checker;
 	//考勤时间
 	private DateTime checkTime;
 	//课程名
@@ -31,16 +31,16 @@ public class RecordDetail {
 	public void set_id(int _id) {
 		this._id = _id;
 	}
-	public User getSponsor() {
+	public OldUser getSponsor() {
 		return sponsor;
 	}
-	public void setSponsor(User sponsor) {
+	public void setSponsor(OldUser sponsor) {
 		this.sponsor = sponsor;
 	}
-	public User getChecker() {
+	public OldUser getChecker() {
 		return checker;
 	}
-	public void setChecker(User checker) {
+	public void setChecker(OldUser checker) {
 		this.checker = checker;
 	}
 	public DateTime getCheckTime() {

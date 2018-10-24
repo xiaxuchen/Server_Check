@@ -5,7 +5,7 @@ package com.cxyz.check.entity;
  * 学生实体
  */
 
-public class Student extends User {
+public class Student extends OldUser {
 
 	//更多信息在User中
 

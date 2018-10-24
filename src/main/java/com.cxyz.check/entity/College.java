@@ -16,34 +16,46 @@ public class College {
     public College(Integer id){
     	this.id = id;
     }
-    
-    public Integer getId() {
+
+	public Integer getId() {
 		return id;
 	}
-	public void setId(Integer _id) {
-		this.id = _id;
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
+
 	public String getName() {
 		return name;
 	}
-	public void setName(String _name) {
-		this.name = _name;
+
+	public void setName(String name) {
+		this.name = name;
 	}
+
 	public School getSchool() {
 		return school;
 	}
+
 	public void setSchool(School school) {
 		this.school = school;
 	}
+
 	public Teacher getManager() {
 		return manager;
 	}
+
 	public void setManager(Teacher manager) {
 		this.manager = manager;
 	}
+
 	@Override
 	public String toString() {
-		return "College [_id=" + id + ", _name=" + name + ", school="
-				+ school + ", manager=" + manager + "]";
+		return "College{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", school=" + school +
+				", manager=" + manager +
+				'}';
 	}
 }

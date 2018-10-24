@@ -8,7 +8,7 @@ import java.util.Date;
 
 public class VacOrder {
     public int _id;
-    public User sponsor;
+    public OldUser sponsor;
     public Date update_time;
     public Date start_time;
     public Date duration;

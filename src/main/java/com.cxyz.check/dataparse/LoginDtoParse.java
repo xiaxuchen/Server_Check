@@ -3,7 +3,7 @@ package com.cxyz.check.dataparse;
 import com.cxyz.check.dto.LoginDto;
 import com.cxyz.check.entity.Student;
 import com.cxyz.check.entity.Teacher;
-import com.cxyz.check.entity.typevalue.UserType;
+import com.cxyz.check.typevalue.UserType;
 
 public class LoginDtoParse {
 

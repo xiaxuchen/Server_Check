@@ -6,8 +6,8 @@ package com.cxyz.check.entity;
 
 public class Info {
     private int _id;//聊天记录编号(暂时无用)
-    private User sender;//发送者
-    private User receiver;//接受者
+    private OldUser sender;//发送者
+    private OldUser receiver;//接受者
     private String content;//内容
     private int state;//状态，是否已读，已删除之类的
 
@@ -30,19 +30,19 @@ public class Info {
         this._id = _id;
     }
 
-    public User getSender() {
+    public OldUser getSender() {
         return sender;
     }
 
-    public void setSender(User sender) {
+    public void setSender(OldUser sender) {
         this.sender = sender;
     }
 
-    public User getReceiver() {
+    public OldUser getReceiver() {
         return receiver;
     }
 
-    public void setReceiver(User receiver) {
+    public void setReceiver(OldUser receiver) {
         this.receiver = receiver;
     }
 

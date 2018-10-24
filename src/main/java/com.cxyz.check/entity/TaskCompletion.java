@@ -14,7 +14,7 @@ public class TaskCompletion{
     private TaskInfo taskInfo;//所属任务id
     private Date date;//考勤日期
     private Integer state;//完成情况
-    private Timestamp updatetime;//更新时间
+    private Timestamp updateTime;//更新时间
 
 	public Date getDate() {
 		return date;
@@ -24,21 +24,21 @@ public class TaskCompletion{
 		this.date = date;
 	}
 
-	public Timestamp getUpdatetime() {
-		return updatetime;
-	}
-
-	public void setUpdatetime(Timestamp updatetime) {
-		this.updatetime = updatetime;
-	}
-
 	public TaskCompletion(){}
     
     public TaskCompletion(int id){
     	setId(id);
     }
-    
-    public Integer getId() {
+
+	public Timestamp getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(Timestamp updateTime) {
+		this.updateTime = updateTime;
+	}
+
+	public Integer getId() {
 		return id;
 	}
 	public void setId(Integer _id) {
@@ -61,7 +61,7 @@ public class TaskCompletion{
 	public String toString() {
 		return "TaskCompletion [_id=" + id + ", taskInfo=" + taskInfo
 				+ ", date=" + date + ", state=" + state + ", updatetime="
-				+ updatetime + "]";
+				+ updateTime + "]";
 	}
 
 	

@@ -6,7 +6,7 @@ import com.cxyz.check.dataparse.LoginDtoParse;
 import com.cxyz.check.dto.LoginDto;
 import com.cxyz.check.entity.Student;
 import com.cxyz.check.entity.Teacher;
-import com.cxyz.check.entity.typevalue.UserType;
+import com.cxyz.check.typevalue.UserType;
 import com.cxyz.check.exception.PasswordErrorException;
 import com.cxyz.check.exception.UserNotFoundException;
 import com.cxyz.check.service.UserService;
