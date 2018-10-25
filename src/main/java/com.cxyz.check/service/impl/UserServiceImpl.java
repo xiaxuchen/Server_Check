@@ -1,15 +1,12 @@
 package com.cxyz.check.service.impl;
 
-import com.cxyz.check.dao.StudentDao;
-import com.cxyz.check.dao.TeacherDao;
-import com.cxyz.check.dataparse.LoginDtoParse;
+import com.cxyz.check.dao.UserDao;
 import com.cxyz.check.dto.LoginDto;
-import com.cxyz.check.entity.Student;
-import com.cxyz.check.entity.Teacher;
-import com.cxyz.check.typevalue.UserType;
+import com.cxyz.check.entity.User;
 import com.cxyz.check.exception.PasswordErrorException;
 import com.cxyz.check.exception.UserNotFoundException;
 import com.cxyz.check.service.UserService;
+import com.cxyz.check.util.automapper.AutoMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,31 +15,19 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    private StudentDao studentDao;
-
-    @Autowired
-    private TeacherDao teacherDao;
-
+    private UserDao userDao;
     @Override
     public LoginDto login(String id, String password, int type) {
-        if(type == UserType.STUDENT) {
-            Student stu = studentDao.getStuById(id);
-            if(stu == null)
+            User u = userDao.selectOne(id,type);
+            if(u == null)
                 throw new UserNotFoundException();
-            if(stu.getPwd().equals(password))
+
+            if(u.getPwd().equals(password))
             {
-                return LoginDtoParse.getLoginDto(stu);
+                return AutoMapper.mapping(u,new LoginDto());
             }
-        }else if(type == UserType.TEACHER)
-        {
-            Teacher tea = teacherDao.getTeaById(id);
-            if(tea == null)
-            if(tea.getPwd().equals(password))
-            {
-                return LoginDtoParse.getLoginDto(tea);
-            }
-        }
-        throw new PasswordErrorException();
+
+            throw new PasswordErrorException();
     }
 
    /* @Override

@@ -3,7 +3,7 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cxyz.check.dao.UserDao">
-
+    <!--获取一个学生的信息-->
     <select id="selectOne" resultType="User">
       SELECT
       *
@@ -20,15 +20,57 @@
       </choose>
       WHERE id = #{id};
     </select>
-
+    <!--获取一个班级学生的信息-->
     <select id="selectStusByGrade" resultType="User">
         SELECT
         id,name,photo
         FROM tb_stu
-        WHERE `grade.id`=#{grade}
+        WHERE `grade.id`=#{grade};
+    </select>
+    <!--获取班主任的信息-->
+    <select id="selectTeaIDByGrade" resultType="String">
+        SELECT
+        `manager.id`
+        FROM tb_grade
+        WHERE id=#{grade};
     </select>
 
     <select id="selectTeaByGrade" resultType="User">
+        SELECT
+        id,name,sex,phone,photo,`college.id`,`college.name`
+        FROM tb_tea
+        WHERE EXISTS (SELECT * FROM tb_grade WHERE `manager.id`=tb_tea.id);
     </select>
+
+    <insert id="addUsers" parameterType="User">
+        INSERT
+        INTO
+        <!--判断用户类型选择插入的表和不同字段-->
+        <choose>
+            <when test="type==0">
+                tb_stu(`grade.id`,`grade.name`
+            </when>
+            <when test="type==1">
+                tb_tea(`college.id`
+            </when>
+        </choose>
+        <!--共有的字段-->
+        ,id,name,sex,phone,photo,pwd,power,
+        `college.name`)
+        VALUES
+        <!--循环添加多个用户-->
+        <foreach collection="users" item="item" close=";" separator=",">
+            <choose>
+                <when test="type==0">
+                    (#{item.grade.id},#{item.grade.name},
+                </when>
+                <when test="type==1">
+                    (#{item.college.id},
+                </when>
+            </choose>
+            #{item.id},#{item.name},#{item.sex},#{item.phone},#{item.photo}
+            ,#{item.pwd},#{item.power},#{item.college.name})
+        </foreach>
+    </insert>
 
 </mapper>

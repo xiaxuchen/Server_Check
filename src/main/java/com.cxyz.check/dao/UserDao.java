@@ -39,5 +39,5 @@ public interface UserDao {
      * 添加用户
      * @param users
      */
-    public void addUsers(@Param("users")List<User> users,int type);
+    public void addUsers(@Param("users")List<User> users,@Param("type") int type);
 }

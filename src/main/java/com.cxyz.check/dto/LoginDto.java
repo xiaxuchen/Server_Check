@@ -1,10 +1,17 @@
 package com.cxyz.check.dto;
 
+import com.cxyz.check.entity.User;
+import com.cxyz.check.util.automapper.annotation.Classes;
+import com.cxyz.check.util.automapper.annotation.Ignore;
+import com.cxyz.check.util.automapper.annotation.Path;
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 
+@Classes({User.class})
 public class LoginDto implements Serializable {
 
-
+    @SerializedName(value = "name",alternate = {"Caonima","nihaoa"})
     private String name;//姓名
     private String sex;//性别
     private String phone;//电话号码
@@ -25,25 +32,30 @@ public class LoginDto implements Serializable {
     /**
      * 该dto的类型
      */
+    @Ignore
     private Integer type;
 
     /**
      * dto为STUDENT和TEACHER时候拥有的学院名称
      */
-    private String CollegeName;
+    @Path("college.name")
+    private String collegeName;
     /**
      * dto为TEACHER时候拥有的学院id
      */
+    @Path("college.id")
     private Integer collegeId;
 
     /**
      * dto为Student时候拥有的班级id
      */
+    @Path("grade.id")
     private Integer gradeId;
 
     /**
      * dto为STUDENT是拥有的班级名称
      */
+    @Path("grade.name")
     private String gradeName;
 
     public String getName() {
@@ -95,11 +107,11 @@ public class LoginDto implements Serializable {
     }
 
     public String getCollegeName() {
-        return CollegeName;
+        return collegeName;
     }
 
     public void setCollegeName(String collegeName) {
-        CollegeName = collegeName;
+        this.collegeName = collegeName;
     }
 
     public Integer getCollegeId() {
@@ -135,7 +147,7 @@ public class LoginDto implements Serializable {
                 ", photo='" + photo + '\'' +
                 ", power=" + power +
                 ", type=" + type +
-                ", CollegeName='" + CollegeName + '\'' +
+                ", CollegeName='" + collegeName + '\'' +
                 ", collegeId=" + collegeId +
                 ", gradeId=" + gradeId +
                 ", gradeName='" + gradeName + '\'' +

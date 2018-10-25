@@ -1,7 +1,6 @@
 package com.cxyz.check.service;
 
 import com.cxyz.check.dto.LoginDto;
-import com.cxyz.check.exception.GradeNotFoundException;
 import com.cxyz.check.exception.PasswordErrorException;
 import com.cxyz.check.exception.UserException;
 import com.cxyz.check.exception.UserNotFoundException;
