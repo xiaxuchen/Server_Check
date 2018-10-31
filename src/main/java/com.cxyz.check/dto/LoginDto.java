@@ -11,7 +11,6 @@ import java.io.Serializable;
 @Classes({User.class})
 public class LoginDto implements Serializable {
 
-    @SerializedName(value = "name",alternate = {"Caonima","nihaoa"})
     private String name;//姓名
     private String sex;//性别
     private String phone;//电话号码

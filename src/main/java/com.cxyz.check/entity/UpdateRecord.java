@@ -11,7 +11,7 @@ public class UpdateRecord {
     private Student student;//所更改的记录的所属学生
     private int result;//历史考勤结果
     private TaskCompletion taskCompletion;//关联的完成情况
-    private OldUser updater;//更新者
+    private User updater;//更新者
     private String _describe;//更新时的描述信息
     private DateTime update_time;//更新时间
 
@@ -60,11 +60,11 @@ public class UpdateRecord {
         this.taskCompletion = taskCompletion;
     }
 
-    public OldUser getUpdater() {
+    public User getUpdater() {
         return updater;
     }
 
-    public void setUpdater(OldUser updater) {
+    public void setUpdater(User updater) {
         this.updater = updater;
     }
 

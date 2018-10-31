@@ -9,7 +9,7 @@ import java.util.Date;
 public class LookRecord {
     public int _id;
     public TaskCompletion taskCompletion;
-    public OldUser sponsor;
+    public User sponsor;
     public int rank;
     public int state;
     public Date update_time;

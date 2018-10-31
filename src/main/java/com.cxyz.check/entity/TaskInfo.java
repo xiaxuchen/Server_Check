@@ -13,8 +13,8 @@ import java.util.List;
 public class TaskInfo {
     private String id;//考勤任务编号
 	private String name;//考勤任务名称
-    private OldUser sponsor = new OldUser();//考勤任务发起人
-    private OldUser checker = new OldUser();//考勤任务考勤人
+    private User sponsor;//考勤任务发起人
+    private User checker;//考勤任务考勤人
     private Timestamp start;//考勤开始时间
     private Timestamp end;//考勤时限
     private ClassRoom room;//考勤所在地
@@ -41,22 +41,6 @@ public class TaskInfo {
 		this.name = name;
 	}
 
-	public OldUser getSponsor() {
-		return sponsor;
-	}
-
-	public void setSponsor(OldUser sponsor) {
-		this.sponsor = sponsor;
-	}
-
-	public OldUser getChecker() {
-		return checker;
-	}
-
-	public void setChecker(OldUser checker) {
-		this.checker = checker;
-	}
-
 	public Timestamp getStart() {
 		return start;
 	}
@@ -71,6 +55,22 @@ public class TaskInfo {
 
 	public void setEnd(Timestamp end) {
 		this.end = end;
+	}
+
+	public User getSponsor() {
+		return sponsor;
+	}
+
+	public void setSponsor(User sponsor) {
+		this.sponsor = sponsor;
+	}
+
+	public User getChecker() {
+		return checker;
+	}
+
+	public void setChecker(User checker) {
+		this.checker = checker;
 	}
 
 	public ClassRoom getRoom() {

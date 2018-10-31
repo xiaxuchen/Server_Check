@@ -6,21 +6,10 @@ package com.cxyz.check.entity;
 
 public class Info {
     private int _id;//聊天记录编号(暂时无用)
-    private OldUser sender;//发送者
-    private OldUser receiver;//接受者
+    private User sender;//发送者
+    private User receiver;//接受者
     private String content;//内容
     private int state;//状态，是否已读，已删除之类的
-
-    @Override
-    public String toString() {
-        return "Info{" +
-                "_id=" + _id +
-                ", sender=" + sender +
-                ", receiver=" + receiver +
-                ", content='" + content + '\'' +
-                ", state=" + state +
-                '}';
-    }
 
     public int get_id() {
         return _id;
@@ -30,19 +19,19 @@ public class Info {
         this._id = _id;
     }
 
-    public OldUser getSender() {
+    public User getSender() {
         return sender;
     }
 
-    public void setSender(OldUser sender) {
+    public void setSender(User sender) {
         this.sender = sender;
     }
 
-    public OldUser getReceiver() {
+    public User getReceiver() {
         return receiver;
     }
 
-    public void setReceiver(OldUser receiver) {
+    public void setReceiver(User receiver) {
         this.receiver = receiver;
     }
 
@@ -60,5 +49,16 @@ public class Info {
 
     public void setState(int state) {
         this.state = state;
+    }
+
+    @Override
+    public String toString() {
+        return "Info{" +
+                "_id=" + _id +
+                ", sender=" + sender +
+                ", receiver=" + receiver +
+                ", content='" + content + '\'' +
+                ", state=" + state +
+                '}';
     }
 }

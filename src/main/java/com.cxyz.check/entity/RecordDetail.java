@@ -11,9 +11,9 @@ public class RecordDetail {
 	//完成情况id
 	private int _id;
 	//考勤发起人，一般为课任老师
-	private OldUser sponsor;
+	private User sponsor;
 	//考勤人，一般为副班长
-	private OldUser checker;
+	private User checker;
 	//考勤时间
 	private DateTime checkTime;
 	//课程名
@@ -30,18 +30,6 @@ public class RecordDetail {
 	}
 	public void set_id(int _id) {
 		this._id = _id;
-	}
-	public OldUser getSponsor() {
-		return sponsor;
-	}
-	public void setSponsor(OldUser sponsor) {
-		this.sponsor = sponsor;
-	}
-	public OldUser getChecker() {
-		return checker;
-	}
-	public void setChecker(OldUser checker) {
-		this.checker = checker;
 	}
 	public DateTime getCheckTime() {
 		return checkTime;
@@ -67,12 +55,30 @@ public class RecordDetail {
 	public void setDes(String des) {
 		this.des = des;
 	}
-	@Override
-	public String toString() {
-		return "RecordDetail [_id=" + _id + ", sponsor=" + sponsor
-				+ ", checker=" + checker + ", checkTime=" + checkTime
-				+ ", _name=" + _name + ", result=" + result + ", des=" + des
-				+ "]";
+
+	public User getSponsor() {
+		return sponsor;
 	}
-	
+
+	public void setSponsor(User sponsor) {
+		this.sponsor = sponsor;
+	}
+
+	public User getChecker() {
+		return checker;
+	}
+
+	public void setChecker(User checker) {
+		this.checker = checker;
+	}
+
+	public RecordDetail(int _id, User sponsor, User checker, DateTime checkTime, String _name, int result, String des) {
+		this._id = _id;
+		this.sponsor = sponsor;
+		this.checker = checker;
+		this.checkTime = checkTime;
+		this._name = _name;
+		this.result = result;
+		this.des = des;
+	}
 }

@@ -33,7 +33,7 @@ public class CheckController {
             method = RequestMethod.GET,
             produces = {"application/json;charset=UTF-8"})
     @ResponseBody
-    public CheckResult<LoginDto> login(@RequestPart("id") String id, @RequestParam("pwd")
+    public CheckResult<LoginDto> login(@RequestParam("id") String id, @RequestParam("pwd")
             String pwd, @RequestParam("type") int type)
     {
         LoginDto login = null;
