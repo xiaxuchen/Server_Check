@@ -9,6 +9,14 @@ import java.util.List;
 public interface UserDao {
 
     /**
+     * 通过id和用户类型获取用户姓名
+     * @param id 用户id
+     * @param type 用户类型
+     * @return
+     */
+    public String getName(@Param("id")String id,@Param("type")int type);
+
+    /**
      * 通过用户id获取一个用户的信息
      * @param id 用户id
      * @return 用户实体

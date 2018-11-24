@@ -59,10 +59,12 @@ public class TaskCompletion{
 
 	@Override
 	public String toString() {
-		return "TaskCompletion [_id=" + id + ", taskInfo=" + taskInfo
-				+ ", date=" + date + ", state=" + state + ", updatetime="
-				+ updateTime + "]";
+		return "TaskCompletion{" +
+				"id=" + id +
+				", taskInfo=" + taskInfo +
+				", date=" + date +
+				", state=" + state +
+				", updateTime=" + updateTime +
+				'}';
 	}
-
-	
 }

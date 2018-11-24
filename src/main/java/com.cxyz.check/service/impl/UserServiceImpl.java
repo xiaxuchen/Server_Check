@@ -1,18 +1,26 @@
 package com.cxyz.check.service.impl;
 
 import com.cxyz.check.dao.UserDao;
+import com.cxyz.check.dto.GradeStusDto;
 import com.cxyz.check.dto.LoginDto;
 import com.cxyz.check.entity.User;
+import com.cxyz.check.exception.GradeNotFoundException;
 import com.cxyz.check.exception.PasswordErrorException;
 import com.cxyz.check.exception.UserNotFoundException;
 import com.cxyz.check.service.UserService;
 import com.cxyz.check.util.automapper.AutoMapper;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class UserServiceImpl implements UserService {
+
+    Logger logger = Logger.getLogger(UserService.class);
 
     @Autowired
     private UserDao userDao;
@@ -24,27 +32,24 @@ public class UserServiceImpl implements UserService {
 
             if(u.getPwd().equals(password))
             {
-                return AutoMapper.mapping(u,new LoginDto());
+                LoginDto loginDto = AutoMapper.mapping(u, new LoginDto());
+                loginDto.setType(type);
+                return loginDto;
             }
 
             throw new PasswordErrorException();
     }
 
-   /* @Override
-    public List<LoginDto> getGradeStus(int gradeId) {
-        List<Student> stus = studentDao.getStusByGrade(gradeId);
+   @Override
+    public List<GradeStusDto> getGradeStus(int gradeId) {
+        List<User> stus = userDao.selectStusByGrade(gradeId);
         //如果查询不到对象，返回空
         if (stus != null) {
             if (!stus.isEmpty()) {
-                List<LoginDto> userDtos = new ArrayList<LoginDto>();
-                LoginDto dto = null;
-                for (Student stu : stus) {
-                    dto = new LoginDto(stu);
-                    userDtos.add(dto);
-                }
-                return userDtos;
+                List<GradeStusDto> gradeStusDtos = AutoMapper.mappingList(stus, GradeStusDto.class);
+                return gradeStusDtos;
             }
         }
         throw new GradeNotFoundException();
-    }*/
+    }
 }

@@ -14,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.sql.Timestamp;
+import java.util.Date;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(
         {"classpath:spring/spring_dao.xml",
@@ -31,19 +34,15 @@ public class UserServiceImplTest {
                 .setDateFormat("yyyy-MM-dd HH:mm:ss") //序列化日期格式化输出
                 .create();
         String s = gson.toJson(new CheckResult(service.login("17478093", "123456", 0)));
-        CheckResult<LoginDto> result  = gson.fromJson("{\n" +
-                "  \"success\": true,\n" +
-                "  \"data\": {\n" +
-                "    \"Caonima\": \"夏旭晨\",\n" +
-                "    \"sex\": \"男\",\n" +
-                "    \"phone\": \"17779911413\",\n" +
-                "    \"power\": 5,\n" +
-                "    \"collegeName\": \"信息与计算机工程学院\",\n" +
-                "    \"gradeId\": 1702,\n" +
-                "    \"gradeName\": \"17软工二班\"\n" +
-                "  }\n" +
-                "}", new TypeToken<CheckResult<LoginDto>>() {
-        }.getType());
-        logger.debug(result.getData());
+        logger.debug(gson.toJson(new Timestamp(new Date().getTime())));
+    }
+
+    /**
+     * 测试成功
+     */
+    @Test
+    public void gradeStus()
+    {
+        service.getGradeStus(1702);
     }
 }

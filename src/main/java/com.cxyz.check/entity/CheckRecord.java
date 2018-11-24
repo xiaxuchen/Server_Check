@@ -22,7 +22,7 @@ public class CheckRecord {
     /**
      * 完成情况，一般只需要装填id
      */
-    private TaskCompletion comp;
+    private TaskCompletion completion;
     /**
      * 考勤描述信息
      */
@@ -52,12 +52,12 @@ public class CheckRecord {
 		this.result = result;
 	}
 
-	public TaskCompletion getComp() {
-		return comp;
+	public TaskCompletion getCompletion() {
+		return completion;
 	}
 
-	public void setComp(TaskCompletion comp) {
-		this.comp = comp;
+	public void setCompletion(TaskCompletion completion) {
+		this.completion = completion;
 	}
 
 	public String getDes() {
@@ -74,7 +74,7 @@ public class CheckRecord {
 				"id=" + id +
 				", stu=" + stu +
 				", result=" + result +
-				", comp=" + comp +
+				", completion=" + completion +
 				", des='" + des + '\'' +
 				'}';
 	}

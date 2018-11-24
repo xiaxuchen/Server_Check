@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxyz.check.dao.TaskDao">
+
+    <select id="checkTask" resultType="TaskCompletion" >
+        select
+        c.id,
+        t.name 'taskInfo.name',
+        t.`sponsor.id` 'taskInfo.sponsor.id',
+        t.`start` 'taskInfo.start',
+        t.`end` 'taskInfo.end',
+        t.`sponsor.type` 'taskInfo.sponsor.type',
+        t.`room.id` 'taskInfo.room.id',
+        t.type 'taskInfo.type'
+        from tb_completion c,tb_taskinfo t
+        where t.`checker.id`=#{checker_id}
+        and t.`checker.type`=#{checker_type}
+        and t.id = c.`taskinfo.id`
+        and (#{time} between t.start and t.end)
+        and t.type=#{type}
+        and #{date}=c.date
+        and c.state=0
+        ;
+    </select>
+
+    <update id="updateComp" >
+        update tb_completion
+        set state=#{state},
+        update_time=now()
+        where id=#{id};
+    </update>
+
+    <!--批处理添加纪录到tb_record表中-->
+    <insert id="addRecords" >
+        insert into tb_record(`completion.id`,`stu.id`,des,result)
+        values
+        <foreach collection="stuInfo" item="item" close=";" separator=",">
+        (#{id},#{item.id},#{item.des},#{item.result})
+        </foreach>
+    </insert>
+
+    <insert id="addOtherState">
+        insert into tb_otherstate(`completion.id`,des)
+        VALUES (#{id},#{des});
+    </insert>
+
+    <select id="getCompDate" resultType="java.util.Date">
+        SELECT
+        `update_time`
+        FROM tb_completion
+        WHERE id=#{id};
+    </select>
+
+    <select id="getGradeCheck" resultType="Integer">
+        SELECT
+        count(*)
+        FROM tb_completion c,tb_taskinfo t
+        WHERE c.`taskinfo.id`=t.id
+        and t.`grade.id`=#{grade}
+        and c.state=1;
+    </select>
+
+    <insert id="addComp">
+        insert into tb_completion(`date`,`taskinfo.id`)
+        values(#{date},#{id});
+    </insert>
+</mapper>

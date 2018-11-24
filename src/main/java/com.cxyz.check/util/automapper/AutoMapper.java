@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AutoMapper
@@ -97,6 +98,7 @@ public class AutoMapper
                         continue;
                     }
                 }
+                logger.info("目标对象："+destination);
                 //返回映射后的结果
                 return destination;
             }
@@ -105,7 +107,8 @@ public class AutoMapper
     }
 
 
-    public static <S, T> List<T> mappingList(List<S> src, List<T> target, Class<?> targetClass) {
+    public static <S, T> List<T> mappingList(List<S> src, Class<T> targetClass) {
+        List<T> target = new ArrayList<T>();
         for (int i = 0; i < src.size(); i++) {
             try {
                 Object object = targetClass.newInstance();
@@ -115,6 +118,7 @@ public class AutoMapper
                 continue;// 某个方法反射异常
             }
         }
+        logger.info("目标list："+target);
         return target;
     }
 

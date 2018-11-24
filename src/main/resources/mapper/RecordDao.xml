@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxyz.check.dao.RecordDao">
+    <select id="getCheckRecords" resultType="CheckRecord" >
+      select
+      r.`completion.id`,
+      r.des,
+      r.result,
+      c.update_time 'completion.updateTime'
+      from tb_record r,tb_completion c
+      where r.`stu.id` = #{id}
+      and c.id=r.`completion.id`
+      order by r.id desc
+      limit #{start},#{len}
+    </select>
+
+    <!--批处理添加纪录到tb_record表中-->
+    <insert id="addRecords" >
+        insert into tb_record(`completion.id`,`stu.id`,des,result)
+        values
+        <foreach collection="stuInfo" item="item" close=";" separator=",">
+            (#{id},#{item.id},#{item.des},#{item.result})
+        </foreach>
+    </insert>
+
+    <insert id="addOtherState">
+        insert into tb_otherstate(`completion.id`,des)
+        VALUES (#{id},#{des});
+    </insert>
+</mapper>

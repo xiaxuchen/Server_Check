@@ -1,7 +1,12 @@
 package com.cxyz.check.dao;
 
+import com.cxyz.check.dto.CheckResult;
+import com.cxyz.check.dto.CheckTaskDto;
 import com.cxyz.check.entity.User;
+import com.cxyz.check.exception.util.GsonException;
 import com.cxyz.check.typevalue.UserType;
+import com.cxyz.check.util.parse.GsonUtil;
+import com.google.gson.reflect.TypeToken;
 
 import org.apache.log4j.Logger;
 import org.junit.Test;
@@ -67,5 +72,18 @@ public class UserDaoTest {
         /**
          * 测试成功
          */
+    }
+
+    @Test
+    public void t()
+    {
+        CheckResult<CheckTaskDto> o = null;
+        try {
+            o = (CheckResult<CheckTaskDto>) GsonUtil.fromJson("{\"success\":true,\"data\":{\"id\":5,\"name\":\"android\",\"sponsorName\":\"刘老师\",\"start\":\"1970-01-01 07:50:00\",\"end\":\"1970-01-01 23:59:59\",\"spot\":null},\"error\":null}", new TypeToken<CheckResult<CheckTaskDto>>() {
+            }.getType());
+        } catch (GsonException e) {
+            e.printStackTrace();
+        }
+        System.out.println(o.getData());
     }
 }

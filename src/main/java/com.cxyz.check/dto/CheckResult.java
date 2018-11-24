@@ -41,6 +41,9 @@ public class CheckResult<T> {
      */
     private String error;
 
+    public CheckResult()
+    {}
+
     public CheckResult(T data) {
         this.success = true;
         this.data = data;

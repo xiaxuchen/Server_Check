@@ -13,7 +13,7 @@ public class RecordDtoParse {
         record.setDes(dto.getDes());
         record.setStu(new Student(dto.getId()));
         record.setResult(dto.getResult());
-        record.setComp(new TaskCompletion(compid));
+        record.setCompletion(new TaskCompletion(compid));
         return record;
     }
 }

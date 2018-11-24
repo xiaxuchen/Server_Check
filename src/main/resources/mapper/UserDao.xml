@@ -42,6 +42,23 @@
         WHERE EXISTS (SELECT * FROM tb_grade WHERE `manager.id`=tb_tea.id);
     </select>
 
+    <select id="getName" resultType="String">
+        SELECT
+        name
+        from
+        <choose>
+            <!--当类型为0（学生）时查tb_stu表-->
+            <when test="type==0">
+                tb_stu
+            </when>
+            <!--当类型为0（学生）时查tb_tea表-->
+            <when test="type==1">
+                tb_tea
+            </when>
+        </choose>
+        where id=#{id};
+    </select>
+
     <insert id="addUsers" parameterType="User">
         INSERT
         INTO

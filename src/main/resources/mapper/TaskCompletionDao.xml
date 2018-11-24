@@ -47,4 +47,27 @@
         and t._id = c.taskinfo_id;
     </select>
 
+    <select id="checkTask" resultType="TaskCompletion" >
+        select
+        c.id,
+        t.name 'taskInfo.name',
+        t.`sponsor.id` 'taskInfo.sponsor.id',
+        t.`start` 'taskInfo.start',
+        t.`end` 'taskInfo.end',
+        t.`sponsor.type` 'taskInfo.sponsor.type',
+        t.`checker.id` 'taskInfo.checker.id',
+        t.`checker.type` 'taskInfo.checker.type',
+        t.room_id 'taskInfo.room.id',
+        t.type 'taskInfo.type'
+        from tb_completion c,tb_taskinfo t
+        where t.`checker.id`=#{checker.id}
+        and t.`checker.type`=#{checker.type}
+        and t.id = c.`taskinfo.id`
+        and t.`grade.id`=#{grade}
+        and (#{time} between t.start and t.end)
+        and t.type=#{type}
+        and #{date}=c.date
+        ;
+    </select>
+
 </mapper>

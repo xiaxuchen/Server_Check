@@ -1,9 +1,12 @@
 package com.cxyz.check.dao;
 
+import com.cxyz.check.dto.CheckTaskDto;
 import com.cxyz.check.entity.TaskCompletion;
+import com.cxyz.check.exception.task.NoTaskException;
 
 import org.apache.ibatis.annotations.Param;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 public interface TaskCompletionDao {
@@ -15,6 +18,7 @@ public interface TaskCompletionDao {
      * @return
      */
     TaskCompletion findById(@Param("id")int id);
+
     /**
      * 通过班级id和当前时间获取考勤任务
      * @param grade 班级id
@@ -40,4 +44,19 @@ public interface TaskCompletionDao {
      * @return
      */
     int updateCompState(@Param("state") int state,@Param("id") int id);
+
+    /**
+     * 通过一下参数获取当前是否有考勤任务
+     * @param grade 班级id
+     * @param checker_id 考勤人id
+     * @param checker_type 考勤人类型
+     * @param date 考勤日期
+     * @param time 当前时间
+     * @param type 考勤的类型
+     * @return 考勤任务Dto
+     */
+    CheckTaskDto checkTask(@Param("grade")int grade,
+                           @Param("checker_id")int checker_id, @Param("checker_type")int checker_type,
+                           @Param("date")String date,@Param("type") int type,
+                           @Param("time") String time) throws NoTaskException;
 }
