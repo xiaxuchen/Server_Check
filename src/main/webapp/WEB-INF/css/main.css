@@ -1,0 +1,35 @@
+.table{
+    width: 50%;
+}
+
+.time:hover{
+    background-color: #dbdbdb;
+    cursor: pointer;
+}
+
+header#terminfo{
+    margin-left: 10%;
+    margin-top: 100px;
+    width: 200px;
+    float: left;
+}
+
+table{
+    margin-left: 5%;
+}
+
+#date,#term{
+    margin-top: 36px;
+    margin-left: 10px;
+    width: 60%;
+}
+
+#term{
+    margin-left: 36px;
+}
+
+#commit{
+    position: relative;
+    left: 35%;
+    top: 50px;
+}
