@@ -1,24 +1,16 @@
-package com.cxyz.check.controller;
+package com.cxyz.check.handler;
 
-import com.cxyz.check.dao.EnvirDao;
-import com.cxyz.check.dao.UserDao;
-import com.cxyz.check.dto.AddTermDto;
 import com.cxyz.check.dto.CheckRecordDto;
 import com.cxyz.check.dto.CheckResult;
-import com.cxyz.check.dto.CheckTaskDto;
 import com.cxyz.check.dto.CommitCheckDto;
 import com.cxyz.check.dto.GradeStusDto;
 import com.cxyz.check.dto.LoginDto;
-import com.cxyz.check.entity.CheckRecord;
 import com.cxyz.check.entity.User;
 import com.cxyz.check.enums.UserErrorEnum;
 import com.cxyz.check.exception.GradeNotFoundException;
 import com.cxyz.check.exception.PasswordErrorException;
 import com.cxyz.check.exception.UserNotFoundException;
-import com.cxyz.check.exception.envir.TermExistException;
-import com.cxyz.check.exception.task.NoTaskException;
 import com.cxyz.check.exception.transaction.CommitCheckFailException;
-import com.cxyz.check.exception.transaction.TransactionalException;
 import com.cxyz.check.exception.util.GsonException;
 import com.cxyz.check.service.EnvirService;
 import com.cxyz.check.service.RecordService;
@@ -26,26 +18,21 @@ import com.cxyz.check.service.TaskService;
 import com.cxyz.check.service.UserService;
 import com.cxyz.check.util.excel.POIUtil;
 import com.cxyz.check.util.parse.GsonUtil;
-import com.google.gson.Gson;
 
-import org.apache.http.Header;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Controller
-@RequestMapping("/check")
-public class CheckController {
+@RequestMapping("/user")
+public class UserHandler {
 
     @Autowired
     private UserService userService;
@@ -89,32 +76,9 @@ public class CheckController {
         return  new CheckResult<LoginDto>(login);
     }
 
-    /**
-     * 检查是否有考勤任务
-     * @param checkerId 考勤人id
-     * @param checkerType 考勤人类型
-     * @param type 考勤类型·
-     * @return
-     */
-    @RequestMapping(value = "/checkTask",
-            method = RequestMethod.GET,
-            produces = {"application/json;charset=UTF-8"})
-    @ResponseBody
-    public CheckResult<CheckTaskDto>
-    checkTask(@RequestParam String checkerId,@RequestParam int checkerType
-    ,@RequestParam int type)
-    {
-        try {
-            CheckTaskDto taskDto = taskService.checkTask(checkerId, checkerType, type);
-            return new CheckResult<CheckTaskDto>(taskDto);
-        }catch (NoTaskException e)
-        {
-            return new CheckResult("当前暂无考勤任务");
-        }
-    }
 
     /**
-     * 获取该班级所以学生的信息
+     * 获取该班级所有学生的信息用于考勤
      * @param grade 考勤班级
      * @return
      */
@@ -134,56 +98,12 @@ public class CheckController {
         }
     }
 
-    @RequestMapping(value = "/commitCheck",
-            method = RequestMethod.POST,
-            produces = {"application/json;charset=UTF-8"})
-    @ResponseBody
-    public CheckResult<String>
-    commitCheck(@RequestParam String commitCheck)
-    {
-        CheckResult<String> stringCheckResult = new CheckResult<String>();
 
-        try {
-            CommitCheckDto commitCheckDto = (CommitCheckDto)
-                    GsonUtil.fromJson(commitCheck, CommitCheckDto.class);
-            taskService.commitCheck(commitCheckDto);
-            stringCheckResult.setSuccess(true);
-            stringCheckResult.setData("提交成功");
-            return stringCheckResult;
-        } catch (GsonException e) {
-            e.printStackTrace();
-            stringCheckResult.setData("提交数据异常");
-            stringCheckResult.setSuccess(false);
-            return stringCheckResult;
-        }catch (CommitCheckFailException e)
-        {
-            e.printStackTrace();
-            stringCheckResult.setData(e.getMessage()==null?
-                    "提交失败":e.getMessage());
-            stringCheckResult.setSuccess(false);
-            return stringCheckResult;
-        }
-    }
-
-
-    @RequestMapping(value = "/getGradeCheck",
-            method = RequestMethod.GET,
-            produces = {"application/json;charset=UTF-8"})
-    @ResponseBody
-    public CheckResult<CheckRecordDto>
-    getGradeCheck(@RequestParam String id,
-                  @RequestParam int type,@RequestParam int grade)
-    {
-        return new CheckResult<CheckRecordDto>(recordService
-                .getCheckRecord(id,type,grade));
-    }
-
-
-    @RequestMapping(value = "/upload",
+    @RequestMapping(value = "/addStus",
         method = RequestMethod.POST,
         produces = {"application/json;charset=UTF-8"})
     @ResponseBody
-    public CheckResult<String> upload(@RequestParam MultipartFile file,
+    public CheckResult<String> addStus(@RequestParam MultipartFile file,
                                       @RequestParam int type,
                                       @RequestParam int gradeId)
     {
@@ -196,7 +116,7 @@ public class CheckController {
         else {
             //解析excel
             try {
-                List<List<Object>> data = POIUtil.getBankListByExcel(file.getInputStream(), file.getOriginalFilename());
+                List<List<String>> data = POIUtil.getBankListByExcel(file.getInputStream(), file.getOriginalFilename());
                 List head = data.get(0);
                 List<User> users = new ArrayList<>();
                 User user = null;
@@ -241,24 +161,5 @@ public class CheckController {
         throw new RuntimeException();
     }
 
-
-    @RequestMapping(value = "/addTerm",
-        method = RequestMethod.POST,
-        produces = {"application/json;charset=UTF-8"})
-    @ResponseBody
-    public CheckResult<String> addTerm(@RequestBody AddTermDto dto)
-    {
-        CheckResult<String> checkResult = new CheckResult<>();
-        try {
-            envirService.addTerm(dto);
-            checkResult.setSuccess(true);
-            checkResult.setData("提交成功!");
-        }catch (TermExistException e)
-        {
-            checkResult.setError("当前学期已存在!");
-        }
-
-        return checkResult;
-    }
 
 }

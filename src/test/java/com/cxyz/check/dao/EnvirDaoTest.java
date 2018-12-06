@@ -6,15 +6,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration({"classpath:spring/spring_dao.xml"})
-public class EnvironmentDaoTest {
+@ContextConfiguration({"classpath:spring/spring-dao.xml"})
+public class EnvirDaoTest {
 
     @Autowired
-    EnvironmentDao dao;
+    EnvirDao dao;
     @Test
     public void getUserNeedById() {
         System.out.println(dao.getUserNeedById(1702));
+    }
+
+    @Test
+    public void getUserNeedById1() {
+    }
+
+    @Test
+    public void checkTerm() {
+        dao.checkTerm(1,"2018-1-1",1);
+    }
+
+    @Test
+    public void addTerm() {
     }
 }

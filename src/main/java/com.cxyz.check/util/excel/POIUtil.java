@@ -5,7 +5,9 @@ import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -26,8 +28,8 @@ public class POIUtil {
      * @return
      * @throws IOException
      */
-    public  static List<List<Object>> getBankListByExcel(InputStream in,String fileName) throws Exception{
-        List<List<Object>> list = null;
+    public  static List<List<String>> getBankListByExcel(InputStream in,String fileName) throws Exception{
+        List<List<String>> list = null;
 
         //创建Excel工作薄
         Workbook work = getWorkbook(in,fileName);
@@ -38,23 +40,27 @@ public class POIUtil {
         Row row = null;
         Cell cell = null;
 
-        list = new ArrayList<List<Object>>();
+        list = new ArrayList<>();
         //遍历Excel中所有的sheet
         for (int i = 0; i < work.getNumberOfSheets(); i++) {
             sheet = work.getSheetAt(i);
             if(sheet==null){continue;}
 
             //遍历当前sheet中的所有行
-            for (int j = sheet.getFirstRowNum(); j < sheet.getLastRowNum(); j++) {
+            for (int j = sheet.getFirstRowNum(); j <= sheet.getLastRowNum(); j++) {
                 row = sheet.getRow(j);
-                if(row==null||row.getFirstCellNum()==j){continue;}
-
+                if(row==null){continue;}
+                System.err.println(j);
                 //遍历所有的列
-                List<Object> li = new ArrayList<Object>();
+                List<String> li = new ArrayList<>();
                 for (int y = row.getFirstCellNum(); y < row.getLastCellNum(); y++) {
                     cell = row.getCell(y);
-                    li.add(getCellValue(cell));
+                    if(cell != null)
+                        li.add(getCellValue(cell));
+                    else
+                        li.add("");
                 }
+                System.err.println(li);
                 list.add(li);
             }
         }
@@ -63,7 +69,33 @@ public class POIUtil {
     }
 
     /**
-     * 描述：根据文件后缀，自适应上传文件的版本 
+     * 获取List<Map>对象
+     * @param in 文件流
+     * @param fileName 文件名
+     * @param header 表头所在的行
+     * @return
+     */
+    public static List<Map<String,String>> getMap(InputStream in,String fileName,int header) throws Exception {
+        List<List<String>> list = getBankListByExcel(in,fileName);
+        List<String> head = list.get(header);
+        List<Map<String,String>> mapList = new ArrayList<>();
+        Map<String,String> map;
+        for(List<String> l:list)
+        {
+            map = new HashMap<>();
+            int i = 0;
+            for(String str:l)
+            {
+                map.put(head.get(i),str);
+                i++;
+            }
+            mapList.add(map);
+        }
+        return mapList;
+    }
+
+    /**
+     * 描述：根据文件后缀，自适应上传文件的版本
      * @param inStr,fileName
      * @return
      * @throws Exception
@@ -86,8 +118,8 @@ public class POIUtil {
      * @param cell
      * @return
      */
-    public static Object getCellValue(Cell cell){
-        Object value = null;
+    public static String getCellValue(Cell cell){
+        String value = "";
         DecimalFormat df = new DecimalFormat("0");  //格式化number String字符
         SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd");  //日期格式化
         DecimalFormat df2 = new DecimalFormat("0.00");  //格式化数字
@@ -106,7 +138,7 @@ public class POIUtil {
                 }
                 break;
             case Cell.CELL_TYPE_BOOLEAN:
-                value = cell.getBooleanCellValue();
+                value = String.valueOf(cell.getBooleanCellValue());
                 break;
             case Cell.CELL_TYPE_BLANK:
                 value = "";

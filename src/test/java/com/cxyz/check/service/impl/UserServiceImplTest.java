@@ -1,11 +1,9 @@
 package com.cxyz.check.service.impl;
 
 import com.cxyz.check.dto.CheckResult;
-import com.cxyz.check.dto.LoginDto;
 import com.cxyz.check.service.UserService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 
 import org.apache.log4j.Logger;
 import org.junit.Test;
@@ -19,7 +17,7 @@ import java.util.Date;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(
-        {"classpath:spring/spring_dao.xml",
+        {"classpath:spring/spring-dao.xml",
                 "classpath:spring/spring-service.xml"}
 )
 public class UserServiceImplTest {

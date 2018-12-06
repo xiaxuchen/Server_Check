@@ -8,7 +8,7 @@ import com.cxyz.check.util.date.DateTime;
 
 public class UpdateRecord {
     private int _id;//所更改的记录的编号
-    private Student student;//所更改的记录的所属学生
+    private User student;//所更改的记录的所属学生
     private int result;//历史考勤结果
     private TaskCompletion taskCompletion;//关联的完成情况
     private User updater;//更新者
@@ -36,11 +36,11 @@ public class UpdateRecord {
         this._id = _id;
     }
 
-    public Student getStudent() {
+    public User getStudent() {
         return student;
     }
 
-    public void setStudent(Student student) {
+    public void setStudent(User student) {
         this.student = student;
     }
 

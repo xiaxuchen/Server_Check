@@ -14,7 +14,7 @@ public class CheckRecord {
     /**
      * 所属学生
      */
-    private Student stu;
+    private User stu;
     /**
      * 考勤结果
      */
@@ -36,11 +36,11 @@ public class CheckRecord {
 		this.id = id;
 	}
 
-	public Student getStu() {
+	public User getStu() {
 		return stu;
 	}
 
-	public void setStu(Student stu) {
+	public void setStu(User stu) {
 		this.stu = stu;
 	}
 

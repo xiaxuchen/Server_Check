@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxyz.check.dao.EnvirDao">
+
+
+
+    <select id="getUserNeedById" resultType="Grade">
+        SELECT
+        g.name,
+        c.id 'college.id',
+        c.name 'college.name'
+        FROM tb_grade g,tb_college c
+        WHERE g.`college.id`=c.id
+        AND g.id=#{id};
+    </select>
+
+    <select id="checkTerm" resultType="int">
+        SELECT
+        count(*)
+        FROM
+        tb_term
+        WHERE `school.id`=#{school}
+        AND YEAR(`begin`)=YEAR(#{date})
+        AND num=#{num};
+    </select>
+
+    <insert id="addTerm" parameterType="Term" useGeneratedKeys="true" keyProperty="term.id" keyColumn="id">
+        insert into
+        tb_term(num,`begin`,`school.id`)
+        values(#{term.num},#{term.begin},#{term.school.id});
+    </insert>
+
+    <insert id="addTimes">
+        insert into
+        tb_times(`start`,`end`,`session`,`term.id`)
+        values
+        <foreach collection="times" item="item" close=";" separator=",">
+            (#{item.start},#{item.end},#{item.session},#{termId})
+        </foreach>
+    </insert>
+</mapper>

@@ -13,13 +13,13 @@
     <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
     <script src="https://cdn.staticfile.org/jquery/3.1.1/jquery.min.js"></script>
 
-    <script src="js/jquery.js"></script>
+    <script src="../js/jquery.js"></script>
 
-    <script src="js/laydate/laydate.js"></script>
+    <script src="../js/laydate/laydate.js"></script>
 
-    <script src="js/main.js"></script>
+    <script src="../js/main.js"></script>
 
-    <link href="css/main.css" rel="stylesheet">
+    <link href="../css/main.css" rel="stylesheet">
 </head>
 
 <body>

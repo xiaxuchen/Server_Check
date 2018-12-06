@@ -37,7 +37,7 @@
         <property name="dataSource" ref="dataSource" />
         <property name="configLocation" value="classpath:mybatis-config.xml" />
         <!--扫描entity包，使用别名-->
-        <property name="typeAliasesPackage" value="com.cxyz.check.entity" />
+        <property name="typeAliasesPackage" value="com.cxyz.check.entity,com.cxyz.check.dto,com.cxyz.check.custom" />
         <!--扫描sql配置文件：mapper需要的xml文件-->
         <property name="mapperLocations" value="classpath:mapper/*.xml" />
     </bean>

@@ -106,7 +106,7 @@ public class DateTime extends Date{
 	
 	public Date setHour(int hour)
 	{
-		return this.setHour(String.valueOf(hour));
+		return this.setHour(hour+"");
 	}
 
 
@@ -124,7 +124,7 @@ public class DateTime extends Date{
 	
 	public Date setMinute(int minute)
 	{
-		return this.setMinute(String.valueOf(minute));
+		return this.setMinute(minute+"");
 	}
 
 
@@ -142,7 +142,7 @@ public class DateTime extends Date{
 	
 	public Date setSecond(int second)
 	{
-		return this.setSecond(String.valueOf(second));
+		return this.setSecond(second+"");
 	}
 	
 	@Override

@@ -48,4 +48,11 @@ public interface UserDao {
      * @param users
      */
     public void addUsers(@Param("users")List<User> users,@Param("type") int type);
+
+    /**
+     * 通过学生权限获取学生信息
+     * @param gradeId
+     * @param power
+     */
+    User findStuByPower(@Param("gradeId") Integer gradeId,@Param("power") Integer power);
 }

@@ -22,9 +22,9 @@ public class CheckTaskDto {
     private String name;//任务名称
     @Path("taskInfo.sponsor.name")
     private String sponsorName;//发起者名称
-    @Path("taskInfo.start")
+    @Path("start")
     private Timestamp start;//开始时间
-    @Path("taskInfo.end")
+    @Path("end")
     private Timestamp end;//结束时间
     @Path("taskInfo.room.name")
     private String spot;//上课地点

@@ -3,6 +3,17 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cxyz.check.dao.RecordDao">
+
+    <resultMap id="test" type="CheckHistoryDto">
+        <result column="taskName" property="taskName"></result>
+        <result column="state" property="state"/>
+        <result column="commitTime" property="commitTime" />
+        <collection property="results" ofType="ResultCustom">
+            <result property="resultType" column="results.resultType" />
+            <result property="count" column="results.count" />
+        </collection>
+    </resultMap>
+
     <select id="getCheckRecords" resultType="CheckRecord" >
       select
       r.`completion.id`,
@@ -29,4 +40,22 @@
         insert into tb_otherstate(`completion.id`,des)
         VALUES (#{id},#{des});
     </insert>
+
+    <select id="getHistory" resultMap="test" >
+        SELECT
+        t.name taskName,
+        c.state,
+        c.update_time 'commitTime',
+        r.result 'results.resultType',
+        count(*) 'results.count'
+        FROM
+        tb_taskinfo t,tb_completion c,tb_record r
+        WHERE t.`checker.id`=#{id}
+        AND t.`checker.type`=#{type}
+        AND c.id = r.`completion.id`
+        AND t.id = c.`taskinfo.id`
+        AND c.state != 0
+        GROUP BY
+        t.name,c.state,r.result,c.update_time
+    </select>
 </mapper>

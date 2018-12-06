@@ -1,18 +1,22 @@
 package com.cxyz.check.service.impl;
 
 import com.cxyz.check.dao.RecordDao;
+import com.cxyz.check.dao.TaskCompletionDao;
 import com.cxyz.check.dao.TaskDao;
 import com.cxyz.check.dao.UserDao;
 import com.cxyz.check.dto.CheckTaskDto;
 import com.cxyz.check.dto.CommitCheckDto;
 import com.cxyz.check.dto.GradeStusDto;
 import com.cxyz.check.entity.TaskCompletion;
+import com.cxyz.check.entity.TaskInfo;
 import com.cxyz.check.entity.User;
 import com.cxyz.check.exception.GradeNotFoundException;
 import com.cxyz.check.exception.task.NoTaskException;
 import com.cxyz.check.exception.transaction.CommitCheckFailException;
 import com.cxyz.check.service.TaskService;
+import com.cxyz.check.typevalue.PowerType;
 import com.cxyz.check.typevalue.TaskCompletionState;
+import com.cxyz.check.typevalue.UserType;
 import com.cxyz.check.util.automapper.AutoMapper;
 import com.cxyz.check.util.date.DateTime;
 
@@ -31,6 +35,9 @@ public class TaskServiceImpl implements TaskService {
     private TaskDao taskDao;
 
     @Autowired
+    private TaskCompletionDao taskCompletionDao;
+
+    @Autowired
     private UserDao userDao;
 
     @Autowired
@@ -38,10 +45,17 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public CheckTaskDto checkTask(String checker_id, int checker_type, int type) throws NoTaskException {
-        DateTime dateTime = DateTime.fromUDate(new Date());
+        //TODO 这里用作测试
+        DateTime dateTime = new DateTime();
+        dateTime.setYear(2018);
+        dateTime.setMonth(9);
+        dateTime.setDay(3);
+        dateTime.setHour(9);
+        System.out.println(dateTime.getTime());
         //获取当前考勤
         TaskCompletion taskCompletion = taskDao.checkTask(checker_id, checker_type,
                 dateTime.getDate(), type, dateTime.getTime());
+        System.out.println(taskCompletion);
         if(taskCompletion == null)
             throw new NoTaskException();
         User sponsor = taskCompletion.getTaskInfo().getSponsor();
@@ -96,4 +110,19 @@ public class TaskServiceImpl implements TaskService {
         List<GradeStusDto> gradeStusDtos = AutoMapper.mappingList(users, GradeStusDto.class);
         return gradeStusDtos;
     }
+
+    @Override
+    @Transactional
+    public void addTask(List<TaskInfo> taskInfos,Integer termId,Integer type,Integer gradeId) {
+        for(TaskInfo task:taskInfos) {
+            //为任务考勤人
+            User u = userDao.findStuByPower(gradeId, PowerType.STU_CHECKER);
+            u.setType(UserType.STUDENT);
+            task.setChecker(u);
+            //添加任务
+            taskDao.addTask(task, termId, type, gradeId);
+        }
+        taskCompletionDao.addComp(taskInfos);
+    }
+
 }

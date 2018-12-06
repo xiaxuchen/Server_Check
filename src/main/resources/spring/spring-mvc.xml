@@ -34,6 +34,9 @@
         <property name="resolveLazily" value="true"/>
     </bean>
 
-    <!--配置扫描servlet包-->
-    <context:component-scan base-package="com.cxyz.check.controller" />
+    <!--配置扫描handler-->
+    <context:component-scan base-package="com.cxyz.check.handler" />
+
+    <!--扫描typehandler-->
+    <context:component-scan base-package="com.cxyz.check.typehandler"/>
 </beans>

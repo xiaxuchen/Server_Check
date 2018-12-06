@@ -3,6 +3,7 @@ package com.cxyz.check.service;
 import com.cxyz.check.dto.CheckTaskDto;
 import com.cxyz.check.dto.CommitCheckDto;
 import com.cxyz.check.dto.GradeStusDto;
+import com.cxyz.check.entity.TaskInfo;
 import com.cxyz.check.exception.task.NoTaskException;
 
 import org.apache.ibatis.annotations.Param;
@@ -38,5 +39,11 @@ public interface TaskService {
      * @return
      */
     List<GradeStusDto> gradeStus(int grade);
+
+    /**
+     * 添加考勤任务
+     * @param taskInfos 考勤任务
+     */
+    void addTask(List<TaskInfo> taskInfos,Integer termId,Integer type,Integer gradeId);
 
 }

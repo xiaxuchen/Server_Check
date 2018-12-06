@@ -11,5 +11,5 @@ public interface RecordService {
      * @param grade 用户班级id
      * @return
      */
-    CheckRecordDto getCheckRecord(String id,int type,int grade);
+    CheckRecordDto getCheckRecord(String id, int type, int grade);
 }

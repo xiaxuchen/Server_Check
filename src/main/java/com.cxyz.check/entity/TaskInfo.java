@@ -15,11 +15,13 @@ public class TaskInfo {
 	private String name;//考勤任务名称
     private User sponsor;//考勤任务发起人
     private User checker;//考勤任务考勤人
-    private Timestamp start;//考勤开始时间
-    private Timestamp end;//考勤时限
+	private Integer weekday;//周几
     private ClassRoom room;//考勤所在地
     private Integer type;//考勤任务类型，临时任务或者课程
     private Grade grade = new Grade();//考勤班级
+	private Integer start;//开始节次
+	private Integer end;//结束节次
+	private Term term;
     /*
      * 当前考勤任务的所有考勤情况
      */
@@ -41,20 +43,12 @@ public class TaskInfo {
 		this.name = name;
 	}
 
-	public Timestamp getStart() {
-		return start;
+	public Integer getWeekday() {
+		return weekday;
 	}
 
-	public void setStart(Timestamp start) {
-		this.start = start;
-	}
-
-	public Timestamp getEnd() {
-		return end;
-	}
-
-	public void setEnd(Timestamp end) {
-		this.end = end;
+	public void setWeekday(Integer weekday) {
+		this.weekday = weekday;
 	}
 
 	public User getSponsor() {
@@ -105,6 +99,30 @@ public class TaskInfo {
 		this.completions = completions;
 	}
 
+	public Integer getStart() {
+		return start;
+	}
+
+	public void setStart(Integer start) {
+		this.start = start;
+	}
+
+	public Integer getEnd() {
+		return end;
+	}
+
+	public void setEnd(Integer end) {
+		this.end = end;
+	}
+
+	public Term getTerm() {
+		return term;
+	}
+
+	public void setTerm(Term term) {
+		this.term = term;
+	}
+
 	@Override
 	public String toString() {
 		return "TaskInfo{" +
@@ -112,11 +130,13 @@ public class TaskInfo {
 				", name='" + name + '\'' +
 				", sponsor=" + sponsor +
 				", checker=" + checker +
-				", start=" + start +
-				", end=" + end +
+				", weekday=" + weekday +
 				", room=" + room +
 				", type=" + type +
 				", grade=" + grade +
+				", start=" + start +
+				", end=" + end +
+				", term=" + term +
 				", completions=" + completions +
 				'}';
 	}

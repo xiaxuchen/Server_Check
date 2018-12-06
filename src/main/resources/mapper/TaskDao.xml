@@ -7,22 +7,28 @@
     <select id="checkTask" resultType="TaskCompletion" >
         select
         c.id,
-        t.name 'taskInfo.name',
+        t.`name` 'taskInfo.name',
         t.`sponsor.id` 'taskInfo.sponsor.id',
-        t.`start` 'taskInfo.start',
-        t.`end` 'taskInfo.end',
+        s.`start` 'start',
+		e.`end` 'end',
         t.`sponsor.type` 'taskInfo.sponsor.type',
-        t.`room.id` 'taskInfo.room.id',
-        t.type 'taskInfo.type'
-        from tb_completion c,tb_taskinfo t
+        t.type 'taskInfo.type',
+		r.`name` 'taskInfo.room.name'
+        from tb_completion c,tb_taskinfo t,tb_times s,tb_times e,tb_room r,tb_term m
         where t.`checker.id`=#{checker_id}
         and t.`checker.type`=#{checker_type}
         and t.id = c.`taskinfo.id`
-        and (#{time} between t.start and t.end)
+        and t.`start` = s.`session`
+		and t.`end` = e.`session`
+        and t.`term.id` = s.`term.id`
+		and t.`room.id` = r.id
+		and t.`term.id` = e.`term.id`
+		and t.`term.id` = m.id
+		and DATE_ADD(m.`begin`,INTERVAL ((c.`week`-1)*7+(DAYOFWEEK(m.`begin`)+5)%7) DAY) = #{date}
         and t.type=#{type}
-        and #{date}=c.date
+        and #{time} &lt;= e.`end`
+        and #{time} &gt;= s.`start`
         and c.state=0
-        ;
     </select>
 
     <update id="updateComp" >
@@ -31,20 +37,6 @@
         update_time=now()
         where id=#{id};
     </update>
-
-    <!--批处理添加纪录到tb_record表中-->
-    <insert id="addRecords" >
-        insert into tb_record(`completion.id`,`stu.id`,des,result)
-        values
-        <foreach collection="stuInfo" item="item" close=";" separator=",">
-        (#{id},#{item.id},#{item.des},#{item.result})
-        </foreach>
-    </insert>
-
-    <insert id="addOtherState">
-        insert into tb_otherstate(`completion.id`,des)
-        VALUES (#{id},#{des});
-    </insert>
 
     <select id="getCompDate" resultType="java.util.Date">
         SELECT
@@ -65,5 +57,13 @@
     <insert id="addComp">
         insert into tb_completion(`date`,`taskinfo.id`)
         values(#{date},#{id});
+    </insert>
+
+    <insert id="addTask" parameterType="TaskInfo" keyProperty="task.id" useGeneratedKeys="true">
+        INSERT INTO
+        tb_taskinfo(name,`sponsor.id`,`sponsor.type`,`checker.id`,`checker.type`,
+        `type`,`grade.id`,`room.id`,weekday,start,end,`term.id`)
+        VALUES(#{task.name},#{task.sponsor.id},#{task.sponsor.type},#{task.checker.id},#{task.checker.type},#{type},
+        #{gradeId},#{task.room.id},#{task.weekday},#{task.start},#{task.end},#{termId})
     </insert>
 </mapper>

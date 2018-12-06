@@ -1,6 +1,6 @@
 package com.cxyz.check.dao;
 
-import com.cxyz.check.dto.CheckRecordDto;
+import com.cxyz.check.dto.CheckHistoryDto;
 import com.cxyz.check.dto.CommitCheckDto;
 import com.cxyz.check.entity.CheckRecord;
 
@@ -22,13 +22,6 @@ public interface RecordDao {
                                     @Param("len") int len);
 
     /**
-     * 加载详细考勤信息
-     * @param id 考勤记录id
-     * @return
-     */
-    CheckRecord getSingleRecordById(int id);
-
-    /**
      * 添加违规学生记录
      * @param stuInfos 学生信息
      * @return 影响记录数
@@ -44,4 +37,12 @@ public interface RecordDao {
      * @return
      */
     int addOtherState(@Param("id")int id,@Param("des")String des);
+
+    /**
+     * 通过考勤人id和类型获取考勤历史纪录,获取10条
+     * @param id 考勤人id
+     * @param type 考勤人类型
+     * @return
+     */
+    List<CheckHistoryDto> getHistory(@Param("id")String id ,@Param("type") int type);
 }

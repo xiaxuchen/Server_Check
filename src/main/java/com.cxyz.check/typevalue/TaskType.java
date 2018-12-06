@@ -1,9 +1,9 @@
 package com.cxyz.check.typevalue;
 
-public class TaskType {
+public interface TaskType {
 
     //日常考勤
-    public static final int DAILYCHECK = 1;
+    int DAILYCHECK = 1;
     //临时考勤
-    public static final int TEMPORARYCHECK = 0;
+    int TEMPORARYCHECK = 2;
 }

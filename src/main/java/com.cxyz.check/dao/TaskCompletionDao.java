@@ -2,6 +2,7 @@ package com.cxyz.check.dao;
 
 import com.cxyz.check.dto.CheckTaskDto;
 import com.cxyz.check.entity.TaskCompletion;
+import com.cxyz.check.entity.TaskInfo;
 import com.cxyz.check.exception.task.NoTaskException;
 
 import org.apache.ibatis.annotations.Param;
@@ -46,7 +47,7 @@ public interface TaskCompletionDao {
     int updateCompState(@Param("state") int state,@Param("id") int id);
 
     /**
-     * 通过一下参数获取当前是否有考勤任务
+     * 通过一些参数获取当前是否有考勤任务
      * @param grade 班级id
      * @param checker_id 考勤人id
      * @param checker_type 考勤人类型
@@ -59,4 +60,11 @@ public interface TaskCompletionDao {
                            @Param("checker_id")int checker_id, @Param("checker_type")int checker_type,
                            @Param("date")String date,@Param("type") int type,
                            @Param("time") String time) throws NoTaskException;
+
+
+    /**
+     * 添加考勤完成情况
+     * @param taskInfos
+     */
+    void addComp(@Param("taskinfos") List<TaskInfo> taskInfos);
 }

@@ -5,7 +5,7 @@ public class CheckResult<T> {
     /**
      * 请求是否成功
      */
-    private boolean success;
+    private boolean success = false;
 
     /**
      * 请求的数据

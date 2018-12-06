@@ -2,6 +2,7 @@ package com.cxyz.check.service;
 
 import com.cxyz.check.dto.GradeStusDto;
 import com.cxyz.check.dto.LoginDto;
+import com.cxyz.check.entity.User;
 import com.cxyz.check.exception.GradeNotFoundException;
 import com.cxyz.check.exception.PasswordErrorException;
 import com.cxyz.check.exception.UserException;
@@ -33,4 +34,11 @@ public interface UserService {
     List<GradeStusDto> getGradeStus(int gradeId)
     throws GradeNotFoundException;
 
+    /**
+     * 添加用户
+     * @param users 用户信息
+     * @param type 用户类型
+     * @param gradeId 班级id
+     */
+    void addUser(List<User> users,int type,int gradeId);
 }

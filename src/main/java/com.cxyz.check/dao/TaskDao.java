@@ -12,6 +12,8 @@ import org.apache.ibatis.annotations.Param;
 import java.util.Date;
 import java.util.List;
 
+import javafx.concurrent.Task;
+
 /**
  * 管理考勤数据
  */
@@ -53,14 +55,16 @@ public interface TaskDao {
      */
     int getGradeCheck(@Param("grade") int grade);
 
-
-    int addComp(@Param("date") String date,@Param("id") int id);
-
     /**
-     * 获取所有的任务信息
-     * @param grade 班级id
-     * @return
+     * 添加考勤任务
+     * @param task 考勤任务
+     * @param gradeId 班级id
+     * @param termId 学期id
+     * @param type 考勤类型
+     * @return 插入的条数
      */
-    SubjectsDto getLessons(int grade);
+    void addTask(@Param("task")TaskInfo task,@Param("termId") Integer termId,
+                 @Param("type") Integer type,@Param("gradeId")Integer gradeId
+                 );
 
 }

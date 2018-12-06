@@ -1,5 +1,4 @@
 package com.cxyz.check.dao;
-
 import com.cxyz.check.dto.CommitCheckDto;
 import com.cxyz.check.typevalue.CheckRecordResult;
 
@@ -13,9 +12,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration({"classpath:spring/spring_dao.xml"})
+@ContextConfiguration({"classpath:spring/spring-dao.xml"})
 public class RecordDaoTest {
 
     @Resource
@@ -48,6 +46,7 @@ public class RecordDaoTest {
         /**
          * 测试成功
          */
-        dao.addOtherState(1,"狗东西打了老师，老师罢课了");
+        //dao.addOtherState(1,"狗东西打了老师，老师罢课了");
+        System.out.println(dao.getHistory("17478093",0));
     }
 }

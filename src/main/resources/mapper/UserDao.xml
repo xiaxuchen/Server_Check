@@ -72,8 +72,7 @@
             </when>
         </choose>
         <!--共有的字段-->
-        ,id,name,sex,phone,photo,pwd,power,
-        `college.name`)
+        ,id,name,sex,phone,`college.name`)
         VALUES
         <!--循环添加多个用户-->
         <foreach collection="users" item="item" close=";" separator=",">
@@ -85,9 +84,16 @@
                     (#{item.college.id},
                 </when>
             </choose>
-            #{item.id},#{item.name},#{item.sex},#{item.phone},#{item.photo}
-            ,#{item.pwd},#{item.power},#{item.college.name})
+            #{item.id},#{item.name},#{item.sex},#{item.phone}
+            ,#{item.college.name})
         </foreach>
     </insert>
+
+    <select id="findStuByPower" resultType="User">
+        SELECT
+        id
+        from tb_stu
+        where power = #{power} AND `grade.id`=#{gradeId};
+    </select>
 
 </mapper>

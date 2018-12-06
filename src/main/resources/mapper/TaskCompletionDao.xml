@@ -70,4 +70,15 @@
         ;
     </select>
 
+    <insert id="addComp" parameterType="TaskInfo" >
+      INSERT
+      INTO tb_completion(state,update_time,`taskinfo.id`,week) VALUES
+      <foreach collection="taskinfos" item="task" close=";">
+          <foreach collection="task.completions" item="comp" separator=",">
+              (0,NOW(),#{task.id},#{comp.week})
+          </foreach>
+      </foreach>
+    </insert>
+
+
 </mapper>

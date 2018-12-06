@@ -1,5 +1,11 @@
 package com.cxyz.check.dao;
 
+import com.cxyz.check.entity.ClassRoom;
+import com.cxyz.check.entity.Grade;
+import com.cxyz.check.entity.TaskCompletion;
+import com.cxyz.check.entity.TaskInfo;
+import com.cxyz.check.entity.Times;
+import com.cxyz.check.entity.User;
 import com.cxyz.check.typevalue.UserType;
 
 import org.junit.Test;
@@ -7,19 +13,13 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import javax.annotation.Resource;
 
-import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration({"classpath:spring/spring_dao.xml"})
+@ContextConfiguration({"classpath:spring/spring-dao.xml"})
 public class TaskDaoTest {
 
     @Resource
@@ -45,24 +45,19 @@ public class TaskDaoTest {
     }
 
     @Test
-    public void addComp()
+    public void addTask()
     {
-        int year = 2018;
-        int month = 11;
-        int day = 12;
-        while(true) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(year, month - 1, day);
-            int weekofday = calendar.get(Calendar.DAY_OF_WEEK)-1==0?7:calendar.get(Calendar.DAY_OF_WEEK)-1;
-            Date date = calendar.getTime();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-dd", Locale.CHINA);
-            if(calendar.get(Calendar.DAY_OF_MONTH) == 30)
-                break;
-            dao.addComp(dateFormat.format(date),15);
-            day++;
-        }
-
+        List<TaskInfo> list = new ArrayList<>();
+        TaskInfo taskInfo = new TaskInfo();
+        taskInfo.setName("离散");
+        User u = new User("17478093");
+        u.setType(UserType.STUDENT);
+        taskInfo.setChecker(u);
+        taskInfo.setGrade(new Grade(1702));
+        taskInfo.setWeekday(1);
+        taskInfo.setWeekday(1);
     }
+
 
 
 }
