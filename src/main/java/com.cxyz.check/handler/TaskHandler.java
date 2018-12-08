@@ -34,7 +34,6 @@ public class TaskHandler {
     /**
      * 导入课表
      * @param file excel文件
-     * @param termId 学期id
      * @param type 课程类型
      * @return
      */
@@ -43,7 +42,7 @@ public class TaskHandler {
     )
     @ResponseBody
     public CheckResult<String> addTask(@RequestParam MultipartFile file,
-                                       @RequestParam int termId,@RequestParam int type,@RequestParam Integer gradeId)
+                                       @RequestParam int type,@RequestParam Integer gradeId)
     {
         CheckResult<String> checkResult = new CheckResult<>();
         try {
@@ -54,7 +53,7 @@ public class TaskHandler {
             {
                 taskInfos.add(parseTask(strings));
             }
-            taskService.addTask(taskInfos,termId,type,gradeId);
+            taskService.addTask(taskInfos,type,gradeId);
             checkResult.setData("导入成功!");
             checkResult.setSuccess(true);
         } catch (Exception e) {
@@ -104,6 +103,8 @@ public class TaskHandler {
         //填充星期
         taskInfo.setWeekday(Integer.parseInt(info.get(2)));
         //填充开始节次和结束节次
+        taskInfo.setStart(new Times(Integer.parseInt(info.get(3))));
+        taskInfo.setEnd(new Times(Integer.parseInt(info.get(4))));
         ClassRoom classRoom = new ClassRoom();
         classRoom.setName(info.get(5));
         taskInfo.setRoom(classRoom);

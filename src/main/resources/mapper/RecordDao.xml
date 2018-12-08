@@ -5,7 +5,8 @@
 <mapper namespace="com.cxyz.check.dao.RecordDao">
 
     <resultMap id="test" type="CheckHistoryDto">
-        <result column="taskName" property="taskName"></result>
+        <id column="id" property="id" />
+        <result column="taskName" property="taskName" />
         <result column="state" property="state"/>
         <result column="commitTime" property="commitTime" />
         <collection property="results" ofType="ResultCustom">
@@ -42,20 +43,22 @@
     </insert>
 
     <select id="getHistory" resultMap="test" >
-        SELECT
-        t.name taskName,
-        c.state,
-        c.update_time 'commitTime',
-        r.result 'results.resultType',
-        count(*) 'results.count'
-        FROM
-        tb_taskinfo t,tb_completion c,tb_record r
-        WHERE t.`checker.id`=#{id}
-        AND t.`checker.type`=#{type}
-        AND c.id = r.`completion.id`
-        AND t.id = c.`taskinfo.id`
-        AND c.state != 0
-        GROUP BY
-        t.name,c.state,r.result,c.update_time
+     SELECT
+     s.id,
+     s.name 'taskName',
+     s.state,
+     m.name, 'roomName',
+     s.update_time 'commitTime',
+     r.result 'results.resultType',
+     count(*) 'results.count'
+     FROM tb_record r Inner JOIN (SELECT c.id,t.name,c.state,c.update_time,t.`room.id` FROM tb_completion c,tb_taskinfo t
+     WHERE t.`checker.id`=#{id}
+     AND t.`checker.type`=#{type}
+     AND t.id = c.`taskinfo.id`
+     AND c.state != 0
+     ORDER BY c.update_time DESC limit #{start},#{len}) s on s.id = r.`completion.id` LEFT JOIN tb_room m on s.`room.id`=r.id
+     GROUP BY s.id,s.name,s.state,r.result,s.update_time,m.name
     </select>
+
+
 </mapper>

@@ -14,6 +14,7 @@ public interface TaskCompletionDao {
 
 
     /**
+     * TODO 暂时无用
      * 通过id查询一个完成情况
      * @param id
      * @return
@@ -21,6 +22,7 @@ public interface TaskCompletionDao {
     TaskCompletion findById(@Param("id")int id);
 
     /**
+     * TODO 暂时无用
      * 通过班级id和当前时间获取考勤任务
      * @param grade 班级id
      * @param time 当前时间
@@ -45,22 +47,6 @@ public interface TaskCompletionDao {
      * @return
      */
     int updateCompState(@Param("state") int state,@Param("id") int id);
-
-    /**
-     * 通过一些参数获取当前是否有考勤任务
-     * @param grade 班级id
-     * @param checker_id 考勤人id
-     * @param checker_type 考勤人类型
-     * @param date 考勤日期
-     * @param time 当前时间
-     * @param type 考勤的类型
-     * @return 考勤任务Dto
-     */
-    CheckTaskDto checkTask(@Param("grade")int grade,
-                           @Param("checker_id")int checker_id, @Param("checker_type")int checker_type,
-                           @Param("date")String date,@Param("type") int type,
-                           @Param("time") String time) throws NoTaskException;
-
 
     /**
      * 添加考勤完成情况

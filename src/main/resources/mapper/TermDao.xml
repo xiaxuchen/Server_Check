@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxyz.check.dao.TermDao">
+
+    <select id="getTermStart" resultType="java.util.Date">
+        SELECT
+        `begin`
+        FROM tb_school s ,tb_term t
+        WHERE s.`term.id`=t.id;
+    </select>
+
+</mapper>

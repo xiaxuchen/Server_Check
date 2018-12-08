@@ -3,7 +3,6 @@ package com.cxyz.check.dto;
 
 import com.cxyz.check.custom.ResultCustom;
 import com.cxyz.check.json.CustomTimeStampSerializer;
-import com.cxyz.check.util.date.DateTime;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.sql.Timestamp;
@@ -15,6 +14,10 @@ import java.util.List;
 
 public class CheckHistoryDto {
 
+    /**
+     * 任务id
+     */
+    private Integer id;
     /**
      * 任务名称
      */
@@ -40,6 +43,7 @@ public class CheckHistoryDto {
 
     public void setTaskName(String taskName) {
         this.taskName = taskName;
+
     }
 
     @JsonSerialize(using= CustomTimeStampSerializer.class)
@@ -67,46 +71,23 @@ public class CheckHistoryDto {
         this.state = state;
     }
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     @Override
     public String toString() {
         return "CheckHistoryDto{" +
-                "taskName='" + taskName + '\'' +
+                "id=" + id +
+                ", taskName='" + taskName + '\'' +
                 ", state=" + state +
                 ", results=" + results +
                 ", commitTime=" + commitTime +
                 '}';
     }
 
-    /**
-     * 存储结果的数量
-     */
-    public static class Result{
-        private Integer resultType;
-
-        private Integer count;
-
-        public Integer getResultType() {
-            return resultType;
-        }
-
-        public void setResultType(Integer resultType) {
-            this.resultType = resultType;
-        }
-
-        public Integer getCount() {
-            return count;
-        }
-
-        public void setCount(Integer count) {
-            this.count = count;
-        }
-
-        @Override
-        public String toString() {
-            return "Result{" +
-                    "resultType=" + resultType +
-                    ", count=" + count +
-                    '}';
-        }
-    }
 }

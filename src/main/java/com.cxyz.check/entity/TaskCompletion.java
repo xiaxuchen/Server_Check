@@ -11,10 +11,9 @@ import java.util.Date;
 public class TaskCompletion{
 
     private Integer id;//考勤完成情况id
-	private Timestamp start;
-	private Timestamp end;
     private TaskInfo taskInfo;//所属任务id
-    private Integer week;//考勤日期
+    private Integer week;//考勤周次
+	private Date date;//考勤日期
     private Integer state;//完成情况
     private Timestamp updateTime;//更新时间
 
@@ -59,30 +58,21 @@ public class TaskCompletion{
 		this.state = state;
 	}
 
-	public Timestamp getStart() {
-		return start;
+	public Date getDate() {
+		return date;
 	}
 
-	public void setStart(Timestamp start) {
-		this.start = start;
-	}
-
-	public Timestamp getEnd() {
-		return end;
-	}
-
-	public void setEnd(Timestamp end) {
-		this.end = end;
+	public void setDate(Date date) {
+		this.date = date;
 	}
 
 	@Override
 	public String toString() {
 		return "TaskCompletion{" +
 				"id=" + id +
-				", start=" + start +
-				", end=" + end +
 				", taskInfo=" + taskInfo +
 				", week=" + week +
+				", date=" + date +
 				", state=" + state +
 				", updateTime=" + updateTime +
 				'}';

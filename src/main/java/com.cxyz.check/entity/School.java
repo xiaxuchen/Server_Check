@@ -10,6 +10,7 @@ public class School {
 	private String name;//学校姓名
     private Teacher manager;//学校管理员
     private Integer id;//学校编号
+	private Term term;//当前学期
     
     public School(){}
     
@@ -41,12 +42,21 @@ public class School {
 		this.id = id;
 	}
 
+	public Term getTerm() {
+		return term;
+	}
+
+	public void setTerm(Term term) {
+		this.term = term;
+	}
+
 	@Override
 	public String toString() {
 		return "School{" +
 				"name='" + name + '\'' +
 				", manager=" + manager +
 				", id=" + id +
+				", term=" + term +
 				'}';
 	}
 }

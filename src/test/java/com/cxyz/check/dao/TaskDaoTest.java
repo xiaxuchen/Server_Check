@@ -27,15 +27,7 @@ public class TaskDaoTest {
     @Test
     public void checkTask() {
         System.out.println(dao.checkTask("17478093",
-                UserType.STUDENT,"2018-11-10",1,"08:00:00"));
-    }
-
-    @Test
-    public void updateComp() {
-        /**
-         * 测试成功
-         */
-        System.out.println(dao.updateComp(1,0));
+                UserType.STUDENT,"2018-09-03",1,"08:00:00"));
     }
 
     @Test
@@ -57,6 +49,7 @@ public class TaskDaoTest {
         taskInfo.setWeekday(1);
         taskInfo.setWeekday(1);
     }
+
 
 
 

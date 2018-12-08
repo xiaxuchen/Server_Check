@@ -40,4 +40,12 @@
             (#{item.start},#{item.end},#{item.session},#{termId})
         </foreach>
     </insert>
+
+    <select id="getCurrentTerm" resultType="Term">
+        SELECT
+        t.*
+        FROM tb_school s,tb_term t
+        WHERE s.id=#{schoolId}
+        AND s.`term.id`=t.id
+    </select>
 </mapper>

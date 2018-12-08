@@ -42,7 +42,10 @@ public interface RecordDao {
      * 通过考勤人id和类型获取考勤历史纪录,获取10条
      * @param id 考勤人id
      * @param type 考勤人类型
+     * @param start 开始条目
+     * @param len 条目数
      * @return
      */
-    List<CheckHistoryDto> getHistory(@Param("id")String id ,@Param("type") int type);
+    List<CheckHistoryDto> getHistory(@Param("id")String id ,@Param("type") int type,
+                                     @Param("start")int start,@Param("len")int len);
 }

@@ -47,6 +47,6 @@ public class RecordDaoTest {
          * 测试成功
          */
         //dao.addOtherState(1,"狗东西打了老师，老师罢课了");
-        System.out.println(dao.getHistory("17478093",0));
+        System.out.println(dao.getHistory("17478093",0,0,1).size());
     }
 }

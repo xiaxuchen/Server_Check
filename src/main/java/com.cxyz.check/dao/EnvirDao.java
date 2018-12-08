@@ -40,4 +40,11 @@ public interface EnvirDao {
      */
     void addTimes(@Param("times") List<Times> times, @Param("termId")int termId);
 
+    /**
+     * 获取学校当前学期
+     * @param schoolId 学校id
+     * @return
+     */
+    Term getCurrentTerm(@Param("schoolId")Integer schoolId);
+
 }

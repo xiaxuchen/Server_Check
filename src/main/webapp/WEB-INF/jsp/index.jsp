@@ -1,25 +1,25 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
+<% String path=request.getContextPath();%>
 <html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Title</title>
-    <!--图标库-->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+
+
     <!-- 新 Bootstrap 核心 CSS 文件 -->
     <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
-    <script src="https://cdn.staticfile.org/jquery/3.1.1/jquery.min.js"></script>
-
-    <script src="../js/jquery.js"></script>
-
-    <script src="../js/laydate/laydate.js"></script>
-
-    <script src="../js/main.js"></script>
-
     <link href="../css/main.css" rel="stylesheet">
+
+    <script src="../../js/jquery.js"></script>
+
+    <script src="../../js/laydate/laydate.js"></script>
+
+    <script src="../../js/main.js"></script>
+
+
 </head>
 
 <body>
@@ -81,4 +81,6 @@
     <h1>${hello}</h1>
 
 </body>
+
+
 </html>

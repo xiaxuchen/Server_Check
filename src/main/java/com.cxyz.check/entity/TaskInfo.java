@@ -1,6 +1,7 @@
 package com.cxyz.check.entity;
 
 
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +20,8 @@ public class TaskInfo {
     private ClassRoom room;//考勤所在地
     private Integer type;//考勤任务类型，临时任务或者课程
     private Grade grade = new Grade();//考勤班级
-	private Integer start;//开始节次
-	private Integer end;//结束节次
+	private Times start;//开始节次
+	private Times end;//结束节次
 	private Term term;
     /*
      * 当前考勤任务的所有考勤情况
@@ -99,19 +100,19 @@ public class TaskInfo {
 		this.completions = completions;
 	}
 
-	public Integer getStart() {
+	public Times getStart() {
 		return start;
 	}
 
-	public void setStart(Integer start) {
+	public void setStart(Times start) {
 		this.start = start;
 	}
 
-	public Integer getEnd() {
+	public Times getEnd() {
 		return end;
 	}
 
-	public void setEnd(Integer end) {
+	public void setEnd(Times end) {
 		this.end = end;
 	}
 

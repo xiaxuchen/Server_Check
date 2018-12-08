@@ -6,6 +6,7 @@ import com.cxyz.check.dto.CheckHistoryDto;
 import com.cxyz.check.dto.CheckRecordDto;
 import com.cxyz.check.dto.CheckResult;
 import com.cxyz.check.dto.CommitCheckDto;
+import com.cxyz.check.exception.record.NOHistoryException;
 import com.cxyz.check.exception.transaction.CommitCheckFailException;
 import com.cxyz.check.exception.util.GsonException;
 import com.cxyz.check.service.RecordService;
@@ -98,8 +99,32 @@ public class RecordHandler {
     @ResponseBody
     public CheckResult<List<CheckHistoryDto>>
     getHistory(@RequestParam String id,
-               @RequestParam int type)
-    {
-        return new CheckResult<>(dao.getHistory(id,type));
+               @RequestParam int type) {
+        CheckResult<List<CheckHistoryDto>> checkResult;
+        try {
+             checkResult = new CheckResult<>(recordService.getHistory(id,type));
+        } catch (NOHistoryException e)
+        {
+            checkResult = new CheckResult<>("暂无考勤历史");
+        }
+        return checkResult;
+    }
+
+
+    @RequestMapping(value = "/loadMore",
+            method = RequestMethod.GET,
+            produces = {"application/json;charset=UTF-8"})
+    @ResponseBody
+    public CheckResult<List<CheckHistoryDto>>
+    loadMore(@RequestParam String id,
+               @RequestParam int type,@RequestParam int start) {
+        CheckResult<List<CheckHistoryDto>> checkResult;
+        try {
+            checkResult = new CheckResult<>(recordService.loadMore(id,type,start));
+        } catch (NOHistoryException e)
+        {
+            checkResult = new CheckResult<>("暂无考勤历史");
+        }
+        return checkResult;
     }
 }

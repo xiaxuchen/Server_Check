@@ -14,7 +14,7 @@
     <title>Title</title>
 </head>
 <body>
-<form action="envir/uploadBugs" method="post" enctype="multipart/form-data">
+<form action="task/addTask" method="post" enctype="multipart/form-data">
     <input type="file" name="file">
     <input type="hidden" name="termId" value="17">
     <input type="hidden" name="type" value="1">

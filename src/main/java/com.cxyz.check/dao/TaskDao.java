@@ -1,5 +1,6 @@
 package com.cxyz.check.dao;
 
+import com.cxyz.check.dto.CheckHistoryDto;
 import com.cxyz.check.dto.CheckTaskDto;
 import com.cxyz.check.dto.CommitCheckDto;
 import com.cxyz.check.dto.SubjectsDto;
@@ -27,21 +28,15 @@ public interface TaskDao {
      * @param type 考勤的类型
      * @return 考勤任务Dto
      */
-    TaskCompletion checkTask(@Param("checker_id")String checker_id,
-                             @Param("checker_type")int checker_type,
+    TaskCompletion checkTask(@Param("checkerId")String checker_id,
+                             @Param("checkerType")int checker_type,
                              @Param("date")String date,
                              @Param("type") int type,
                              @Param("time") String time);
 
-    /**
-     * 更新考勤完成情况
-     * @param id
-     * @param state
-     * @return 影响记录数
-     */
-    int updateComp(@Param("id") int id,@Param("state") int state);
 
     /**
+     * TODO 暂时无用
      * 获取考勤日期
      * @param id 考勤完成情况id
      * @return

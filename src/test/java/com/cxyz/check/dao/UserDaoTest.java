@@ -16,6 +16,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"classpath:spring/spring-dao.xml"})
@@ -36,7 +38,13 @@ public class UserDaoTest {
 
     @Test
     public void selectStusByGrade() {
-        logger.debug(dao.selectStusByGrade(1702));
+        //logger.debug(dao.selectStusByGrade(1702));
+        Date date = new Date();
+        date.setDate(9);
+        Calendar calendar = Calendar.getInstance();
+        calendar.clear();
+        calendar.setTime(date);
+        logger.debug(calendar.get(Calendar.DAY_OF_WEEK));
         /**
          * 测试成功
          */

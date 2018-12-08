@@ -44,6 +44,6 @@ public interface TaskService {
      * 添加考勤任务
      * @param taskInfos 考勤任务
      */
-    void addTask(List<TaskInfo> taskInfos,Integer termId,Integer type,Integer gradeId);
+    void addTask(List<TaskInfo> taskInfos,Integer type,Integer gradeId);
 
 }

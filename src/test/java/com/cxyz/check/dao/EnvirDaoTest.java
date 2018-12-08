@@ -29,4 +29,10 @@ public class EnvirDaoTest {
     @Test
     public void addTerm() {
     }
+
+
+    @Test
+    public void getCurrentTerm() {
+        System.out.println(dao.getCurrentTerm(1));
+    }
 }

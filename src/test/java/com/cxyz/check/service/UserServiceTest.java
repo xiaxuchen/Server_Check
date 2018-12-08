@@ -31,6 +31,10 @@ public class UserServiceTest {
 
     @Test
     public void getGradeStus() {
+        long weekday = 1;
+        long theWeek = 1;
+        long w = 5;
+        System.out.println(((weekday -theWeek)+(w-1l)*7l)*24l*60l*60l*1000l);
        //System.out.print(userService.getGradeStus(122));
         /**测试结果：成功
          * [LoginDto{id='17478063', name='陈宸',
