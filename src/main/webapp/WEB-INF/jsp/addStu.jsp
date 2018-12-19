@@ -13,7 +13,7 @@
 </head>
 <body>
 
-<form action="user/addStus" method="post" enctype="multipart/form-data">
+<form action="<c:url value='/user/addStus'/>" method="post" enctype="multipart/form-data">
     <input type="file" name="file">
     <input type="hidden" name="type" value="0">
     <input type="hidden" name="gradeId" value="1702">

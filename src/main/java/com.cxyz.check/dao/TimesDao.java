@@ -14,4 +14,12 @@ public interface TimesDao {
      * @return
      */
     List<Times> getTermTimes(@Param("termId") int termId);
+
+    /**
+     * 获取节次
+     * @param id times id
+     * @param isStart 开始或结束
+     * @return
+     */
+    int getSession(@Param("id")Integer id);
 }

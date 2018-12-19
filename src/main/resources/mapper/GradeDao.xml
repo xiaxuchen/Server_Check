@@ -13,4 +13,11 @@
         AND g.id=#{gradeId}
     </select>
 
+    <select id="getCollegeGrades" resultType="GradeDto">
+        SELECT
+        id,name
+        FROM tb_grade
+        WHERE `college.id`=#{collegeId}
+    </select>
+
 </mapper>

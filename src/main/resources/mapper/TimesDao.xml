@@ -14,4 +14,11 @@
         WHERE `term.id`=#{termId};
     </select>
 
+    <select id="getSession" resultType="Integer">
+        SELECT
+        session
+        FROM tb_times
+        WHERE id=#{id}
+    </select>
+
 </mapper>

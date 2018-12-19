@@ -57,4 +57,9 @@ public class TaskCompletionDaoTest {
          * 1
          */
     }
+
+    @Test
+    public void getCompSponsorId() {
+        completionDao.getCompSponsorId(163);
+    }
 }

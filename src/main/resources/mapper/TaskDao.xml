@@ -4,6 +4,39 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cxyz.check.dao.TaskDao">
 
+    <resultMap id="TaskInfoMap" type="TaskInfo">
+        <id property="id" column="id" />
+        <result column="name" property="name" />
+        <result column="room.id" property="room.id" />
+        <result column="sponsor.id" property="sponsor.id" />
+        <result column="start.id" property="start.id" />
+        <result column="end.id" property="end.id" />
+        <result column="sponsor.type" property="sponsor.type" />
+        <result column="weekday" property="weekday" />
+        <collection property="completions" ofType="TaskCompletion">
+            <result property="week" column="week" />
+        </collection>
+    </resultMap>
+
+    <select id="getSubjects" resultMap="TaskInfoMap">
+        SELECT
+        t.id,
+        t.name,
+        t.`room.id`,
+        t.`sponsor.id`,
+        t.start 'start.id',
+        c.week,
+        t.end 'end.id',
+        t.`sponsor.type`,
+        t.weekday
+        FROM tb_taskinfo t,tb_completion c
+        WHERE t.id=c.`taskinfo.id`
+        AND t.`grade.id`=#{gradeId}
+        AND t.`term.id`=#{termId}
+        AND t.type=1
+    </select>
+
+
     <select id="checkTask" resultType="TaskCompletion" >
         select
         c.id,
@@ -50,4 +83,6 @@
         #{gradeId},#{task.room.id},#{task.weekday},#{task.start.id},#{task.end.id},#{termId},
         #{task.start.start},#{task.end.end})
     </insert>
+
+
 </mapper>

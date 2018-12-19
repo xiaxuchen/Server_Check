@@ -1,19 +1,12 @@
 package com.cxyz.check.dao;
 
-import com.cxyz.check.dto.CheckHistoryDto;
-import com.cxyz.check.dto.CheckTaskDto;
-import com.cxyz.check.dto.CommitCheckDto;
-import com.cxyz.check.dto.SubjectsDto;
 import com.cxyz.check.entity.TaskCompletion;
 import com.cxyz.check.entity.TaskInfo;
-import com.cxyz.check.exception.task.NoTaskException;
 
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
 import java.util.List;
-
-import javafx.concurrent.Task;
 
 /**
  * 管理考勤数据
@@ -61,5 +54,13 @@ public interface TaskDao {
     void addTask(@Param("task")TaskInfo task,@Param("termId") Integer termId,
                  @Param("type") Integer type,@Param("gradeId")Integer gradeId
                  );
+
+    /**
+     * 获取班级的课程表
+     * @param gradeId 班级id
+     * @param termId 学期id
+     * @return
+     */
+    List<TaskInfo> getSubjects(@Param("gradeId") int gradeId,@Param("termId") int termId);
 
 }

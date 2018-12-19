@@ -19,4 +19,9 @@ public class GradeDaoTest {
     public void getGradeSchoolId() {
         System.out.println(dao.getGradeSchoolId(1702));
     }
+
+    @Test
+    public void getCollegeGrades() {
+        System.out.println(dao.getCollegeGrades(1));
+    }
 }

@@ -2,16 +2,21 @@ package com.cxyz.check.handler;
 
 
 import com.cxyz.check.dao.RecordDao;
+import com.cxyz.check.dto.AlterRecordDto;
 import com.cxyz.check.dto.CheckHistoryDto;
 import com.cxyz.check.dto.CheckRecordDto;
 import com.cxyz.check.dto.CheckResult;
 import com.cxyz.check.dto.CommitCheckDto;
+import com.cxyz.check.dto.StatisticDto;
+import com.cxyz.check.dto.StatisticRecordDto;
 import com.cxyz.check.exception.record.NOHistoryException;
+import com.cxyz.check.exception.record.NoMoreHistoryException;
 import com.cxyz.check.exception.transaction.CommitCheckFailException;
 import com.cxyz.check.exception.util.GsonException;
 import com.cxyz.check.service.RecordService;
 import com.cxyz.check.service.TaskService;
 import com.cxyz.check.util.parse.GsonUtil;
+import com.google.gson.reflect.TypeToken;
 
 import org.apache.poi.hssf.record.Record;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +35,9 @@ public class RecordHandler {
     @Autowired
     private RecordService recordService;
 
+
     @Autowired
-    private RecordDao dao;
+    private TaskService taskService;
 
     /**
      * 获取考勤记录
@@ -52,9 +58,6 @@ public class RecordHandler {
                 .getCheckRecord(id,type,grade));
     }
 
-
-    @Autowired
-    private TaskService taskService;
 
     /**
      * 提交考勤信息
@@ -93,6 +96,12 @@ public class RecordHandler {
     }
 
 
+    /**
+     * 获取考勤历史记录
+     * @param id 考勤人id
+     * @param type 考勤人类型
+     * @return
+     */
     @RequestMapping(value = "/getHistory",
             method = RequestMethod.GET,
             produces = {"application/json;charset=UTF-8"})
@@ -105,12 +114,18 @@ public class RecordHandler {
              checkResult = new CheckResult<>(recordService.getHistory(id,type));
         } catch (NOHistoryException e)
         {
-            checkResult = new CheckResult<>("暂无考勤历史");
+            checkResult = new CheckResult<>(e.getMessage());
         }
         return checkResult;
     }
 
 
+    /**
+     * 加载更多考勤历史记录
+     * @param id 考勤人id
+     * @param type 考勤人类型
+     * @return
+     */
     @RequestMapping(value = "/loadMore",
             method = RequestMethod.GET,
             produces = {"application/json;charset=UTF-8"})
@@ -121,10 +136,104 @@ public class RecordHandler {
         CheckResult<List<CheckHistoryDto>> checkResult;
         try {
             checkResult = new CheckResult<>(recordService.loadMore(id,type,start));
-        } catch (NOHistoryException e)
+        } catch (NoMoreHistoryException e)
         {
-            checkResult = new CheckResult<>("暂无考勤历史");
+            checkResult = new CheckResult<>(e.getMessage());
         }
         return checkResult;
     }
+
+    /**
+     * 获取历史记录详细
+     * @param gradeId
+     * @param compId
+     * @return
+     */
+    @RequestMapping(value = "/getAlterRecords",
+            method = RequestMethod.GET,
+            produces = {"application/json;charset=UTF-8"})
+    @ResponseBody
+    public CheckResult<List<AlterRecordDto>>
+    getAlterRecords(@RequestParam Integer gradeId,
+             @RequestParam Integer compId) {
+        return new CheckResult<>(recordService.getAlterRecords(gradeId,compId));
+    }
+
+    /**
+     * 更新考勤记录
+     * @param compId 考勤完成情况id
+     * @param alteds 修改记录
+     * @param updaterId 更新人id
+     * @param updaterType 更新人类型
+     * @return
+     */
+    @RequestMapping(value = "/updateAlteds",
+            method = RequestMethod.POST,
+            produces = {"application/json;charset=UTF-8"})
+    @ResponseBody
+    public CheckResult<String>
+    updateAlteds(@RequestParam Integer compId,
+                    @RequestParam String alteds,@RequestParam String updaterId,@RequestParam Integer updaterType) {
+        CheckResult<String> checkResult = new CheckResult<>();
+        try {
+            List<AlterRecordDto> dtos = (List<AlterRecordDto>) GsonUtil.fromJson(alteds, new TypeToken<List<AlterRecordDto>>(){}.getType());
+            recordService.updateRecords(compId,dtos,updaterId,updaterType);
+            checkResult.setSuccess(true);
+            checkResult.setData("提交成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            checkResult.setSuccess(false);
+            checkResult.setData("服务器异常");
+        }
+        return checkResult;
+    }
+
+    /**
+     * url:/record/getStatistic
+     * 获取统计数
+     * @param start 开始日期
+     * @param end 结束日期
+     * @param gradeId 班级id
+     * @return
+     */
+    @RequestMapping(value = "getStatistic",
+            method = RequestMethod.GET,
+            produces = {"application/json;charset=UTF-8;"})
+    @ResponseBody
+    public CheckResult<StatisticDto> getStatistic(@RequestParam String start,
+                                                  @RequestParam String end,@RequestParam Integer gradeId)
+    {
+        try {
+            return new CheckResult<>(recordService.getStatistic(start,end,gradeId));
+        }catch (Exception e)
+        {
+            return new CheckResult<>("服务器异常");
+        }
+    }
+
+
+    /**
+     * url:/record/getStatisticRecords
+     * 获取记录
+     * @param start 开始日期
+     * @param end 结束日期
+     * @param gradeId 班级id
+     * @param resultType 考勤结果类型
+     * @return
+     */
+    @RequestMapping(value = "getStatisticRecords",
+            method = RequestMethod.GET,
+            produces = {"application/json;charset=UTF-8;"})
+    @ResponseBody
+    public CheckResult<List<StatisticRecordDto>> getStatisticRecords(@RequestParam String start,
+               @RequestParam String end,@RequestParam Integer gradeId,@RequestParam Integer resultType)
+    {
+        try {
+            return new CheckResult<>(recordService.getStatisticRecords(start,end,gradeId,resultType));
+        }catch (Exception e)
+        {
+            return new CheckResult<>("服务器异常");
+        }
+    }
+
 }

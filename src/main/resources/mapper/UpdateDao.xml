@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxyz.check.dao.UpdateDao">
+    <insert id="addUpdates">
+        INSERT INTO tb_update(`record.id`,`record.completion.id`,`record.stu.id`,`record.result`,`updater.id`,`update_time`,des,`updater.type`) VALUES
+        <foreach collection="records" item="item" separator="," close=";">
+            (#{item.id},#{item.completion.id},#{item.stu.id}
+            ,#{item.result},#{updaterId},now(),#{item.des},#{updaterType})
+        </foreach>
+    </insert>
+</mapper>

@@ -55,4 +55,11 @@ public interface UserDao {
      * @param power
      */
     User findStuByPower(@Param("gradeId") Integer gradeId,@Param("power") Integer power);
+
+    /**
+     * 获取班级人数
+     * @param gradeId 班级id
+     * @return
+     */
+    int gradeStuCount(@Param("gradeId")Integer gradeId);
 }

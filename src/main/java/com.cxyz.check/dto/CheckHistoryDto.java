@@ -32,6 +32,7 @@ public class CheckHistoryDto {
      */
     private List<ResultCustom> results;
 
+
     /**
      * 提交时间
      */

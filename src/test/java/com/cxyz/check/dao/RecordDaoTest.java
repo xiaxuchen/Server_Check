@@ -1,5 +1,9 @@
 package com.cxyz.check.dao;
+import com.cxyz.check.dto.AlterRecordDto;
 import com.cxyz.check.dto.CommitCheckDto;
+import com.cxyz.check.dto.GradeStusDto;
+import com.cxyz.check.entity.CheckRecord;
+import com.cxyz.check.entity.User;
 import com.cxyz.check.typevalue.CheckRecordResult;
 
 import org.junit.Test;
@@ -48,5 +52,40 @@ public class RecordDaoTest {
          */
         //dao.addOtherState(1,"狗东西打了老师，老师罢课了");
         System.out.println(dao.getHistory("17478093",0,0,1).size());
+    }
+
+    @Test
+    public void getAlterRecords()
+    {
+        System.out.println(dao.getAlterRecords(1702,163));
+    }
+
+    @Test
+    public void updateRecord() {
+        AlterRecordDto dto = new AlterRecordDto();
+        dto.setDes("caoniamdasdas");
+        dto.setResult(10);
+        dto.setStu(new GradeStusDto("17478093"));
+        dao.updateRecord(163,dto);
+    }
+
+    @Test
+    public void getAlterRecord() {
+        dao.getAlterRecord("17478063",163);
+    }
+
+    @Test
+    public void removeRecords() {
+        ArrayList arrayList = new ArrayList() {{
+            CheckRecord record1 = new CheckRecord();
+            record1.setStu(new User("17478056"));
+            add(record1);
+        }};
+        dao.removeRecords(163,arrayList);
+    }
+
+    @Test
+    public void getStatisticRecords() {
+        System.out.println(dao.getStatisticRecords("2018-9-3","2018-9-4",1702,0));
     }
 }

@@ -1,7 +1,9 @@
 package com.cxyz.check.service.impl;
 
 import com.cxyz.check.dao.EnvirDao;
+import com.cxyz.check.dao.GradeDao;
 import com.cxyz.check.dto.AddTermDto;
+import com.cxyz.check.dto.GradeDto;
 import com.cxyz.check.entity.School;
 import com.cxyz.check.entity.Term;
 import com.cxyz.check.entity.Times;
@@ -23,6 +25,9 @@ public class EnvirServiceImpl implements EnvirService {
 
     @Autowired
     private EnvirDao envirDao;
+
+    @Autowired
+    private GradeDao gradeDao;
 
     Calendar instance = Calendar.getInstance();
 
@@ -81,6 +86,12 @@ public class EnvirServiceImpl implements EnvirService {
         instance.set(1970,0,0,
                 Integer.parseInt(time[0]),Integer.parseInt(time[1]),0);
         return new Timestamp(instance.getTimeInMillis());
+    }
+
+    @Override
+    public List<GradeDto> getCollegeGrades(Integer collegeId)
+    {
+        return gradeDao.getCollegeGrades(collegeId);
     }
     
 }

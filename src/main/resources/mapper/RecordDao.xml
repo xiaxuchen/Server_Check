@@ -37,6 +37,13 @@
         </foreach>
     </insert>
 
+    <delete id="removeRecords" >
+        DELETE FROM tb_record WHERE `completion.id`=#{id} AND `stu.id` IN
+        <foreach collection="stuInfo" item="item" close=");" separator="," open="(">
+            #{item.stu.id}
+        </foreach>
+    </delete>
+
     <insert id="addOtherState">
         insert into tb_otherstate(`completion.id`,des)
         VALUES (#{id},#{des});
@@ -47,17 +54,83 @@
      s.id,
      s.name 'taskName',
      s.state,
-     m.name, 'roomName',
+     m.name 'roomName',
      s.update_time 'commitTime',
      r.result 'results.resultType',
      count(*) 'results.count'
-     FROM tb_record r Inner JOIN (SELECT c.id,t.name,c.state,c.update_time,t.`room.id` FROM tb_completion c,tb_taskinfo t
+     FROM tb_record r RIGHT JOIN (SELECT c.id,t.name,c.state,c.update_time,t.`room.id` FROM tb_completion c,tb_taskinfo t
      WHERE t.`checker.id`=#{id}
      AND t.`checker.type`=#{type}
      AND t.id = c.`taskinfo.id`
      AND c.state != 0
      ORDER BY c.update_time DESC limit #{start},#{len}) s on s.id = r.`completion.id` LEFT JOIN tb_room m on s.`room.id`=r.id
      GROUP BY s.id,s.name,s.state,r.result,s.update_time,m.name
+    </select>
+
+
+    <select id="getAlterRecords" resultType="AlterRecordDto" >
+        SELECT
+        s.id 'stu.id',s.name 'stu.name',s.photo 'stu.photo',r.result,r.des
+        FROM (tb_stu s LEFT JOIN tb_record r ON r.`stu.id`=s.id)
+        WHERE
+        s.`grade.id`=#{gradeId}
+		AND EXISTS (SELECT count(*) from tb_completion c WHERE id=#{compId} AND state!=0)
+		ORDER BY s.id
+    </select>
+
+    <select id="getAlterRecord" resultType="CheckRecord">
+        SELECT
+        id,
+        `stu.id`,
+        des,
+        result
+        FROM tb_record
+        WHERE `completion.id`=#{compId}
+        AND `stu.id`=#{stuId}
+    </select>
+
+    <update id="updateRecord" parameterType="AlterRecordDto">
+        UPDATE
+        tb_record
+        SET result=#{alter.result},des=#{alter.des}
+        WHERE  `stu.id`=#{alter.stu.id}
+        AND `completion.id`=#{compId}
+    </update>
+
+    <select id="getResults" resultType="ResultCustom">
+     SELECT
+     r.result 'resultType',
+     count(*) 'count'
+     FROM tb_record r,tb_completion c,tb_taskinfo t
+     WHERE r.`completion.id`=c.id
+     AND c.date&gt;=#{start}
+     AND c.date&lt;=#{end}
+     AND c.`taskinfo.id`=t.id
+     AND c.id=r.`completion.id`
+     AND t.`grade.id`=#{gradeId}
+     AND c.state=1
+     GROUP BY r.result
+    </select>
+
+    <select id="getStatisticRecords" resultType="StatisticRecordDto">
+         SELECT
+         s.id 'stu.id',
+         s.name 'stu.name',
+         s.photo 'stu.photo',
+         r.result,
+         r.des,
+         c.update_time 'time',
+         c.id 'compId'
+         FROM tb_record r,tb_completion c,tb_taskinfo t,tb_stu s
+         WHERE r.`completion.id`=c.id
+         AND c.date&gt;=#{start}
+         AND c.date&lt;=#{end}
+         AND c.`taskinfo.id`=t.id
+         AND c.id=r.`completion.id`
+         AND t.`grade.id`=#{gradeId}
+         AND s.id=r.`stu.id`
+         AND c.state=1
+         AND r.result=#{resultType}
     </select>
 
 

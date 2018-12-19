@@ -1,5 +1,6 @@
 package com.cxyz.check.typevalue;
 
+
 /**
  * 考勤记录结果
  */
@@ -7,17 +8,27 @@ public interface CheckRecordResult {
     /**
      * 请假
      */
-    int VACATE = 0;
+    public static final int VACATE = 0;
     /**
      * 早退
      */
-    int EARLYLEAVE = -3;
+    public static final int EARLYLEAVE = -3;
     /**
      * 迟到
      */
-    int LATE = -2;
+    public static final int LATE = -2;
     /**
      * 缺勤
      */
-    int ABSENTEEISM = -1;
+    public static final int ABSENTEEISM = -1;
+
+    /**
+     * 正常
+     */
+    public static final int NORMAL = 1;
+
+    /**
+     * 待处理
+     */
+    public static final int WAIT_DISPOSE = 2;
 }

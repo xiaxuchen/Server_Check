@@ -2,6 +2,7 @@ package com.cxyz.check.handler;
 
 import com.cxyz.check.dto.CheckResult;
 import com.cxyz.check.dto.CheckTaskDto;
+import com.cxyz.check.dto.SubjectDto;
 import com.cxyz.check.entity.ClassRoom;
 import com.cxyz.check.entity.TaskCompletion;
 import com.cxyz.check.entity.TaskInfo;
@@ -42,7 +43,7 @@ public class TaskHandler {
     )
     @ResponseBody
     public CheckResult<String> addTask(@RequestParam MultipartFile file,
-                                       @RequestParam int type,@RequestParam Integer gradeId)
+                                       @RequestParam Integer type,@RequestParam Integer gradeId)
     {
         CheckResult<String> checkResult = new CheckResult<>();
         try {
@@ -51,7 +52,22 @@ public class TaskHandler {
             list.remove(0);
             for(List<String> strings:list)
             {
-                taskInfos.add(parseTask(strings));
+                //判断是否为空list，若空则continue
+                if(strings.isEmpty()||strings.size()<6)
+                    continue;
+
+                boolean isEmpty[] = {true};
+                strings.forEach(s -> {
+                    if(!s.isEmpty())
+                        isEmpty[0] = false;
+                });
+                if(isEmpty[0])
+                    continue;
+
+                TaskInfo taskInfo = parseTask(strings);
+                if(taskInfo == null)
+                    continue;
+                taskInfos.add(taskInfo);
             }
             taskService.addTask(taskInfos,type,gradeId);
             checkResult.setData("导入成功!");
@@ -71,6 +87,9 @@ public class TaskHandler {
      */
     private TaskInfo parseTask(List<String> info)
     {
+
+        if(info.size()<6)
+            return null;
         TaskInfo taskInfo = new TaskInfo();
         //装填名字
         taskInfo.setName(info.get(0));
@@ -133,6 +152,23 @@ public class TaskHandler {
         {
             return new CheckResult("当前暂无考勤任务");
         }
+    }
+
+    @RequestMapping(value = "/getSubjects",
+            method = RequestMethod.GET,
+            produces = {"application/json;charset=UTF-8"})
+    @ResponseBody
+    public CheckResult<List<SubjectDto>> getSubjects(@RequestParam Integer gradeId)
+    {
+        try {
+            return new CheckResult<>(taskService.getSubjects(gradeId));
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            return new CheckResult<>("服务器异常");
+        }
+
+
     }
 
 }

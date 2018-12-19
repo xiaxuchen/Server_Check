@@ -45,4 +45,9 @@ public class TaskServiceTest {
         taskDto.setDes("狗东西打了老师，老师罢课");
         service.commitCheck(taskDto);
     }
+
+    @Test
+    public void getSubjects() {
+        service.getSubjects(1702);
+    }
 }

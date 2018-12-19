@@ -57,5 +57,13 @@
       </foreach>
     </insert>
 
+    <select id="getCompSponsorId" resultType="String">
+        SELECT
+        t.`sponsor.id`
+        from tb_taskinfo t,tb_completion c
+        WHERE c.id=#{compId}
+        AND t.id=c.`taskInfo.id`
+    </select>
+
 
 </mapper>

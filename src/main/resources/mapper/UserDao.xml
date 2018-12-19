@@ -96,4 +96,11 @@
         where power = #{power} AND `grade.id`=#{gradeId};
     </select>
 
+    <select id="gradeStuCount" resultType="Integer">
+        SELECT
+        COUNT(*)
+        FROM tb_stu
+        WHERE `grade.id`=#{gradeId}
+    </select>
+
 </mapper>

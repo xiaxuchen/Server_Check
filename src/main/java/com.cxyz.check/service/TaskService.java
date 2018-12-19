@@ -3,6 +3,7 @@ package com.cxyz.check.service;
 import com.cxyz.check.dto.CheckTaskDto;
 import com.cxyz.check.dto.CommitCheckDto;
 import com.cxyz.check.dto.GradeStusDto;
+import com.cxyz.check.dto.SubjectDto;
 import com.cxyz.check.entity.TaskInfo;
 import com.cxyz.check.exception.task.NoTaskException;
 
@@ -45,5 +46,12 @@ public interface TaskService {
      * @param taskInfos 考勤任务
      */
     void addTask(List<TaskInfo> taskInfos,Integer type,Integer gradeId);
+
+    /**
+     * 获取班级当前学期课表
+     * @param gradeId
+     * @return
+     */
+    List<SubjectDto> getSubjects(Integer gradeId);
 
 }

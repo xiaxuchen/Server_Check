@@ -53,4 +53,10 @@ public interface TaskCompletionDao {
      * @param taskInfos
      */
     void addComp(@Param("taskinfos") List<TaskInfo> taskInfos);
+
+    /**
+     * 获取考勤发起人或任课老师id
+     * @param compId 任务完成情况id
+     */
+    String getCompSponsorId(@Param("compId") Integer compId);
 }

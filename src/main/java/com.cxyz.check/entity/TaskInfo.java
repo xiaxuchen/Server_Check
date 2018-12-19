@@ -12,7 +12,7 @@ import java.util.List;
  */
 
 public class TaskInfo {
-    private String id;//考勤任务编号
+    private Integer id;//考勤任务编号
 	private String name;//考勤任务名称
     private User sponsor;//考勤任务发起人
     private User checker;//考勤任务考勤人
@@ -28,11 +28,11 @@ public class TaskInfo {
      */
     private List<TaskCompletion> completions = new ArrayList<TaskCompletion>();
 
-	public String getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

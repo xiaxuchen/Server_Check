@@ -2,6 +2,7 @@ package com.cxyz.check.handler;
 
 import com.cxyz.check.dto.AddTermDto;
 import com.cxyz.check.dto.CheckResult;
+import com.cxyz.check.dto.GradeDto;
 import com.cxyz.check.exception.envir.TermExistException;
 import com.cxyz.check.service.EnvirService;
 import com.cxyz.check.service.RecordService;
@@ -10,6 +11,7 @@ import com.cxyz.check.service.UserService;
 import com.cxyz.check.util.date.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +27,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -88,6 +91,22 @@ public class EnvirHandler {
         checkResult.setSuccess(true);
         checkResult.setData("上传成功!");
         return checkResult;
+    }
+
+    /**
+     * url:/envir/getCollegeGrades
+     * 获取学院的班级信息
+     * @param collegeId 学院id
+     * @return
+     */
+    @RequestMapping(value="getCollegeGrades",
+            method = RequestMethod.GET,
+            produces = {"application/json;charset=UTF-8;"}
+    )
+    @ResponseBody
+    public CheckResult<List<GradeDto>> getCollegeGrades(@RequestParam Integer collegeId)
+    {
+        return new CheckResult<>(envirService.getCollegeGrades(collegeId));
     }
 
 }

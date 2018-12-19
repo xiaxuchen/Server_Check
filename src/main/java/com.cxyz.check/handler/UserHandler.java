@@ -103,14 +103,14 @@ public class UserHandler {
         method = RequestMethod.POST,
         produces = {"application/json;charset=UTF-8"})
     @ResponseBody
-    public CheckResult<String> addStus(@RequestParam MultipartFile file,
+    public CheckResult<List<String>> addStus(@RequestParam MultipartFile file,
                                       @RequestParam int type,
                                       @RequestParam int gradeId)
     {
-        CheckResult<String> checkResult = new CheckResult<>();
+        CheckResult<List<String>> checkResult = new CheckResult<>();
         if(file.isEmpty())
         {
-            checkResult.setError("导入失败");
+            checkResult.setError("文件为空!");
             return checkResult;
         }
         else {
@@ -119,27 +119,52 @@ public class UserHandler {
                 List<List<String>> data = POIUtil.getBankListByExcel(file.getInputStream(), file.getOriginalFilename());
                 List head = data.get(0);
                 List<User> users = new ArrayList<>();
-                User user = null;
+                User user;
                 for(List list:data)
                 {
                     user= new User();
+                    StringBuilder builder = new StringBuilder();
+                    int count = 0;
                     if(list == head)
                         continue;
                     user.setName((String) list.get(get(head,"姓名")));
                     user.setId((String) list.get(get(head,"学号")));
                     user.setSex((String) list.get(get(head,"性别")));
                     user.setPhone((String) list.get(get(head,"电话")));
+                    if(user.getName().isEmpty())
+                    {
+                        builder.append("姓名不能为空\n");
+                        count++;
+                    }
+                    if(user.getId().isEmpty())
+                    {
+                        builder.append("学号不能为空\n");
+                        count++;
+                    }
+                    if(user.getSex().isEmpty())
+                    {
+                        builder.append("性别不能为空\n");
+                        count++;
+                    }
+
+                    if(count == 3)
+                        break;
+                    else if(count>0)
+                        throw new Exception(builder.toString());
+
                     users.add(user);
                 }
                 userService.addUser(users,type,gradeId);
+                List<String> ids = new ArrayList<>();
+                users.forEach(user1 -> ids.add(user1.getId()));
+                checkResult.setSuccess(true);
+                checkResult.setData(ids);
             } catch (Exception e) {
                 e.printStackTrace();
                 checkResult.setError("导入失败");
                 return checkResult;
             }
         }
-        checkResult.setSuccess(true);
-        checkResult.setData("导入成功");
         return checkResult;
     }
 
