@@ -20,4 +20,11 @@
         WHERE `college.id`=#{collegeId}
     </select>
 
+    <select id="getGradeName" resultType="java.lang.String">
+        SELECT
+        name
+        FROM tb_grade
+        WHERE id=#{gradeId}
+    </select>
+
 </mapper>

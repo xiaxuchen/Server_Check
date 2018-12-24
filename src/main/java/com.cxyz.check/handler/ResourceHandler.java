@@ -24,7 +24,6 @@ import java.net.URLEncoder;
 
 import javax.servlet.http.HttpServletRequest;
 
-import ch.qos.logback.core.util.FileUtil;
 
 @Controller
 @RequestMapping("resource")

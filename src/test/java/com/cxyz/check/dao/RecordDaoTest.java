@@ -88,4 +88,9 @@ public class RecordDaoTest {
     public void getStatisticRecords() {
         System.out.println(dao.getStatisticRecords("2018-9-3","2018-9-4",1702,0));
     }
+
+    @Test
+    public void getRecordsByCompId() {
+        System.out.println(dao.getRecordsByCompId(237));
+    }
 }

@@ -60,6 +60,11 @@ public class TaskCompletionDaoTest {
 
     @Test
     public void getCompSponsorId() {
-        completionDao.getCompSponsorId(163);
+        completionDao.getCompSponsorId(227);
+    }
+
+    @Test
+    public void findById1() {
+        System.out.println(completionDao.findByTaskId(42,1));
     }
 }

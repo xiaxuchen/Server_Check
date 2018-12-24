@@ -25,6 +25,7 @@ public class CheckResult<T> {
     }
 
     public void setData(T data) {
+        setSuccess(true);
         this.data = data;
     }
 
@@ -33,6 +34,7 @@ public class CheckResult<T> {
     }
 
     public void setError(String error) {
+        setSuccess(false);
         this.error = error;
     }
 

@@ -63,4 +63,14 @@ public interface TaskDao {
      */
     List<TaskInfo> getSubjects(@Param("gradeId") int gradeId,@Param("termId") int termId);
 
+    /**
+     * 获取老师在此班级的考勤汇总
+     * @param gradeId 班级id
+     * @param sponsorId 发起人id
+     * @param taskName 任务名
+     * @return
+     */
+    TaskInfo getTaskInfos(@Param("gradeId")Integer gradeId,@Param("sponsorId")String sponsorId,@Param("sponsorType")Integer sponsorType,@Param("taskName") String taskName);
+
+
 }

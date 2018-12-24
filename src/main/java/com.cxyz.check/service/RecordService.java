@@ -41,6 +41,7 @@ public interface RecordService {
     List<CheckHistoryDto> loadMore(String id , int type ,int start) throws NoMoreHistoryException;
 
     /**
+     * TODO 当获取为空时抛异常
      * 获取历史考勤详细信息
      * @param gradeId 班级id
      * @param compId 考勤完成情况id

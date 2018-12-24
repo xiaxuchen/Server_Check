@@ -8,6 +8,7 @@ import com.cxyz.check.entity.Times;
 import com.cxyz.check.entity.User;
 import com.cxyz.check.typevalue.UserType;
 
+import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -50,6 +51,11 @@ public class TaskDaoTest {
         taskInfo.setWeekday(1);
     }
 
+    @Test
+    public void getTaskInfoById()
+    {
+        TaskInfo taskInfoById = dao.getTaskInfos(1702,"17478093",0,"离散数学");
+    }
 
 
 

@@ -22,9 +22,15 @@ public interface RecordDao {
      * @return
      */
     List<CheckRecord> getCheckRecords(@Param("id") String id,
-                                    @Param("start") int start,
-                                    @Param("len") int len);
+                                    @Param("start") Integer start,
+                                    @Param("len") Integer len);
 
+    /**
+     * 获取一个课次的考勤记录信息
+     * @param compId
+     * @return
+     */
+    List<CheckRecord> getRecordsByCompId(@Param("compId")Integer compId);
     /**
      * 添加违规学生记录
      * @param stuInfos 学生信息

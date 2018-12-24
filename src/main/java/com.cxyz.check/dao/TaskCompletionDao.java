@@ -22,6 +22,13 @@ public interface TaskCompletionDao {
     TaskCompletion findById(@Param("id")int id);
 
     /**
+     * 获取一个课程的所有课次信息
+     * @param taskId
+     * @return
+     */
+    List<TaskCompletion> findByTaskId(@Param("taskId") int taskId,@Param("state") Integer state);
+
+    /**
      * TODO 暂时无用
      * 通过班级id和当前时间获取考勤任务
      * @param grade 班级id

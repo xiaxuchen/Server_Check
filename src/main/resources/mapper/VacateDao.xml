@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxyz.check.dao.VacateDao">
+    <insert id="addVacate">
+        INSERT INTO tb_vac(start,end,des,`sponsor.id`)
+        VALUES (#{vacate.start},#{vacate.end},#{vacate.des},#{vacate.sponsor.id});
+    </insert>
+</mapper>

@@ -25,7 +25,15 @@
       where r.`stu.id` = #{id}
       and c.id=r.`completion.id`
       order by r.id desc
-      limit #{start},#{len}
+      <if test="start!=null and len!=null">
+              limit #{start},#{len}
+      </if>
+    </select>
+
+    <select id="getRecordsByCompId" resultType="CheckRecord">
+        SELECT *
+        FROM tb_record
+        WHERE `completion.id`=#{compId}
     </select>
 
     <!--批处理添加纪录到tb_record表中-->
@@ -69,13 +77,17 @@
 
 
     <select id="getAlterRecords" resultType="AlterRecordDto" >
-        SELECT
-        s.id 'stu.id',s.name 'stu.name',s.photo 'stu.photo',r.result,r.des
-        FROM (tb_stu s LEFT JOIN tb_record r ON r.`stu.id`=s.id)
-        WHERE
-        s.`grade.id`=#{gradeId}
-		AND EXISTS (SELECT count(*) from tb_completion c WHERE id=#{compId} AND state!=0)
-		ORDER BY s.id
+        SELECT s.id 'stu.id',
+        s.name 'stu.name',
+        s.photo 'stu.photo',
+        r.result,r.des
+        FROM
+        (SELECT id,name,photo FROM tb_stu WHERE `grade.id`=#{gradeId}) s
+        LEFT JOIN
+        tb_record r ON r.`stu.id`=s.id
+        WHERE (r.`completion.id` IS NULL OR r.`completion.id`=#{compId})
+        AND EXISTS (SELECT * FROM tb_completion WHERE id=#{compId} AND state=1)
+        ORDER BY s.id
     </select>
 
     <select id="getAlterRecord" resultType="CheckRecord">
@@ -120,6 +132,7 @@
          r.result,
          r.des,
          c.update_time 'time',
+         t.name 'subject',
          c.id 'compId'
          FROM tb_record r,tb_completion c,tb_taskinfo t,tb_stu s
          WHERE r.`completion.id`=c.id

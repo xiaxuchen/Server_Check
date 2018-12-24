@@ -20,4 +20,11 @@ public interface GradeDao {
      * @return
      */
     List<GradeDto> getCollegeGrades(@Param("collegeId") Integer collegeId);
+
+    /**
+     * 获取班级名称
+     * @param gradeId 班级id
+     * @return
+     */
+    String getGradeName(@Param("gradeId")Integer gradeId);
 }

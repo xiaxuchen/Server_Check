@@ -1,21 +1,32 @@
 package com.cxyz.check.util.excel;
 
+import com.cxyz.check.dao.GradeDao;
+import com.cxyz.check.dao.TaskDao;
+import com.cxyz.check.dao.UserDao;
+import com.cxyz.check.entity.CheckRecord;
+import com.cxyz.check.entity.TaskCompletion;
+import com.cxyz.check.entity.TaskInfo;
+import com.cxyz.check.entity.User;
+import com.cxyz.check.typevalue.CheckRecordResult;
 import com.cxyz.check.util.date.Date;
-import com.cxyz.check.util.date.DateTime;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import static org.junit.Assert.*;
+import javax.annotation.Resource;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration({"classpath:spring/spring-dao.xml"})
 public class POIUtilTest {
 
 
@@ -57,8 +68,18 @@ public class POIUtilTest {
 
     }
 
+    @Resource
+    private TaskDao dao;
+
+    @Resource
+    private UserDao uDao;
+
+    @Resource
+    private GradeDao gradeDao;
+
     @Test
-    public void getCellValue() {
+    public void createExcel() {
+
     }
 
 }

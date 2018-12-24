@@ -97,14 +97,14 @@ public class DateTime extends Date{
 	}
 
 
-	public Date setHour(String hour) {
+	public DateTime setHour(String hour) {
 		String temp = setZero(hour, 2);
 		if(temp!=null)
 			this.hour = temp;
 		return this;
 	}
 	
-	public Date setHour(int hour)
+	public DateTime setHour(int hour)
 	{
 		return this.setHour(hour+"");
 	}
@@ -115,14 +115,14 @@ public class DateTime extends Date{
 	}
 
 
-	public Date setMinute(String minute) {
+	public DateTime setMinute(String minute) {
 		String temp = setZero(minute, 2);
 		if(temp!=null)
 			this.minute = temp;
 		return this;
 	}
 	
-	public Date setMinute(int minute)
+	public DateTime setMinute(int minute)
 	{
 		return this.setMinute(minute+"");
 	}
@@ -133,14 +133,14 @@ public class DateTime extends Date{
 	}
 
 
-	public Date setSecond(String second) {
+	public DateTime setSecond(String second) {
 		String temp = setZero(second, 2);
 		if(temp!=null)
 			this.second = temp;
 		return this;
 	}
 	
-	public Date setSecond(int second)
+	public DateTime setSecond(int second)
 	{
 		return this.setSecond(second+"");
 	}

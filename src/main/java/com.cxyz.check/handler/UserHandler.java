@@ -16,9 +16,17 @@ import com.cxyz.check.service.EnvirService;
 import com.cxyz.check.service.RecordService;
 import com.cxyz.check.service.TaskService;
 import com.cxyz.check.service.UserService;
+import com.cxyz.check.shiro.token.UserToken;
 import com.cxyz.check.util.excel.POIUtil;
 import com.cxyz.check.util.parse.GsonUtil;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +37,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/user")
@@ -62,18 +72,22 @@ public class UserHandler {
     {
         LoginDto login = null;
         try {
-           login = userService.login(id, pwd, type);
-        }catch (UserNotFoundException e)
+            Subject subject = SecurityUtils.getSubject();
+            UserToken token = new UserToken(id, pwd, type);
+            subject.logout();
+            subject.login(token);
+            login = token.getLoginDto();
+        }catch (UnknownAccountException e)
         {
-            return new CheckResult<LoginDto>(UserErrorEnum.USERNOTFOUND.getMsg());
-        }catch (PasswordErrorException e)
+            return new CheckResult<>("用户不存在");
+        }catch (IncorrectCredentialsException e)
         {
-            return new CheckResult<LoginDto>(UserErrorEnum.PASSWORDERROR.getMsg());
-        }catch (Exception e)
+            return new CheckResult<>("密码错误");
+        }catch (AuthenticationException e)
         {
-            return new CheckResult<LoginDto>(UserErrorEnum.INNERERROR.getMsg());
+            return new CheckResult<>("服务器内部异常");
         }
-        return  new CheckResult<LoginDto>(login);
+        return  new CheckResult<>(login);
     }
 
 

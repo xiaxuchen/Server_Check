@@ -3,6 +3,17 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cxyz.check.dao.TaskCompletionDao">
+
+    <resultMap id="TaskCompletionMap" type="TaskCompletion" autoMapping="true">
+        <id property="id" column="id"></id>
+        <collection property="records"
+            column="id" ofType="CheckRecord"
+            javaType="java.util.ArrayList"
+            select="com.cxyz.check.dao.RecordDao.getRecordsByCompId"
+            fetchType="lazy"
+        />
+    </resultMap>
+
     <update id="updateCompState" parameterType="int" >
         update tb_completion set state = #{state}, update_time=now() where id=#{id}
     </update>
@@ -30,21 +41,9 @@
 
     <select id="findById" resultType="TaskCompletion" >
         select
-        c._date,
-        c.state,
-        c.update_time,
-        t._name 'taskInfo.name',
-        t.sponsor_id 'taskInfo.sponsor.id',
-        t.start_time 'taskInfo.start',
-        t.end_time 'taskInfo.end',
-        t.s_type 'taskInfo.sponsor.type',
-        t.checker_id 'taskInfo.checker.id',
-        t.c_type 'taskInfo.checker.type',
-        t.room_id 'taskInfo.room.id',
-        t.type 'taskInfo.type'
-        from tb_completion c,tb_taskinfo t
-        where c._id=#{id}
-        and t._id = c.taskinfo_id;
+        *
+        from tb_completion
+        where id=#{id}
     </select>
 
     <insert id="addComp" parameterType="TaskInfo" >
@@ -63,6 +62,17 @@
         from tb_taskinfo t,tb_completion c
         WHERE c.id=#{compId}
         AND t.id=c.`taskInfo.id`
+    </select>
+
+    <select id="findByTaskId" resultMap="TaskCompletionMap">
+        SELECT
+        *
+        FROM tb_completion c
+        WHERE c.`taskinfo.id`=#{taskId}
+        <if test="state!=null">
+            AND state=#{state}
+        </if>
+        ORDER BY c.date;
     </select>
 
 

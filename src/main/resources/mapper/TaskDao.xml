@@ -5,17 +5,14 @@
 <mapper namespace="com.cxyz.check.dao.TaskDao">
 
     <resultMap id="TaskInfoMap" type="TaskInfo">
-        <id property="id" column="id" />
-        <result column="name" property="name" />
-        <result column="room.id" property="room.id" />
-        <result column="sponsor.id" property="sponsor.id" />
-        <result column="start.id" property="start.id" />
-        <result column="end.id" property="end.id" />
-        <result column="sponsor.type" property="sponsor.type" />
-        <result column="weekday" property="weekday" />
-        <collection property="completions" ofType="TaskCompletion">
-            <result property="week" column="week" />
-        </collection>
+        <id property="name" column="name" />
+        <association property="sponsor"
+            column="{id=sponsor.id,type=sponsor.type}"
+            javaType="User"
+            select="com.cxyz.check.dao.UserDao.selectOne" />
+        <collection column="{taskId=id,state=state}" property="completions"
+            ofType="TaskCompletion" javaType="java.util.ArrayList"
+            select="com.cxyz.check.dao.TaskCompletionDao.findByTaskId" />
     </resultMap>
 
     <select id="getSubjects" resultMap="TaskInfoMap">
@@ -83,6 +80,18 @@
         #{gradeId},#{task.room.id},#{task.weekday},#{task.start.id},#{task.end.id},#{termId},
         #{task.start.start},#{task.end.end})
     </insert>
+
+    <select id="getTaskInfos" resultMap="TaskInfoMap">
+        SELECT
+        *,
+        1 'state'
+        FROM
+        tb_taskinfo
+        WHERE `grade.id`=#{gradeId}
+        AND name=#{taskName}
+        AND `sponsor.id`=#{sponsorId}
+        AND `sponsor.type`=#{sponsorType}
+    </select>
 
 
 </mapper>

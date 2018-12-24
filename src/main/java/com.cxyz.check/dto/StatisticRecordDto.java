@@ -4,12 +4,14 @@ import com.cxyz.check.json.CustomTimeStampSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.sql.Timestamp;
-import java.util.Date;
 
 public class StatisticRecordDto {
 
     //学生信息
     private GradeStusDto stu;
+
+    //考勤课程
+    private String subject;
 
     //考勤结果
     private Integer result;
@@ -29,6 +31,14 @@ public class StatisticRecordDto {
 
     public void setStu(GradeStusDto stu) {
         this.stu = stu;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subjuct) {
+        this.subject = subjuct;
     }
 
     public Integer getResult() {
@@ -64,9 +74,11 @@ public class StatisticRecordDto {
         this.compId = compId;
     }
 
+
     @Override
     public String toString() {
         return "StatisticRecordDto{" +
+                "subject"+subject+
                 "stu=" + stu +
                 ", result=" + result +
                 ", des='" + des + '\'' +

@@ -10,7 +10,9 @@ import com.cxyz.check.entity.Times;
 import com.cxyz.check.exception.task.NoTaskException;
 import com.cxyz.check.service.TaskService;
 import com.cxyz.check.util.excel.POIUtil;
+import com.sun.deploy.net.URLEncoder;
 
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,10 +21,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.processing.Completion;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping(value = "/task")
@@ -169,6 +174,26 @@ public class TaskHandler {
         }
 
 
+    }
+
+    @RequestMapping(value = "/getStatisticExcel",
+            method = {RequestMethod.GET}
+    )
+    public void getStatisticExcel(HttpServletResponse response,@RequestParam Integer gradeId,
+                                  @RequestParam String sponsorId,@RequestParam Integer sponsorType,
+                                  @RequestParam String taskName) throws IOException {
+        try {
+            Workbook workbook = taskService.getStatisticExcel(gradeId,sponsorId,sponsorType,taskName);
+            response.setHeader("content-disposition", "attachment;filename=statisic.xlsx");
+            workbook.write(response.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+            response.getWriter().println("");
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            response.getWriter().println("");
+        }
     }
 
 }

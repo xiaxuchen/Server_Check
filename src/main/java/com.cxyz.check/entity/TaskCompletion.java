@@ -3,6 +3,7 @@ package com.cxyz.check.entity;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by 夏旭晨 on 2018/9/23.
@@ -16,6 +17,18 @@ public class TaskCompletion{
 	private Date date;//考勤日期
     private Integer state;//完成情况
     private Timestamp updateTime;//更新时间
+
+	private List<CheckRecord> records;//考勤记录
+
+	private OtherState otherState;//其他情况
+
+	public List<CheckRecord> getRecords() {
+		return records;
+	}
+
+	public void setRecords(List<CheckRecord> records) {
+		this.records = records;
+	}
 
 	public Integer getWeek() {
 		return week;
@@ -66,6 +79,14 @@ public class TaskCompletion{
 		this.date = date;
 	}
 
+	public OtherState getOtherState() {
+		return otherState;
+	}
+
+	public void setOtherState(OtherState otherState) {
+		this.otherState = otherState;
+	}
+
 	@Override
 	public String toString() {
 		return "TaskCompletion{" +
@@ -75,6 +96,8 @@ public class TaskCompletion{
 				", date=" + date +
 				", state=" + state +
 				", updateTime=" + updateTime +
+				", records=" + records +
+				", otherState=" + otherState +
 				'}';
 	}
 }

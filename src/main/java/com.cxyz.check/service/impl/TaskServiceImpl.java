@@ -13,6 +13,7 @@ import com.cxyz.check.dto.CheckTaskDto;
 import com.cxyz.check.dto.CommitCheckDto;
 import com.cxyz.check.dto.GradeStusDto;
 import com.cxyz.check.dto.SubjectDto;
+import com.cxyz.check.entity.CheckRecord;
 import com.cxyz.check.entity.TaskCompletion;
 import com.cxyz.check.entity.TaskInfo;
 import com.cxyz.check.entity.Times;
@@ -22,18 +23,23 @@ import com.cxyz.check.exception.task.NoTaskException;
 import com.cxyz.check.exception.transaction.CommitCheckFailException;
 import com.cxyz.check.exception.transaction.TransactionalException;
 import com.cxyz.check.service.TaskService;
+import com.cxyz.check.typevalue.CheckRecordResult;
 import com.cxyz.check.typevalue.PowerType;
 import com.cxyz.check.typevalue.TaskCompletionState;
 import com.cxyz.check.typevalue.UserType;
 import com.cxyz.check.util.automapper.AutoMapper;
 import com.cxyz.check.util.date.DateTime;
+import com.cxyz.check.util.excel.ExcelUtil;
 import com.cxyz.check.util.push.PushUtil;
 
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.xmlbeans.SchemaTypeSystem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -244,4 +250,68 @@ public class TaskServiceImpl implements TaskService {
         System.out.println(subjectDtos);
         return subjectDtos;
     }
+
+    @Override
+    public Workbook getStatisticExcel(Integer gradeId, String sponsorId, Integer sponsorType, String taskName) {
+
+        //查询信息
+        TaskInfo t = taskDao.getTaskInfos(gradeId, sponsorId, sponsorType, taskName);
+        List<User> users = userDao.selectStusByGrade(gradeId);
+        String gradeName = gradeDao.getGradeName(gradeId);
+
+        List<Object> info = new ArrayList<>();
+        //添加课程编号，课程名，老师名，开课学期，班级等信息
+        info.add("");
+        info.add(t.getName());
+        String name = "";
+        if(t.getSponsor() != null)
+            name = t.getSponsor().getName();
+        info.add(name);
+        info.add("");
+        info.add("");
+        info.add(gradeName);
+
+        List<List<List<Object>>> datas = new ArrayList<>();
+        List<List<Object>> data = new ArrayList<>();
+        List<java.util.Date> dates = new ArrayList<>();
+        List<Object> list;
+        boolean added = false;//用来标识是否添加了日期
+        for(User u:users)
+        {
+            list = new ArrayList<>();
+            list.add(u.getId());
+            list.add(u.getName());
+            list.add(gradeName);
+            for(TaskCompletion c:t.getCompletions())
+            {
+                if(!added)
+                    dates.add(c.getDate());
+                boolean isBad = false;
+                for(CheckRecord r:c.getRecords())
+                {
+                    if(r.getStu().getId().equals(u.getId()))
+                    {
+                        list.add(r.getResult());
+                        isBad = true;
+                        break;
+                    }
+                }
+                if(!isBad)
+                    list.add(CheckRecordResult.NORMAL);
+            }
+            for(int i = list.size();i<21;i++)
+            {
+                if(!added)
+                    dates.add(null);
+                list.add(null);
+            }
+            list.add(null);
+            added = true;//循环一次就完成了添加
+            data.add(list);
+        }
+        datas.add(data);
+        return ExcelUtil.getCheckExcel(dates,info,datas);
+    }
+
+
 }
