@@ -3,7 +3,9 @@ package com.cxyz.check.handler;
 import com.cxyz.check.dto.AddTermDto;
 import com.cxyz.check.dto.CheckResult;
 import com.cxyz.check.dto.GradeDto;
+import com.cxyz.check.exception.envir.LessonImportedException;
 import com.cxyz.check.exception.envir.TermExistException;
+import com.cxyz.check.exception.envir.UserImportedException;
 import com.cxyz.check.service.EnvirService;
 import com.cxyz.check.service.RecordService;
 import com.cxyz.check.service.TaskService;
@@ -108,5 +110,151 @@ public class EnvirHandler {
     {
         return new CheckResult<>(envirService.getCollegeGrades(collegeId));
     }
+
+
+    /**
+     * 是否可导入用户信息
+     * @param gradeId
+     * @return
+     */
+    @RequestMapping(value="isUserImportEnable",
+            method = RequestMethod.GET,
+            produces = {"application/json;charset=UTF-8;"}
+    )
+    @ResponseBody
+    public CheckResult<Boolean> isUserImportEnable(@RequestParam int gradeId)
+    {
+        CheckResult<Boolean> cr = new CheckResult<>();
+        try {
+            cr.setData(envirService.isUserImportEnable(gradeId));
+        } catch (UserImportedException e) {
+            e.printStackTrace();
+            cr.setError(e.getMessage());
+        }catch (Exception e)
+        {
+            cr.setError("服务器异常");
+        }
+        return cr;
+    }
+
+
+    /**
+     * 是否可导入课程信息
+     * @param gradeId
+     * @return
+     */
+    @RequestMapping(value="isLessonImportEnable",
+            method = RequestMethod.GET,
+            produces = {"application/json;charset=UTF-8;"}
+    )
+    @ResponseBody
+    public CheckResult<Boolean> isLessonImportEnable(@RequestParam int gradeId)
+    {
+        CheckResult<Boolean> cr = new CheckResult<>();
+        try {
+            cr.setData(envirService.isLessonImportEnable(gradeId));
+        } catch (LessonImportedException e) {
+            e.printStackTrace();
+            cr.setError(e.getMessage());
+        }catch (Exception e)
+        {
+            cr.setError("服务器异常");
+        }
+        return cr;
+    }
+
+    /**
+     * 切换用户导入状态
+     * @param collegeId 学院id
+     * @return
+     */
+    @RequestMapping(value="toggleUserImport",
+            method = RequestMethod.GET,
+            produces = {"application/json;charset=UTF-8;"}
+    )
+    @ResponseBody
+    public CheckResult<Boolean> toggleUserImport(@RequestParam int collegeId)
+    {
+        CheckResult<Boolean> cr = new CheckResult<>();
+        try {
+            envirService.toggleUserImport(collegeId);
+            cr.setData(envirService.isCollegeUserImportEnable(collegeId));
+        }catch (Exception e)
+        {
+            cr.setError("服务器异常");
+        }
+        return cr;
+    }
+
+    /**
+     * 是否可导入课程信息
+     * @param collegeId
+     * @return
+     */
+    @RequestMapping(value="toggleLessonImport",
+            method = RequestMethod.GET,
+            produces = {"application/json;charset=UTF-8;"}
+    )
+    @ResponseBody
+    public CheckResult<Boolean> toggleLessonImport(@RequestParam int collegeId)
+    {
+        CheckResult<Boolean> cr = new CheckResult<>();
+        try {
+            envirService.toggleLessonImport(collegeId);
+            cr.setData(envirService.isCollegeLessonImportEnable(collegeId));
+        }catch (Exception e)
+        {
+            cr.setError("服务器异常");
+        }
+        return cr;
+    }
+
+
+    /**
+     * 是否可导入用户信息
+     * @param gradeId
+     * @return
+     */
+    @RequestMapping(value="isCollegeUserImportEnable",
+            method = RequestMethod.GET,
+            produces = {"application/json;charset=UTF-8;"}
+    )
+    @ResponseBody
+    public CheckResult<Boolean> isCollegeUserImportEnable(@RequestParam int gradeId)
+    {
+        CheckResult<Boolean> cr = new CheckResult<>();
+        try {
+            cr.setData(envirService.isCollegeUserImportEnable(gradeId));
+        } catch (Exception e)
+        {
+            cr.setError("服务器异常");
+        }
+        return cr;
+    }
+
+
+    /**
+     * 是否可导入课程信息
+     * @param gradeId
+     * @return
+     */
+    @RequestMapping(value="isCollegeLessonImportEnable",
+            method = RequestMethod.GET,
+            produces = {"application/json;charset=UTF-8;"}
+    )
+    @ResponseBody
+    public CheckResult<Boolean> isCollegeLessonImportEnable(@RequestParam int gradeId)
+    {
+        CheckResult<Boolean> cr = new CheckResult<>();
+        try {
+            cr.setData(envirService.isCollegeLessonImportEnable(gradeId));
+        }catch (Exception e)
+        {
+            cr.setError("服务器异常");
+        }
+        return cr;
+    }
+
+
 
 }

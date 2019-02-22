@@ -1,4 +1,4 @@
-package com.cxyz.check.exception;
+package com.cxyz.check.exception.user;
 
 /**
  * 密码错误时抛出的异常

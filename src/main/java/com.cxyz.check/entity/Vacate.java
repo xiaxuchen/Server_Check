@@ -1,10 +1,24 @@
 package com.cxyz.check.entity;
 
+import com.cxyz.check.json.CustomDateListSerializer;
+import com.cxyz.check.json.CustomDateSerializer;
+import com.cxyz.check.json.CustomTimeStampSerializer;
+import com.cxyz.check.util.automapper.annotation.Classes;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.sql.Timestamp;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+
 /**
  * 请假表
  */
 public class Vacate {
+
+    public static final int TIME_LEN = 1;
+
+    public static final int WEEK = 2;
 
     private Integer id;//请假id
 
@@ -14,13 +28,27 @@ public class Vacate {
 
     private String des;//请假事由
 
-    private User checker;//审核人
-
     private User sponsor;//申请人
 
-    private Integer state;//请假情况
+    private Integer len;//请假天数
 
-    private String checkInfo;//审核人回复
+    private Integer type;//请假类型
+
+    private Timestamp sponsorTime;//发起时间
+
+    private List<Audit> audits;//审核信息
+
+    private Integer timeType;//时间的记录类型,0为时间段,1为周次
+
+    private List<Date> dates;//当时间记录类型为1时，日期的list
+
+    private List<Photo> photos;//请假条照片
+
+    public Vacate(){}
+
+    public Vacate(Integer id){
+        setId(id);
+    }
 
     public Integer getId() {
         return id;
@@ -30,6 +58,7 @@ public class Vacate {
         this.id = id;
     }
 
+    @JsonSerialize(using= CustomTimeStampSerializer.class)
     public Timestamp getStart() {
         return start;
     }
@@ -38,6 +67,7 @@ public class Vacate {
         this.start = start;
     }
 
+    @JsonSerialize(using = CustomTimeStampSerializer.class)
     public Timestamp getEnd() {
         return end;
     }
@@ -54,36 +84,71 @@ public class Vacate {
         this.des = des;
     }
 
-    public User getChecker() {
-        return checker;
-    }
-
-    public void setChecker(User checker) {
-        this.checker = checker;
-    }
-
-    public Integer getState() {
-        return state;
-    }
-
-    public void setState(Integer state) {
-        this.state = state;
-    }
-
-    public String getCheckInfo() {
-        return checkInfo;
-    }
-
-    public void setCheckInfo(String checkInfo) {
-        this.checkInfo = checkInfo;
-    }
-
     public User getSponsor() {
         return sponsor;
     }
 
     public void setSponsor(User sponsor) {
         this.sponsor = sponsor;
+    }
+
+    public Integer getLen() {
+        return len;
+    }
+
+    public void setLen(Integer len) {
+        this.len = len;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+
+    @JsonSerialize(using = CustomTimeStampSerializer.class)
+    public Timestamp getSponsorTime() {
+        return sponsorTime;
+    }
+
+    public void setSponsorTime(Timestamp sponsorTime) {
+        this.sponsorTime = sponsorTime;
+    }
+
+    public List<Audit> getAudits() {
+        return audits;
+    }
+
+    public void setAudits(List<Audit> audits) {
+        this.audits = audits;
+    }
+
+    public Integer getTimeType() {
+        return timeType;
+    }
+
+    public void setTimeType(Integer timeType) {
+        this.timeType = timeType;
+    }
+
+    @JsonSerialize(using = CustomDateListSerializer.class)
+    public List<Date> getDates() {
+        return dates;
+    }
+
+    public void setDates(List<Date> dates) {
+        this.dates = dates;
+    }
+
+    public List<Photo> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(List<Photo> photos) {
+        this.photos = photos;
     }
 
     @Override
@@ -93,10 +158,14 @@ public class Vacate {
                 ", start=" + start +
                 ", end=" + end +
                 ", des='" + des + '\'' +
-                ", checker=" + checker +
                 ", sponsor=" + sponsor +
-                ", state=" + state +
-                ", checkInfo='" + checkInfo + '\'' +
+                ", len=" + len +
+                ", type=" + type +
+                ", sponsorTime=" + sponsorTime +
+                ", audits=" + audits +
+                ", timeType=" + timeType +
+                ", dates=" + dates +
+                ", photos=" + photos +
                 '}';
     }
 }

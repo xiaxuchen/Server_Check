@@ -7,6 +7,7 @@ import com.cxyz.check.dto.StatisticDto;
 import com.cxyz.check.entity.User;
 import com.cxyz.check.exception.util.GsonException;
 import com.cxyz.check.typevalue.CheckRecordResult;
+import com.cxyz.check.typevalue.PowerType;
 import com.cxyz.check.typevalue.UserType;
 import com.cxyz.check.util.parse.GsonUtil;
 import com.google.gson.Gson;
@@ -30,6 +31,12 @@ public class UserDaoTest {
     @Autowired
     UserDao dao;
     Logger logger = Logger.getLogger(UserDaoTest.class);
+
+    @Test
+    public void getSchoolId()
+    {
+        System.out.println(dao.getSchoolId("17478093",0));
+    }
 
     @Test
     public void selectStu() {
@@ -126,5 +133,21 @@ public class UserDaoTest {
         } catch (GsonException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void getTeaIds() {
+        dao.getTeaIds(1, PowerType.TEA_SECRETARY);
+    }
+
+    @Test
+    public void alterPassword() {
+        dao.alterPassword("17478093",0,"123456","0");
+    }
+
+    @Test
+    public void getEmail()
+    {
+        System.out.println(dao.getEmail("17478093",0));
     }
 }

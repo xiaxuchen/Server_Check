@@ -1,5 +1,6 @@
 package com.cxyz.check.dao;
 
+import com.cxyz.check.dto.GradeLessonDto;
 import com.cxyz.check.entity.TaskCompletion;
 import com.cxyz.check.entity.TaskInfo;
 
@@ -65,12 +66,18 @@ public interface TaskDao {
 
     /**
      * 获取老师在此班级的考勤汇总
-     * @param gradeId 班级id
-     * @param sponsorId 发起人id
-     * @param taskName 任务名
+     * @param lessonId 课程id
      * @return
      */
-    TaskInfo getTaskInfos(@Param("gradeId")Integer gradeId,@Param("sponsorId")String sponsorId,@Param("sponsorType")Integer sponsorType,@Param("taskName") String taskName);
+    List<TaskInfo> getTasks(@Param("lessonId") Integer lessonId);
 
+    /**
+     * 通过发起人或老师id获取所教班级的课程信息
+     * @param sponsorId 发起人id
+     * @param sponsorType 发起人类型
+     * @param termId
+     * @return
+     */
+    List<GradeLessonDto> getGradeTasks(@Param("sponsorId") String sponsorId, @Param("sponsorType") Integer sponsorType, @Param("termId")Integer termId);
 
 }

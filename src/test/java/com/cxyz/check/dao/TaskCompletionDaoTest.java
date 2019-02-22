@@ -1,5 +1,7 @@
 package com.cxyz.check.dao;
 
+import com.cxyz.check.entity.TaskCompletion;
+import com.cxyz.check.entity.TaskInfo;
 import com.cxyz.check.typevalue.UserType;
 import com.cxyz.check.util.date.DateTime;
 
@@ -7,6 +9,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
 
 import javax.annotation.Resource;
 
@@ -46,7 +52,20 @@ public class TaskCompletionDaoTest {
 
     @Test
     public void addComp() {
-
+        TaskInfo taskInfo = new TaskInfo();
+        taskInfo.setCompletions(new ArrayList<TaskCompletion>(){{
+            TaskCompletion taskCompletion = new TaskCompletion();
+            taskCompletion.setDate(new Date());
+            TaskCompletion taskCompletion1 = new TaskCompletion();
+            taskCompletion1.setDate(new Date());
+            add(taskCompletion);
+            add(taskCompletion1);
+        }});
+        ArrayList<TaskInfo> list = new ArrayList<>();
+        list.add(taskInfo);
+        list.add(taskInfo);
+        System.out.println(list);
+        completionDao.addComp(list);
     }
 
     @Test

@@ -4,6 +4,7 @@ import com.cxyz.check.custom.ResultCustom;
 import com.cxyz.check.dto.AlterRecordDto;
 import com.cxyz.check.dto.CheckHistoryDto;
 import com.cxyz.check.dto.CommitCheckDto;
+import com.cxyz.check.dto.MyHistoryDto;
 import com.cxyz.check.dto.StatisticRecordDto;
 import com.cxyz.check.entity.CheckRecord;
 
@@ -15,15 +16,21 @@ import java.util.List;
 public interface RecordDao {
 
     /**
-     * 通过学生的id查询他的记录
+     * 获取个人历史考勤记录
      * @param id 学生id
-     * @param start 开始查询的位置
-     * @param len 查询条目数
+     * @param result 考勤结果类型
+     * @param start 起始
+     * @param len 长度
      * @return
      */
-    List<CheckRecord> getCheckRecords(@Param("id") String id,
-                                    @Param("start") Integer start,
-                                    @Param("len") Integer len);
+    List<MyHistoryDto> getMyHistory(@Param("id")String id,@Param("result")Integer result,@Param("start")int start,@Param("len")int len);
+
+    /**
+     * 通过学生的id查询他的记录
+     * @param id 学生id
+     * @return
+     */
+    List<ResultCustom> getRecordStatistic(@Param("id") String id);
 
     /**
      * 获取一个课次的考勤记录信息
@@ -108,4 +115,12 @@ public interface RecordDao {
      * @return
      */
     List<StatisticRecordDto> getStatisticRecords(@Param("start") String start, @Param("end")String end,@Param("gradeId")Integer gradeId,@Param("resultType")Integer resultType);
+
+    /**
+     * 获取课程的考勤信息
+     * @param id 课程id
+     * @return
+     */
+    List<CheckHistoryDto> getLessonHistories(@Param("id")Integer id,@Param("start")int start,@Param("len")int len);
+
 }

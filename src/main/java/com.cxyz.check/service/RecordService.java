@@ -3,16 +3,29 @@ package com.cxyz.check.service;
 import com.cxyz.check.dto.AlterRecordDto;
 import com.cxyz.check.dto.CheckHistoryDto;
 import com.cxyz.check.dto.CheckRecordDto;
+import com.cxyz.check.dto.MyHistoryDto;
 import com.cxyz.check.dto.StatisticDto;
 import com.cxyz.check.dto.StatisticRecordDto;
 import com.cxyz.check.exception.record.NOHistoryException;
 import com.cxyz.check.exception.record.NoMoreHistoryException;
 import com.cxyz.check.exception.task.NoTaskException;
 
+import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 
 public interface RecordService {
 
+
+    /**
+     * 获取从start开始的几条记录
+     * @param id 学生id
+     * @param result 考勤结果
+     * @param start 开始记录
+     * @throws NoMoreHistoryException 当获取的记录为空时抛出
+     * @return
+     */
+    List<MyHistoryDto> getMyHistory(String id,Integer result,int start)throws NoMoreHistoryException;
     /**
      * 获取最近10条考勤违规记录
      * @param id 用户id
@@ -20,7 +33,7 @@ public interface RecordService {
      * @param grade 用户班级id
      * @return
      */
-    CheckRecordDto getCheckRecord(String id, int type, int grade);
+    CheckRecordDto getRecordStatistic(String id, int type, int grade);
 
     /***
      * 获取历史考勤信息
@@ -75,4 +88,13 @@ public interface RecordService {
      * @return
      */
     List<StatisticRecordDto> getStatisticRecords(String start,String end,Integer gradeId,Integer resultType);
+
+    /**
+     * 获取课程的考勤历史记录
+     * @param id 课程id
+     * @param start 起始位置
+     * @return
+     */
+    List<CheckHistoryDto> getLessonHistories(Integer id,int start) throws NoMoreHistoryException;
+
 }

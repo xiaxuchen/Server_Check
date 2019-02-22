@@ -3,13 +3,17 @@ package com.cxyz.check.util.excel.config;
 import com.cxyz.check.util.excel.WorkBookUtil;
 
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 
 import java.util.List;
 
@@ -150,7 +154,7 @@ public abstract class Config{
      * @param curCol 当前列
      * @return 单位:字符个数
      */
-    public abstract int width(int curSheet,int curCol);
+    public abstract float width(int curSheet,int curCol);
 
     /**
      * 设置单元格的高度
@@ -257,6 +261,18 @@ public abstract class Config{
             return;
         style.setAlignment(CellStyle.ALIGN_CENTER);
         style.setVerticalAlignment(CellStyle.VERTICAL_CENTER);//垂直居中
+    }
+
+    /**
+     * @param text
+     * @return
+     */
+    public RichTextString getRichTextString(String text)
+    {
+        if(getWorkbook() instanceof HSSFWorkbook)
+            return new HSSFRichTextString(text);
+        else
+            return new XSSFRichTextString(text);
     }
 
     /**

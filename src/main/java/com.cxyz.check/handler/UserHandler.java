@@ -1,43 +1,46 @@
 package com.cxyz.check.handler;
 
-import com.cxyz.check.dto.CheckRecordDto;
 import com.cxyz.check.dto.CheckResult;
-import com.cxyz.check.dto.CommitCheckDto;
 import com.cxyz.check.dto.GradeStusDto;
 import com.cxyz.check.dto.LoginDto;
 import com.cxyz.check.entity.User;
-import com.cxyz.check.enums.UserErrorEnum;
 import com.cxyz.check.exception.GradeNotFoundException;
-import com.cxyz.check.exception.PasswordErrorException;
-import com.cxyz.check.exception.UserNotFoundException;
-import com.cxyz.check.exception.transaction.CommitCheckFailException;
-import com.cxyz.check.exception.util.GsonException;
+import com.cxyz.check.exception.user.ActiveException;
+import com.cxyz.check.exception.user.AlterPwdException;
 import com.cxyz.check.service.EnvirService;
 import com.cxyz.check.service.RecordService;
 import com.cxyz.check.service.TaskService;
 import com.cxyz.check.service.UserService;
 import com.cxyz.check.shiro.token.UserToken;
 import com.cxyz.check.util.excel.POIUtil;
-import com.cxyz.check.util.parse.GsonUtil;
+import com.cxyz.check.util.mail.MailUtil;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.UUID;
 
+import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 @Controller
@@ -200,5 +203,185 @@ public class UserHandler {
         throw new RuntimeException();
     }
 
+    @RequestMapping(value = "/alterPwd",
+            method = RequestMethod.POST,
+            produces = {"application/json;charset=UTF-8"})
+    @ResponseBody
+    public CheckResult<String> alterPwd(@RequestParam String id,@RequestParam Integer type,@RequestParam
+            String originPwd,@RequestParam String newPwd)
+    {
+        CheckResult<String> cr = new CheckResult<>();
+        try {
+            userService.alterPassword(id,type,originPwd,newPwd);
+            cr.setData("修改成功");
+        }catch (AlterPwdException e)
+        {
+            e.printStackTrace();
+            cr.setError(e.getMessage());
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            cr.setError("服务器异常");
+        }
+        return cr;
+    }
+
+    /**
+     * 验证密码
+     * @param request
+     * @param type 用户类型
+     * @param acode 激活码
+     * @return
+     */
+    @RequestMapping(value = "/confirmPwd/{type}/{acode}")
+    public String confirmPwd(HttpServletRequest request, @PathVariable Integer type, @PathVariable String acode)
+    {
+        try {
+            userService.confirmPwd(type,acode);
+            request.setAttribute("msg","验证成功,密码已修改");
+        }catch (ActiveException e)
+        {
+            e.printStackTrace();
+            request.setAttribute("msg","验证失败:"+e.getMessage());
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            request.setAttribute("msg","验证失败:未知错误");
+        }
+        return "/active/msg";
+    }
+
+
+
+    @RequestMapping(value = "/forgetPwd",
+        produces = {"application/json;charset=utf-8"}
+    )
+    /**
+     * 忘记密码
+     * @param id
+     * @param type
+     * @param newPwd
+     * @return
+     */
+    @ResponseBody
+    public CheckResult forgetPwd(HttpServletRequest request,@RequestParam String id,@RequestParam Integer type,@RequestParam
+            String newPwd,@RequestParam(required = false) String mail)
+    {
+        CheckResult cr = new CheckResult();
+        if(mail == null)
+            mail = userService.getEmail(id,type);
+        if(mail == null)
+        {
+            cr.setError("非法操作,账号未绑定邮箱!");
+            return cr;
+        }
+        String schema = request.getScheme();
+        int port = request.getServerPort();
+        System.out.println(schema);
+        System.out.println(port);
+        final String acode = UUID.randomUUID().toString().replace("-", "");
+        try {
+            userService.forgetPwd(id,type,newPwd,acode);
+            MailUtil.sendEmail(mail,"点到为止账号改密验证",msg ->
+            {
+                final StringBuffer messageText=new StringBuffer();//内容以html格式发送,防止被当成垃圾邮件
+                messageText.append("<h2>Hi,您好,这是点到为止的改密邮件</h2></br>");
+                messageText.append("<a href='").append(schema).append("://").append(InetAddress.getLocalHost().getHostAddress())
+                        .append(":").append(port).append("/user/confirmPwd/")
+                        .append(type).append("/").append(acode).append("'").append(">点此确认修改</a>");
+                try {
+                    msg.setContent(messageText.toString(),"text/html;charset=utf-8");
+                } catch (MessagingException e) {
+                    e.printStackTrace();
+                }
+            });
+            cr.setSuccess(true);
+        }catch (ActiveException e)
+        {
+            e.printStackTrace();
+            cr.setError(e.getMessage());
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            cr.setError("未知错误");
+        }
+
+        return cr;
+    }
+
+
+
+    /**
+     *  激活账号的准备工作
+     * @param id 用户id
+     * @param type 用户类型
+     * @param mail 邮箱
+     * @param newPwd 新密码
+     */
+    @RequestMapping(value = "/activeAccountPre",
+            produces = {"application/json;charset=utf-8"}
+    )
+    @ResponseBody
+    public CheckResult activeAccountPre(HttpServletRequest request,@RequestParam String id,@RequestParam Integer type,@RequestParam String mail,@RequestParam String newPwd)
+    {
+        CheckResult cr = new CheckResult();
+        String schema = request.getScheme();
+        int port = request.getServerPort();
+        System.out.println(schema);
+        System.out.println(port);
+        final String acode = UUID.randomUUID().toString().replace("-", "");
+        try {
+            userService.activeAccountPre(id,type,newPwd,mail,acode);
+            MailUtil.sendEmail(mail,"点到为止账号激活",msg ->
+            {
+                final StringBuffer messageText=new StringBuffer();//内容以html格式发送,防止被当成垃圾邮件
+                messageText.append("<h2>Hi,您好,这是点到为止的账号激活邮件</h2></br>");
+                messageText.append("<a href='").append(schema).append("://").append(InetAddress.getLocalHost().getHostAddress())
+                        .append(":").append(port).append("/user/activeAccount/")
+                        .append(type).append("/").append(acode).append("'").append(">点此激活</a>");
+                try {
+                    msg.setContent(messageText.toString(),"text/html;charset=utf-8");
+                } catch (MessagingException e) {
+                    e.printStackTrace();
+                }
+            });
+            cr.setSuccess(true);
+        }catch (ActiveException e)
+        {
+            e.printStackTrace();
+            cr.setError(e.getMessage());
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            cr.setError("未知错误");
+        }
+
+        return cr;
+    }
+
+    /**
+     * 激活账号
+     * @param request
+     * @param type 用户类型
+     * @param acode 激活码
+     * @return
+     */
+    @RequestMapping(value = "/activeAccount/{type}/{acode}")
+    public String activeAccount(HttpServletRequest request, @PathVariable Integer type, @PathVariable String acode)
+    {
+        try {
+            userService.activeAccount(type,acode);
+            request.setAttribute("msg","账号激活成功");
+        }catch (ActiveException e)
+        {
+            e.printStackTrace();
+            request.setAttribute("msg","激活失败"+e.getMessage());
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            request.setAttribute("msg","激活失败,未知错误");
+        }
+        return "/active/msg";
+    }
 
 }

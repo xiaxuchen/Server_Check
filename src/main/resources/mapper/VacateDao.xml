@@ -3,8 +3,105 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cxyz.check.dao.VacateDao">
-    <insert id="addVacate">
-        INSERT INTO tb_vac(start,end,des,`sponsor.id`)
-        VALUES (#{vacate.start},#{vacate.end},#{vacate.des},#{vacate.sponsor.id});
+
+    <resultMap id="VacateDtoMap" type="VacateDto" autoMapping="true">
+        <id column="id" property="id" />
+        <association  property="sponsor.name" select="com.cxyz.check.dao.UserDao.getName"
+            column="{id=sponsor.id,type=sponsor.type}" />
+        <collection property="audits" javaType="java.util.ArrayList" ofType="Audit"
+            column="{vacId=id,checkerId=checkerId}" select=
+            "com.cxyz.check.dao.AuditDao.getAudits" />
+        <collection property="photos" column="id" javaType="java.util.ArrayList" ofType="String" select="com.cxyz.check.dao.VacateDao.getPhotos"/>
+        <collection property="dates" column="id" javaType="java.util.ArrayList" ofType="java.util.Date" select="com.cxyz.check.dao.VacateDao.getDates"/>
+    </resultMap>
+
+    <insert id="addVacate" useGeneratedKeys="true" keyProperty="vacate.id">
+        INSERT INTO tb_vac(start,end,des,`sponsor.id`,`sponsor.type`,len,type,time_type)
+        VALUES (#{vacate.start},#{vacate.end},#{vacate.des},#{vacate.sponsor.id},#{vacate.sponsor.type},#{vacate.len},#{vacate.type},0);
     </insert>
+
+    <select id="getVacates" resultMap="VacateDtoMap" >
+        SELECT
+        v.*,
+        (CASE WHEN  (SELECT count(*) FROM tb_audit t WHERE t.`vac.id`=v.id)=0 THEN  2
+          WHEN EXISTS (SELECT * FROM tb_audit t WHERE t.`vac.id`=v.id AND t.state=-1) THEN -1
+          WHEN EXISTS (SELECT * FROM tb_audit t WHERE t.`vac.id`=v.id AND t.state=0) THEN 0
+          ELSE 1 END) 'state',
+        null 'checkerId'
+        FROM
+        tb_vac v
+        WHERE v.`sponsor.id` = #{sponsorId}
+        AND v.`sponsor.type` = #{sponsorType}
+        <if test="state!=null">
+            AND (CASE WHEN EXISTS (SELECT * FROM tb_audit t WHERE t.`vac.id`=v.id AND t.state=-1) THEN -1
+            WHEN EXISTS (SELECT * FROM tb_audit t WHERE t.`vac.id`=v.id AND t.state=0) THEN 0
+            ELSE 1 END)=#{state}
+        </if>
+    </select>
+    
+    <select id="getVacatesToAudit" resultMap="VacateDtoMap" >
+        SELECT
+        v.*,
+        (CASE WHEN EXISTS (SELECT * FROM tb_audit t WHERE t.`vac.id`=v.id AND t.state=-1) THEN -1
+        WHEN EXISTS (SELECT * FROM tb_audit t WHERE t.`vac.id`=v.id AND t.state=0) THEN 0
+        ELSE 1 END) 'state',
+        ${checkerId} 'checkerId'
+        FROM
+        tb_vac v JOIN tb_audit a ON v.id=a.`vac.id`
+        WHERE a.`checker.id`=#{checkerId}
+        <if test="state!=null">
+        AND (CASE WHEN EXISTS (SELECT * FROM tb_audit t WHERE t.`vac.id`=v.id AND t.state=-1) THEN -1
+        WHEN EXISTS (SELECT * FROM tb_audit t WHERE t.`vac.id`=v.id AND t.state=0) THEN 0
+        ELSE 1 END)=#{state}
+        </if>
+        ORDER BY a.update_time;
+    </select>
+
+    <select id="getVacateSponsorId" resultType="String">
+        SELECT
+        `sponsor.id`
+        FROM tb_vac
+        WHERE id=#{vacId}
+    </select>
+
+    <insert id="uploadPhotos" >
+        INSERT INTO tb_vac_photo(`vac.id`, uri)
+        VALUES
+        <foreach collection="photos" item="photo" separator="," close=";">
+            (#{vacId},#{photo.uri})
+        </foreach>
+    </insert>
+
+    <insert id="addDates" >
+        INSERT INTO tb_vac_date(`vac.id`,date)
+        VALUES
+        <foreach collection="dates" item="date" separator="," close=";">
+            (#{vacId},#{date})
+        </foreach>
+    </insert>
+
+    <select id="getPhotos" resultType="Photo">
+        SELECT
+        id,
+        uri,
+        `vac.id`
+        FROM tb_vac_photo
+        WHERE `vac.id`=#{id}
+        AND active=0
+    </select>
+
+    <select id="getDates" resultType="java.util.Date">
+        SELECT date FROM tb_vac_date
+        WHERE `vac.id`=#{id}
+    </select>
+
+    <update id="deletePhoto" >
+        UPDATE tb_vac_photo SET active=1 WHERE id=#{id}
+    </update>
+
+    <insert id="uploadPhoto" useGeneratedKeys="true" keyProperty="photo.id" >
+      INSERT INTO tb_vac_photo(`vac.id`, uri)
+        VALUES(#{vacId},#{photo.uri})
+    </insert>
+
 </mapper>

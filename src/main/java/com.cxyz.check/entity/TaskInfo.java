@@ -1,8 +1,6 @@
 package com.cxyz.check.entity;
 
 
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +11,7 @@ import java.util.List;
 
 public class TaskInfo {
     private Integer id;//考勤任务编号
+	private Lesson lesson;//课程id
 	private String name;//考勤任务名称
     private User sponsor;//考勤任务发起人
     private User checker;//考勤任务考勤人
@@ -22,7 +21,8 @@ public class TaskInfo {
     private Grade grade = new Grade();//考勤班级
 	private Times start;//开始节次
 	private Times end;//结束节次
-	private Term term;
+	private Term term;//学期
+	private Integer num;//教务系统中的课程编号
     /*
      * 当前考勤任务的所有考勤情况
      */
@@ -124,10 +124,27 @@ public class TaskInfo {
 		this.term = term;
 	}
 
+	public Integer getNum() {
+		return num;
+	}
+
+	public void setNum(Integer num) {
+		this.num = num;
+	}
+
+	public Lesson getLesson() {
+		return lesson;
+	}
+
+	public void setLesson(Lesson lesson) {
+		this.lesson = lesson;
+	}
+
 	@Override
 	public String toString() {
 		return "TaskInfo{" +
-				"id='" + id + '\'' +
+				"id=" + id +
+				", lesson=" + lesson +
 				", name='" + name + '\'' +
 				", sponsor=" + sponsor +
 				", checker=" + checker +
@@ -138,6 +155,7 @@ public class TaskInfo {
 				", start=" + start +
 				", end=" + end +
 				", term=" + term +
+				", num=" + num +
 				", completions=" + completions +
 				'}';
 	}

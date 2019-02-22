@@ -4,18 +4,35 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cxyz.check.dao.TaskDao">
 
-    <resultMap id="TaskInfoMap" type="TaskInfo">
-        <id property="name" column="name" />
-        <association property="sponsor"
+    <resultMap id="GradeLessonDtoMap" type="GradeLessonDto" autoMapping="true">
+        <id column="id" property="gradeId" />
+        <result property="gradeName" column="name" />
+        <collection property="lessons" javaType="java.util.ArrayList" ofType="LessonDto" autoMapping="true">
+            <id property="id" column="lessonId" />
+            <result property="name" column="lessonName" />
+        </collection>
+    </resultMap>
+
+
+    <resultMap id="SubjectTaskInfoMap" type="TaskInfo" autoMapping="true">
+        <id property="id" column="id" />
+        <association property="sponsor.name"
             column="{id=sponsor.id,type=sponsor.type}"
             javaType="User"
-            select="com.cxyz.check.dao.UserDao.selectOne" />
+            select="com.cxyz.check.dao.UserDao.getName" />
+        <collection property="completions" javaType="java.util.ArrayList" ofType="TaskCompletion" >
+            <result column="week" property="week"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="TaskMap" type="Task" autoMapping="true">
+        <id column="id" property="id"></id>
         <collection column="{taskId=id,state=state}" property="completions"
             ofType="TaskCompletion" javaType="java.util.ArrayList"
             select="com.cxyz.check.dao.TaskCompletionDao.findByTaskId" />
     </resultMap>
 
-    <select id="getSubjects" resultMap="TaskInfoMap">
+    <select id="getSubjects" resultMap="SubjectTaskInfoMap">
         SELECT
         t.id,
         t.name,
@@ -26,7 +43,7 @@
         t.end 'end.id',
         t.`sponsor.type`,
         t.weekday
-        FROM tb_taskinfo t,tb_completion c
+        FROM taskinfo t,tb_completion c
         WHERE t.id=c.`taskinfo.id`
         AND t.`grade.id`=#{gradeId}
         AND t.`term.id`=#{termId}
@@ -44,7 +61,7 @@
         t.`sponsor.type` 'taskInfo.sponsor.type',
         t.type 'taskInfo.type',
         r.`name` 'taskInfo.room.name'
-        from tb_completion c,tb_taskinfo t LEFT JOIN tb_room r ON t.`room.id` = r.id
+        from tb_completion c,taskinfo t LEFT JOIN tb_room r ON t.`room.id` = r.id
         where t.`checker.id`=#{checkerId}
         and t.`checker.type`=#{checkerType}
         and t.id = c.`taskinfo.id`
@@ -65,7 +82,7 @@
     <select id="getGradeCheck" resultType="Integer">
         SELECT
         count(*)
-        FROM tb_completion c,tb_taskinfo t
+        FROM tb_completion c,taskinfo t
         WHERE c.`taskinfo.id`=t.id
         and t.`grade.id`=#{grade}
         and c.state=1;
@@ -74,23 +91,40 @@
 
     <insert id="addTask" parameterType="TaskInfo" keyProperty="task.id" useGeneratedKeys="true">
         INSERT INTO
-        tb_taskinfo(name,`sponsor.id`,`sponsor.type`,`checker.id`,`checker.type`,
-        `type`,`grade.id`,`room.id`,weekday,start,end,`term.id`,startTime,endTime)
-        VALUES(#{task.name},#{task.sponsor.id},#{task.sponsor.type},#{task.checker.id},#{task.checker.type},#{type},
-        #{gradeId},#{task.room.id},#{task.weekday},#{task.start.id},#{task.end.id},#{termId},
-        #{task.start.start},#{task.end.end})
+        tb_task(`lesson.id`,weekday,start,
+        end,startTime,endTime)
+        VALUES(#{task.lesson.id},#{task.weekday},#{task.start.id},
+        #{task.end.id},#{task.start.start},#{task.end.end})
     </insert>
 
-    <select id="getTaskInfos" resultMap="TaskInfoMap">
+    <select id="getTasks" resultMap="TaskMap">
         SELECT
         *,
         1 'state'
         FROM
-        tb_taskinfo
-        WHERE `grade.id`=#{gradeId}
-        AND name=#{taskName}
-        AND `sponsor.id`=#{sponsorId}
-        AND `sponsor.type`=#{sponsorType}
+        tb_task
+        WHERE `lesson.id`=#{lessonId}
+    </select>
+
+    <select id="getGradeTasks" resultMap="GradeLessonDtoMap">
+        SELECT
+        t.id 'lessonId',
+        t.`checker.id` 'checkerId',
+        t.`checker.type` 'checkerType',
+        g.id,
+        g.name,
+        t.`room.id` 'roomId',
+        r.name 'roomName',
+        t.num,
+        t.name 'lessonName'
+        FROM tb_grade g,tb_lesson t
+        LEFT JOIN tb_room r ON t.`room.id`=r.id
+        WHERE g.id = t.`grade.id`
+        AND t.`sponsor.id`=#{sponsorId}
+        AND t.`sponsor.type`=#{sponsorType}
+        <if test="termId!=null">
+            AND t.`term.id`=#{termId}
+        </if>
     </select>
 
 

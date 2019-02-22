@@ -1,13 +1,17 @@
 package com.cxyz.check.service.impl;
 
+import com.cxyz.check.dao.CollegeDao;
 import com.cxyz.check.dao.EnvirDao;
 import com.cxyz.check.dao.GradeDao;
+import com.cxyz.check.dao.SchoolDao;
 import com.cxyz.check.dto.AddTermDto;
 import com.cxyz.check.dto.GradeDto;
 import com.cxyz.check.entity.School;
 import com.cxyz.check.entity.Term;
 import com.cxyz.check.entity.Times;
+import com.cxyz.check.exception.envir.LessonImportedException;
 import com.cxyz.check.exception.envir.TermExistException;
+import com.cxyz.check.exception.envir.UserImportedException;
 import com.cxyz.check.service.EnvirService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +32,12 @@ public class EnvirServiceImpl implements EnvirService {
 
     @Autowired
     private GradeDao gradeDao;
+
+    @Autowired
+    private SchoolDao schoolDao;
+
+    @Autowired
+    private CollegeDao collegeDao;
 
     Calendar instance = Calendar.getInstance();
 
@@ -93,5 +103,46 @@ public class EnvirServiceImpl implements EnvirService {
     {
         return gradeDao.getCollegeGrades(collegeId);
     }
-    
+
+    @Override
+    public boolean isUserImportEnable(int gradeId) {
+        int result = gradeDao.isStuImportEnable(gradeId);
+        System.out.println(result);
+        if(result == 0)
+            throw new UserImportedException("学生信息已导入");
+        if(result == 1)
+            return true;
+        return false;
+    }
+
+    @Override
+    public boolean isLessonImportEnable(int gradeId) {
+        int result = gradeDao.isLessonImportEnable(gradeId,schoolDao.getCurrentTermId(gradeDao.getGradeSchoolId(gradeId)));
+        if(result == 0)
+            throw new LessonImportedException("课程信息已导入");
+        if(result == 1)
+            return true;
+        return false;
+    }
+
+    @Override
+    public void toggleUserImport(int collegeId) {
+        collegeDao.toggleUserImport(collegeId);
+    }
+
+    @Override
+    public void toggleLessonImport(int collegeId) {
+        collegeDao.toggleLessonImport(collegeId);
+    }
+
+    @Override
+    public boolean isCollegeUserImportEnable(int collegeId) {
+        return collegeDao.isUserImportEnable(collegeId);
+    }
+
+    @Override
+    public boolean isCollegeLessonImportEnable(int collegeId) {
+        return collegeDao.isLessonImportEnable(collegeId);
+    }
+
 }

@@ -19,6 +19,6 @@ public class RecordServiceImplTest {
     private RecordService service;
     @Test
     public void getCheckRecord() {
-        System.out.println(service.getCheckRecord("17478093",0,1702));
+        System.out.println(service.getRecordStatistic("17478093",0,1702));
     }
 }

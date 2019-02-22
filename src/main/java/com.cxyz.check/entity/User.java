@@ -22,6 +22,8 @@ public class User{
     private String phone;
     //照片地址
     private String photo;
+    //邮箱
+    private String email;
 
     /**
      * power属性用来区分权限
@@ -135,6 +137,14 @@ public class User{
         this.type = type;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -146,6 +156,7 @@ public class User{
                 ", pwd='" + pwd + '\'' +
                 ", phone='" + phone + '\'' +
                 ", photo='" + photo + '\'' +
+                ", email='" + email + '\'' +
                 ", power=" + power +
                 ", type=" + type +
                 '}';

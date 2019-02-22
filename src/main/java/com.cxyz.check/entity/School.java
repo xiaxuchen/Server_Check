@@ -8,7 +8,7 @@ package com.cxyz.check.entity;
 public class School {
 	
 	private String name;//学校姓名
-    private Teacher manager;//学校管理员
+    private User manager;//学校管理员
     private Integer id;//学校编号
 	private Term term;//当前学期
     
@@ -26,11 +26,11 @@ public class School {
 		this.name = name;
 	}
 
-	public Teacher getManager() {
+	public User getManager() {
 		return manager;
 	}
 
-	public void setManager(Teacher manager) {
+	public void setManager(User manager) {
 		this.manager = manager;
 	}
 

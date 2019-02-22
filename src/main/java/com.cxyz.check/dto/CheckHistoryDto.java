@@ -1,11 +1,11 @@
 package com.cxyz.check.dto;
 
-
-import com.cxyz.check.custom.ResultCustom;
+import com.cxyz.check.json.CustomDateSerializer;
 import com.cxyz.check.json.CustomTimeStampSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -17,11 +17,19 @@ public class CheckHistoryDto {
     /**
      * 任务id
      */
-    private Integer id;
+    private int id;
     /**
      * 任务名称
      */
-    private String taskName;
+    private String lessonName;
+
+    private String checkerName;
+
+    private Date date;
+
+    private int start;
+
+    private int end;
 
     /**
      * 考勤结果的状态
@@ -30,24 +38,14 @@ public class CheckHistoryDto {
     /**
      * 考勤结果
      */
-    private List<ResultCustom> results;
-
+    private List<RecordResultCustom> results;
 
     /**
      * 提交时间
      */
     private Timestamp commitTime;
 
-    public String getTaskName() {
-        return taskName;
-    }
-
-    public void setTaskName(String taskName) {
-        this.taskName = taskName;
-
-    }
-
-    @JsonSerialize(using= CustomTimeStampSerializer.class)
+    @JsonSerialize(using = CustomTimeStampSerializer.class)
     public Timestamp getCommitTime() {
         return commitTime;
     }
@@ -56,11 +54,11 @@ public class CheckHistoryDto {
         this.commitTime = commitTime;
     }
 
-    public List<ResultCustom> getResults() {
+    public List<RecordResultCustom> getResults() {
         return results;
     }
 
-    public void setResults(List<ResultCustom> results) {
+    public void setResults(List<RecordResultCustom> results) {
         this.results = results;
     }
 
@@ -72,23 +70,101 @@ public class CheckHistoryDto {
         this.state = state;
     }
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
+
+    public String getLessonName() {
+        return lessonName;
+    }
+
+    public void setLessonName(String lessonName) {
+        this.lessonName = lessonName;
+    }
+
+    @JsonSerialize(using = CustomDateSerializer.class)
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public int getStart() {
+        return start;
+    }
+
+    public void setStart(int start) {
+        this.start = start;
+    }
+
+    public int getEnd() {
+        return end;
+    }
+
+    public void setEnd(int end) {
+        this.end = end;
+    }
+
+    public String getCheckerName() {
+        return checkerName;
+    }
+
+    public void setCheckerName(String checkerName) {
+        this.checkerName = checkerName;
+    }
+
 
     @Override
     public String toString() {
         return "CheckHistoryDto{" +
                 "id=" + id +
-                ", taskName='" + taskName + '\'' +
+                ", lessonName='" + lessonName + '\'' +
+                ", checkerName='" + checkerName + '\'' +
+                ", date=" + date +
+                ", start=" + start +
+                ", end=" + end +
                 ", state=" + state +
                 ", results=" + results +
                 ", commitTime=" + commitTime +
                 '}';
     }
 
+    /**
+     * 存储结果的数量
+     */
+    public static class RecordResultCustom{
+        private Integer resultType;
+
+        private Integer count;
+
+        public Integer getResultType() {
+            return resultType;
+        }
+
+        public void setResultType(Integer resultType) {
+            this.resultType = resultType;
+        }
+
+        public Integer getCount() {
+            return count;
+        }
+
+        public void setCount(Integer count) {
+            this.count = count;
+        }
+
+        @Override
+        public String toString() {
+            return "Result{" +
+                    "resultType=" + resultType +
+                    ", count=" + count +
+                    '}';
+        }
+    }
 }

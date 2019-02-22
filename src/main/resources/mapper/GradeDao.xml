@@ -27,4 +27,57 @@
         WHERE id=#{gradeId}
     </select>
 
+    <select id="getGradeId" resultType="int">
+        SELECT
+        <choose >
+            <when test="type==0">
+                `grade.id`
+                FROM tb_stu WHERE id=#{id}
+            </when>
+            <when test="type==1">
+                id
+                FROM tb_grade WHERE `teacher.id`=#{id}
+            </when>
+        </choose>
+    </select>
+
+    <select id="getManagerId" resultType="String">
+        SELECT `manager.id`
+        FROM tb_grade
+        WHERE id=#{id};
+    </select>
+
+    <select id="getCollegeId" resultType="Integer">
+        SELECT
+        `college.id`
+        FROM tb_grade
+        WHERE id=#{gradeId};
+    </select>
+
+    <update id="addTasks" parameterType="Integer">
+        UPDATE tb_grade
+        SET lesson_term=#{lessonTerm}
+        WHERE id=#{gradeId};
+    </update>
+
+    <select id="isStuImportEnable" resultType="int" >
+        SELECT
+        (CASE WHEN g.stu_import=FALSE AND c.user_import=TRUE THEN 1
+         WHEN g.stu_import=TRUE AND c.user_import= TRUE THEN 0
+         ELSE -1 END)
+         FROM tb_college c,tb_grade g
+         WHERE g.`college.id`=c.id
+         AND g.id=#{gradeId}
+    </select>
+
+    <select id="isLessonImportEnable" resultType="int" >
+        SELECT
+        (CASE WHEN (g.lesson_term IS NULL OR g.lesson_term!=#{currentTerm}) AND c.lesson_import=TRUE THEN 1
+         WHEN g.lesson_term IS NOT NULL AND g.lesson_term=#{currentTerm} AND c.lesson_import=TRUE THEN 0
+         ELSE -1 END)
+         FROM tb_college c,tb_grade g
+         WHERE g.`college.id`=c.id
+         AND g.id=#{gradeId}
+    </select>
+
 </mapper>

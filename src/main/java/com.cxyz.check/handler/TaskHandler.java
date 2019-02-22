@@ -2,15 +2,17 @@ package com.cxyz.check.handler;
 
 import com.cxyz.check.dto.CheckResult;
 import com.cxyz.check.dto.CheckTaskDto;
+import com.cxyz.check.dto.GradeLessonDto;
 import com.cxyz.check.dto.SubjectDto;
 import com.cxyz.check.entity.ClassRoom;
 import com.cxyz.check.entity.TaskCompletion;
 import com.cxyz.check.entity.TaskInfo;
 import com.cxyz.check.entity.Times;
+import com.cxyz.check.exception.envir.LessonImportedException;
 import com.cxyz.check.exception.task.NoTaskException;
+import com.cxyz.check.service.EnvirService;
 import com.cxyz.check.service.TaskService;
 import com.cxyz.check.util.excel.POIUtil;
-import com.sun.deploy.net.URLEncoder;
 
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.processing.Completion;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping(value = "/task")
@@ -36,6 +36,9 @@ public class TaskHandler {
 
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private EnvirService envirService;
 
     /**
      * 导入课表
@@ -52,34 +55,47 @@ public class TaskHandler {
     {
         CheckResult<String> checkResult = new CheckResult<>();
         try {
-            List<List<String>> list = POIUtil.getBankListByExcel(file.getInputStream(), file.getOriginalFilename());
-            List<TaskInfo> taskInfos = new ArrayList<>();
-            list.remove(0);
-            for(List<String> strings:list)
+            if(envirService.isLessonImportEnable(gradeId))//如果可导入则导入
             {
-                //判断是否为空list，若空则continue
-                if(strings.isEmpty()||strings.size()<6)
-                    continue;
+                try {
+                    List<List<String>> list = POIUtil.getBankListByExcel(file.getInputStream(), file.getOriginalFilename());
+                    List<TaskInfo> taskInfos = new ArrayList<>();
+                    list.remove(0);
+                    for(List<String> strings:list)
+                    {
+                        //判断是否为空list，若空则continue
+                        if(strings.isEmpty()||strings.size()<6)
+                            continue;
 
-                boolean isEmpty[] = {true};
-                strings.forEach(s -> {
-                    if(!s.isEmpty())
-                        isEmpty[0] = false;
-                });
-                if(isEmpty[0])
-                    continue;
+                        boolean isEmpty[] = {true};
+                        strings.forEach(s -> {
+                            if(!s.isEmpty())
+                                isEmpty[0] = false;
+                        });
+                        if(isEmpty[0])
+                            continue;
 
-                TaskInfo taskInfo = parseTask(strings);
-                if(taskInfo == null)
-                    continue;
-                taskInfos.add(taskInfo);
+                        TaskInfo taskInfo = parseTask(strings);
+                        if(taskInfo == null)
+                            continue;
+                        taskInfos.add(taskInfo);
+                    }
+                    taskService.addTask(taskInfos,type,gradeId);
+                    checkResult.setData("导入成功!");
+                    checkResult.setSuccess(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    checkResult.setError("导入失败!");
+                }
+            }else {
+                checkResult.setError("课程导入暂未开启");
             }
-            taskService.addTask(taskInfos,type,gradeId);
-            checkResult.setData("导入成功!");
-            checkResult.setSuccess(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-            checkResult.setError("导入失败!");
+        }catch (LessonImportedException e)
+        {
+            checkResult.setError(e.getMessage());
+        }catch (Exception e)
+        {
+            checkResult.setError("服务器内部异常");
         }
         return checkResult;
     }
@@ -173,27 +189,51 @@ public class TaskHandler {
             return new CheckResult<>("服务器异常");
         }
 
-
     }
 
+    /**
+     * 获取考勤统计表
+     * @param response
+     * @param sponsorId 用户id
+     * @param sponsorType 用户类型
+     * @param lessonId 课程id
+     * @throws IOException
+     */
     @RequestMapping(value = "/getStatisticExcel",
             method = {RequestMethod.GET}
     )
-    public void getStatisticExcel(HttpServletResponse response,@RequestParam Integer gradeId,
+    public void getStatisticExcel(HttpServletResponse response,
                                   @RequestParam String sponsorId,@RequestParam Integer sponsorType,
-                                  @RequestParam String taskName) throws IOException {
+                                  @RequestParam Integer lessonId) throws IOException {
         try {
-            Workbook workbook = taskService.getStatisticExcel(gradeId,sponsorId,sponsorType,taskName);
+            Workbook workbook = taskService.getStatisticExcel(sponsorId,sponsorType,lessonId);
             response.setHeader("content-disposition", "attachment;filename=statisic.xlsx");
             workbook.write(response.getOutputStream());
         } catch (IOException e) {
-            e.printStackTrace();
-            response.getWriter().println("");
+            response.setContentType("text/html;charset=utf-8");
+            e.printStackTrace(response.getWriter());
         }catch (Exception e)
         {
-            e.printStackTrace();
-            response.getWriter().println("");
+            response.setContentType("text/html;charset=utf-8");
+            e.printStackTrace(response.getWriter());
         }
     }
 
+
+    @RequestMapping(value = "/getGradeTasks",
+    method = RequestMethod.GET,
+    produces = "application/json;charset=UTF-8;")
+    @ResponseBody
+    public CheckResult<List<GradeLessonDto>> getGradeTasks(@RequestParam String sponsorId, @RequestParam Integer sponsorType, @RequestParam(required = false)Integer termId)
+    {
+        CheckResult<List<GradeLessonDto>> cr = new CheckResult<>();
+        try {
+            cr.setData(taskService.getGradeTasks(sponsorId,sponsorType,termId));
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            cr.setError("服务器异常");
+        }
+        return cr;
+    }
 }

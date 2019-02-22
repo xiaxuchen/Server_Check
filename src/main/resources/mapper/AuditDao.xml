@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxyz.check.dao.AuditDao">
+
+    <resultMap id="AuditMap" type="Audit" autoMapping="true">
+        <id column="id" property="id" />
+        <result column="state" property="state"/>
+        <result column="info" property="info"/>
+        <result column="update_time" property="updateTime" javaType="java.sql.Timestamp" />
+        <association property="checker" javaType="User" >
+            <id column="checker.id" property="id"/>
+            <result column="name" property="name"/>
+            <result column="power" property="power"/>
+        </association>
+    </resultMap>
+
+    <insert id="addAudits" parameterType="Audit" >
+        INSERT INTO tb_audit(`checker.id`,`vac.id`)
+        VALUES
+        <foreach collection="audits" item="item" separator="," close=";">
+            (#{item.checker.id},#{item.vac.id})
+        </foreach>
+    </insert>
+
+    <update id="auditVac" parameterType="Audit" >
+        UPDATE tb_audit
+        SET info=#{audit.info},state=#{audit.state}
+        WHERE id=#{audit.id}
+    </update>
+
+    <delete id="clearOther">
+      DELETE FROM tb_audit
+      WHERE id!=#{auditedId} AND (SELECT power FROM tb_tea WHERE id=`checker.id`)=#{power};
+    </delete>
+
+    <select id="getAudits" resultMap="AuditMap">
+        SELECT
+        a.id,
+        a.`checker.id`,
+        a.state,
+        a.info,
+        a.update_time,
+        t.name,
+        t.power
+        FROM tb_audit a,tb_tea t
+        WHERE a.`checker.id`=t.id
+        AND a.`vac.id`=#{vacId}
+        AND (a.state!=0
+        <if test="checkerId != null">
+            OR a.`checker.id` = #{checkerId}
+        </if>
+        ) ORDER BY a.update_time;
+
+    </select>
+
+    <select id="getVacId" resultType="Integer">
+        SELECT
+        `vac.id`
+        FROM tb_audit
+        WHERE id=#{id};
+    </select>
+</mapper>

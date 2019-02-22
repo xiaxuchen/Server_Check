@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxyz.check.dao.LessonDao">
+
+    <resultMap id="LessonMap" type="Lesson" autoMapping="true">
+        <id property="id" column="id"/>
+        <association property="sponsor"
+            column="{id=sponsor.id,type=sponsor.type}"
+            javaType="User"
+            select="com.cxyz.check.dao.UserDao.selectOne" />
+        <collection property="tasks" select="com.cxyz.check.dao.TaskDao.getTasks" column="id" ofType="Task" javaType="java.util.ArrayList" />
+    </resultMap>
+
+    <insert id="addLesson" parameterType="Lesson" useGeneratedKeys="true" keyProperty="lesson.lesson.id">
+        INSERT INTO
+        tb_lesson(name,`sponsor.id`,`sponsor.type`,`checker.id`,`checker.type`,`room.id`,`term.id`,`grade.id`,type,num)
+        VALUES
+            (#{lesson.name},#{lesson.sponsor.id},#{lesson.sponsor.type},#{lesson.checker.id},#{lesson.checker.type},#{lesson.room.id}
+            ,#{lesson.term.id},#{lesson.grade.id},#{lesson.type},#{lesson.num})
+    </insert>
+
+    <select id="getLesson" resultMap="LessonMap">
+        SELECT *
+        FROM tb_lesson
+        WHERE id=#{id}
+        AND `sponsor.id`=#{sponsorId}
+        AND `sponsor.type`=#{sponsorType}
+    </select>
+
+    <update id="updateLessonNum">
+        UPDATE tb_lesson SET num=#{num}
+        WHERE id=#{id}
+    </update>
+
+</mapper>

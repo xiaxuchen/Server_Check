@@ -54,9 +54,20 @@ public class TaskDaoTest {
     @Test
     public void getTaskInfoById()
     {
-        TaskInfo taskInfoById = dao.getTaskInfos(1702,"17478093",0,"离散数学");
     }
 
+    @Test
+    public void getGradeTask()
+    {
+        System.out.println(dao.getGradeTasks("16478040",UserType.TEACHER,19));
+    }
+
+
+    @Test
+    public void getSubject()
+    {
+        System.out.println(dao.getSubjects(1702,19));
+    }
 
 
 }

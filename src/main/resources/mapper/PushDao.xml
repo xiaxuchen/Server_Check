@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxyz.check.dao.PushDao">
+
+    <insert id="addPushes" parameterType="Push" >
+        INSERT INTO tb_push(send_time,`receiver.id`,`receiver.type`,info)
+        VALUES
+        <foreach collection="pushes" separator="," item="push">
+            (now(),#{push.receiver.id},#{push.receiver.type},#{push.info})
+        </foreach>
+    </insert>
+
+    <update id="pushSuccess">
+        UPDATE tb_push
+        SET state=1 WHERE id=#{id};
+    </update>
+
+    <select id="getPushes" resultType="PushDto">
+        SELECT id,send_time 'sendTime',info,state
+        FROM tb_push
+        WHERE `receiver.id`=#{id}
+        AND `receiver.type`=#{type}
+        AND state=0
+    </select>
+</mapper>

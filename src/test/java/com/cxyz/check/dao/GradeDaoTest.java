@@ -1,5 +1,7 @@
 package com.cxyz.check.dao;
 
+import com.cxyz.check.entity.School;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,9 @@ public class GradeDaoTest {
     @Autowired
     private GradeDao dao;
 
+    @Autowired
+    private SchoolDao schoolDao;
+
     @Test
     public void getGradeSchoolId() {
         System.out.println(dao.getGradeSchoolId(1702));
@@ -23,5 +28,20 @@ public class GradeDaoTest {
     @Test
     public void getCollegeGrades() {
         System.out.println(dao.getCollegeGrades(1));
+    }
+
+    @Test
+    public void addTasks() {
+        dao.addTasks(1702,schoolDao.getCurrentTermId(1));
+    }
+
+    @Test
+    public void isStuImportEnable() {
+        System.out.println(dao.isLessonImportEnable(1702,19));
+    }
+
+    @Test
+    public void isLessonImportEnable() {
+        System.out.println(dao.isLessonImportEnable(1702,schoolDao.getCurrentTermId(dao.getGradeSchoolId(1702))));
     }
 }

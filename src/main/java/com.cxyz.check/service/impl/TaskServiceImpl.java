@@ -1,6 +1,9 @@
 package com.cxyz.check.service.impl;
 
+import com.cxyz.check.dao.CollegeDao;
 import com.cxyz.check.dao.GradeDao;
+import com.cxyz.check.dao.LessonDao;
+import com.cxyz.check.dao.PushDao;
 import com.cxyz.check.dao.RecordDao;
 import com.cxyz.check.dao.RoomDao;
 import com.cxyz.check.dao.SchoolDao;
@@ -12,34 +15,36 @@ import com.cxyz.check.dao.UserDao;
 import com.cxyz.check.dto.CheckTaskDto;
 import com.cxyz.check.dto.CommitCheckDto;
 import com.cxyz.check.dto.GradeStusDto;
+import com.cxyz.check.dto.GradeLessonDto;
+import com.cxyz.check.dto.LessonDto;
 import com.cxyz.check.dto.SubjectDto;
-import com.cxyz.check.entity.CheckRecord;
+import com.cxyz.check.entity.Lesson;
+import com.cxyz.check.entity.Push;
 import com.cxyz.check.entity.TaskCompletion;
 import com.cxyz.check.entity.TaskInfo;
 import com.cxyz.check.entity.Times;
 import com.cxyz.check.entity.User;
 import com.cxyz.check.exception.GradeNotFoundException;
+import com.cxyz.check.exception.record.RecordException;
 import com.cxyz.check.exception.task.NoTaskException;
 import com.cxyz.check.exception.transaction.CommitCheckFailException;
 import com.cxyz.check.exception.transaction.TransactionalException;
+import com.cxyz.check.exception.util.GsonException;
 import com.cxyz.check.service.TaskService;
-import com.cxyz.check.typevalue.CheckRecordResult;
+import com.cxyz.check.typevalue.NotifyType;
 import com.cxyz.check.typevalue.PowerType;
 import com.cxyz.check.typevalue.TaskCompletionState;
 import com.cxyz.check.typevalue.UserType;
 import com.cxyz.check.util.automapper.AutoMapper;
 import com.cxyz.check.util.date.DateTime;
 import com.cxyz.check.util.excel.ExcelUtil;
-import com.cxyz.check.util.push.PushUtil;
+import com.cxyz.check.util.parse.GsonUtil;
 
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.xmlbeans.SchemaTypeSystem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -53,6 +58,12 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private TaskDao taskDao;
+
+    @Autowired
+    private CollegeDao collegeDao;
+
+    @Autowired
+    private LessonDao lessonDao;
 
     @Autowired
     private TaskCompletionDao taskCompletionDao;
@@ -81,14 +92,13 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private RoomDao roomDao;
 
+    @Autowired
+    private PushDao pushDao;
+
     @Override
     public CheckTaskDto checkTask(String checker_id, int checker_type, int type) throws NoTaskException {
         //TODO 这里用作测试
-        DateTime dateTime = new DateTime();
-        dateTime.setYear(2018);
-        dateTime.setMonth(9);
-        dateTime.setDay(3);
-        dateTime.setHour(9);
+        DateTime dateTime = DateTime.fromUDate(new Date());
         System.out.println(dateTime.getTime());
         //获取当前考勤
         TaskCompletion taskCompletion = taskDao.checkTask(checker_id, checker_type,
@@ -127,9 +137,18 @@ public class TaskServiceImpl implements TaskService {
                 for(CommitCheckDto.StuInfo s:checkDto.getStuInfos())
                 {
                     Map<String,String> map = new HashMap<>();
-                    map.put("result",s.getResult()+"");
-                    map.put("msg","kkk");
-                    PushUtil.jpushAndroid("考勤异常",map,s.getId());
+                    map.put("type", NotifyType.BAD_CHECK_RECORD+"");
+                    Push push = new Push();
+                    try {
+                        push.setInfo(GsonUtil.toJson(map));
+                        push.setReceiver(new User(s.getId(),UserType.STUDENT));
+                        List<Push> pushes = new ArrayList<>();
+                        pushes.add(push);
+                        pushDao.addPushes(pushes);
+                    } catch (GsonException e) {
+                        e.printStackTrace();
+                    }
+                    //PushUtil.jpushAndroid("考勤异常",map,s.getId());
                 }
             }
         }else if(state == TaskCompletionState.OTHERSTATE)
@@ -157,10 +176,18 @@ public class TaskServiceImpl implements TaskService {
         return gradeStusDtos;
     }
 
+    /**
+     * TODO 暂时废弃，被addLesson替代
+     * @param taskInfos 考勤任务
+     * @param type
+     * @param gradeId
+     */
     @Override
     @Transactional
+    @Deprecated
     public void addTask(List<TaskInfo> taskInfos,Integer type,Integer gradeId) {
         int termId = schoolDao.getCurrentTermId(gradeDao.getGradeSchoolId(gradeId));
+        gradeDao.addTasks(gradeId,termId);
         if(termId == 0)
             throw new TransactionalException("未知错误");
         //为任务设置考勤人
@@ -238,7 +265,7 @@ public class TaskServiceImpl implements TaskService {
             s.setStart(timesDao.getSession(t.getStart().getId()));
             s.setStep(timesDao.getSession(t.getEnd().getId())-s.getStart()+1);
             if(t.getSponsor()!=null)
-                s.setTeacher(userDao.getName(t.getSponsor().getId(),t.getSponsor().getType()));
+                s.setTeacher(t.getSponsor().getName());
             List<Integer> weeks = new ArrayList<>();
             for(TaskCompletion comp:t.getCompletions())
             {
@@ -252,65 +279,30 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Workbook getStatisticExcel(Integer gradeId, String sponsorId, Integer sponsorType, String taskName) {
-
+    public Workbook getStatisticExcel( String sponsorId, Integer sponsorType, Integer lessonId) {
+        Lesson lesson = lessonDao.getLesson(sponsorId, sponsorType, lessonId);
         //查询信息
-        TaskInfo t = taskDao.getTaskInfos(gradeId, sponsorId, sponsorType, taskName);
+        if(lesson == null || lesson.getTasks().isEmpty())
+            throw new RecordException("当前暂无考勤记录");
+        int gradeId = lesson.getGrade().getId();
         List<User> users = userDao.selectStusByGrade(gradeId);
         String gradeName = gradeDao.getGradeName(gradeId);
+        return ExcelUtil.getCheckExcel(lesson,users,gradeName);
+    }
 
-        List<Object> info = new ArrayList<>();
-        //添加课程编号，课程名，老师名，开课学期，班级等信息
-        info.add("");
-        info.add(t.getName());
-        String name = "";
-        if(t.getSponsor() != null)
-            name = t.getSponsor().getName();
-        info.add(name);
-        info.add("");
-        info.add("");
-        info.add(gradeName);
-
-        List<List<List<Object>>> datas = new ArrayList<>();
-        List<List<Object>> data = new ArrayList<>();
-        List<java.util.Date> dates = new ArrayList<>();
-        List<Object> list;
-        boolean added = false;//用来标识是否添加了日期
-        for(User u:users)
+    @Override
+    public List<GradeLessonDto> getGradeTasks(String sponsorId, Integer sponsorType, Integer termId) {
+        if(termId == null)
+            termId = schoolDao.getCurrentTermId(userDao.getSchoolId(sponsorId,sponsorType));
+        List<GradeLessonDto> gradeTasks = taskDao.getGradeTasks(sponsorId, sponsorType, termId);
+        for(GradeLessonDto dto:gradeTasks)
         {
-            list = new ArrayList<>();
-            list.add(u.getId());
-            list.add(u.getName());
-            list.add(gradeName);
-            for(TaskCompletion c:t.getCompletions())
+            for(LessonDto lessonDto:dto.getLessons())
             {
-                if(!added)
-                    dates.add(c.getDate());
-                boolean isBad = false;
-                for(CheckRecord r:c.getRecords())
-                {
-                    if(r.getStu().getId().equals(u.getId()))
-                    {
-                        list.add(r.getResult());
-                        isBad = true;
-                        break;
-                    }
-                }
-                if(!isBad)
-                    list.add(CheckRecordResult.NORMAL);
+                lessonDto.setCheckerName(userDao.getName(lessonDto.getCheckerId(),lessonDto.getCheckerType()));
             }
-            for(int i = list.size();i<21;i++)
-            {
-                if(!added)
-                    dates.add(null);
-                list.add(null);
-            }
-            list.add(null);
-            added = true;//循环一次就完成了添加
-            data.add(list);
         }
-        datas.add(data);
-        return ExcelUtil.getCheckExcel(dates,info,datas);
+        return gradeTasks;
     }
 
 

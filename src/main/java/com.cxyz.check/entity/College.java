@@ -9,7 +9,9 @@ public class College {
 	private Integer id;//学院编号
     private String name;//学院名称
     private School school;//所属学校
-    private Teacher manager;//系部管理员
+    private User manager;//系部管理员
+	private Boolean userImport;//是否开启用户导入
+	private Boolean lessonImport;//是否开启课程导入
     
     public College(){}
     
@@ -41,11 +43,11 @@ public class College {
 		this.school = school;
 	}
 
-	public Teacher getManager() {
+	public User getManager() {
 		return manager;
 	}
 
-	public void setManager(Teacher manager) {
+	public void setManager(User manager) {
 		this.manager = manager;
 	}
 

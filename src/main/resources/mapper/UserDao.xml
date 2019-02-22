@@ -3,6 +3,18 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cxyz.check.dao.UserDao">
+
+    <select id="getSchoolId" resultType="Integer" >
+        SELECT s.id
+        FROM tb_school s,tb_college c,
+        <choose>
+            <when test="type==0">tb_stu u,tb_grade g WHERE g.id=u.`grade.id` AND g.`college.id`=c.id</when>
+            <otherwise>tb_tea u WHERE u.`college.id`=c.id</otherwise>
+        </choose>
+        AND u.id=#{id}
+        AND c.`school.id`=s.id
+    </select>
+
     <!--获取一个学生的信息-->
     <select id="selectOne" resultType="User">
       SELECT
@@ -102,5 +114,81 @@
         FROM tb_stu
         WHERE `grade.id`=#{gradeId}
     </select>
+
+    <select id="getTeaIds" resultType="String">
+        SELECT
+        id
+        FROM tb_tea
+        WHERE `college.id`=#{collegeId}
+        AND power=#{power};
+    </select>
+
+    <select id="getEmail" resultType="String">
+        SELECT
+        email
+        FROM
+        <choose>
+            <!--当类型为0（学生）时查tb_stu表-->
+            <when test="type==0">
+                tb_stu
+            </when>
+            <!--当类型为0（学生）时查tb_tea表-->
+            <when test="type==1">
+                tb_tea
+            </when>
+        </choose>
+        WHERE id = #{id};
+    </select>
+
+    <update id="alterPassword">
+        UPDATE
+        <choose>
+            <when test="type==0">tb_stu</when>
+            <otherwise>tb_tea</otherwise>
+        </choose>
+        SET pwd=#{newPwd}
+        WHERE id=#{id}
+        AND pwd=#{originPwd};
+    </update>
+
+    <update id="activeAccountPre">
+        UPDATE
+        <choose>
+            <when test="type==0">tb_stu</when>
+            <otherwise>tb_tea</otherwise>
+        </choose>
+        SET email=#{mail},newpwd=#{newPwd},acode=#{acode}
+        WHERE id=#{id};
+    </update>
+
+    <update id="activeAccount">
+        UPDATE
+        <choose>
+            <when test="type==0">tb_stu</when>
+            <otherwise>tb_tea</otherwise>
+        </choose>
+        SET pwd=newpwd,acode=null,newpwd=null,active=1
+        WHERE acode=#{acode};
+    </update>
+
+    <update id="forgetPwd">
+        UPDATE
+        <choose>
+            <when test="type==0">tb_stu</when>
+            <otherwise>tb_tea</otherwise>
+        </choose>
+        SET newpwd=#{newPwd},acode=#{acode}
+        WHERE id=#{id};
+    </update>
+
+    <update id="confirmPwd">
+        UPDATE
+        <choose>
+            <when test="type==0">tb_stu</when>
+            <otherwise>tb_tea</otherwise>
+        </choose>
+        SET pwd=newpwd,acode=null,newpwd=null
+        WHERE acode=#{acode};
+    </update>
 
 </mapper>

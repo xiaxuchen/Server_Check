@@ -32,13 +32,22 @@ public class POIUtil {
     private final static String excel2003L =".xls";    //2003- 版本的excel
     private final static String excel2007U =".xlsx";   //2007+ 版本的excel
 
+
+    public  static List<List<String>> getBankListByExcel(InputStream in,String fileName) throws Exception
+    {
+        return getBankListByExcel(in,fileName,null,null);
+    }
+
     /**
      * 描述：获取IO流中的数据，组装成List<List<Object>>对象
-     * @param in,fileName
+     * @param in excel的流
+     * @param fileName 文件名
+     * @param colCount 列数
+     * @param startRow 开始行数
      * @return
      * @throws IOException
      */
-    public  static List<List<String>> getBankListByExcel(InputStream in,String fileName) throws Exception{
+    public  static List<List<String>> getBankListByExcel(InputStream in,String fileName,Integer colCount,Integer startRow) throws Exception{
         List<List<String>> list = null;
 
         //创建Excel工作薄
@@ -50,6 +59,9 @@ public class POIUtil {
         Row row = null;
         Cell cell = null;
 
+        if(startRow == null)
+            startRow = 0;
+
         list = new ArrayList<>();
         //遍历Excel中所有的sheet
         for (int i = 0; i < work.getNumberOfSheets(); i++) {
@@ -58,19 +70,19 @@ public class POIUtil {
 
             //遍历当前sheet中的所有行
             for (int j = sheet.getFirstRowNum(); j <= sheet.getLastRowNum(); j++) {
+                if(j<startRow)
+                    continue;
                 row = sheet.getRow(j);
                 if(row==null){continue;}
-                System.err.println(j);
                 //遍历所有的列
                 List<String> li = new ArrayList<>();
-                for (int y = row.getFirstCellNum(); y < row.getLastCellNum(); y++) {
+                for (int y = row.getFirstCellNum(); y < (colCount==null?row.getLastCellNum():colCount); y++) {
                     cell = row.getCell(y);
                     if(cell != null)
                         li.add(getCellValue(cell));
                     else
                         li.add("");
                 }
-                System.err.println(li);
                 list.add(li);
             }
         }
@@ -92,6 +104,8 @@ public class POIUtil {
         Map<String,String> map;
         for(List<String> l:list)
         {
+            if(l == head)
+                continue;
             map = new HashMap<>();
             int i = 0;
             for(String str:l)
@@ -167,12 +181,16 @@ public class POIUtil {
      * @return
      */
     public static Workbook createMultiExcel(List<List<List<Object>>> datas, boolean isExcel2007, Config config) {
+
+        if(datas == null || datas.isEmpty())
+            throw new RuntimeException("数据为空");
+
         Workbook workbook;
         //创建workbook
         if (isExcel2007)
-            workbook = new HSSFWorkbook();
-        else
             workbook = new XSSFWorkbook();
+        else
+            workbook = new HSSFWorkbook();
         if (config == null)
             config = new DefaultConfig();
         config.setWorkbook(workbook);
@@ -182,7 +200,7 @@ public class POIUtil {
 
 
         for (List<List<Object>> data : datas) {
-            Sheet sheet = workbook.createSheet(currentSheet.toString());
+            Sheet sheet = workbook.createSheet("第"+(currentSheet+1)+"张");
             if(config.createSheet(currentSheet,sheet,data,config))
                 continue;
             int i = 0;
@@ -223,7 +241,7 @@ public class POIUtil {
             }
             //设置单元格width
             for (int k = 0; k < colCount; k++) {
-                sheet.setColumnWidth(k, config.width(currentSheet,k) * 256);
+                sheet.setColumnWidth(k, (int)(config.width(currentSheet,k) * 256));
             }
             currentSheet++;
         }

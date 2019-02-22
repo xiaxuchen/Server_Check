@@ -1,5 +1,7 @@
 package com.cxyz.check.handler;
 
+import com.cxyz.check.entity.CheckRecord;
+
 import org.apache.commons.io.FileUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -8,6 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.BufferedInputStream;
@@ -26,7 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 
 
 @Controller
-@RequestMapping("resource")
+@RequestMapping("/resource")
 public class ResourceHandler {
 
     /**
@@ -34,7 +38,7 @@ public class ResourceHandler {
      * 获取app最新版本信息
      * @return
      */
-    @RequestMapping(value = "updateApp",
+    @RequestMapping(value = "/updateApp",
             method = RequestMethod.GET,
             produces = "application/json;charset=UTF-8;"
     )
@@ -61,7 +65,7 @@ public class ResourceHandler {
     /**
      * @return
      */
-    @RequestMapping(value = "/{sign}",
+    @RequestMapping(value = "/files/{sign}",
             method = RequestMethod.GET
     )
     public ResponseEntity<byte[]> getFile(HttpServletRequest request, @PathVariable String sign) throws IOException {
@@ -91,7 +95,26 @@ public class ResourceHandler {
         return "/"+view;
     }
 
+    /**
+     * 多文件上传
+     * TODO 超管权限
+     * @return
+     */
+    @RequestMapping("/updateVersion")
+    public CheckRecord updateVersion()
+    {
+        return null;
+    }
 
-
-
+    @RequestMapping("/vac/photo/{firstDir}/{secondDir}/{fileName}/{fileType}")
+    public ResponseEntity<byte[]> vacPhotos(@PathVariable String firstDir,@PathVariable String secondDir,@PathVariable String fileName,@PathVariable String fileType,HttpServletRequest request) throws IOException {
+        String urlPath = new StringBuilder(firstDir).append("/").append(secondDir).append("/").append(fileName).append(".").append(fileType).toString();
+        String path = request.getServletContext().getRealPath("/WEB-INF/photo/"+urlPath);
+        File file = new File(path);
+        ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
+        builder.contentLength(file.length());
+        builder.contentType(MediaType.APPLICATION_OCTET_STREAM);
+        builder.header("Content-Disposition", "attchement;filename=" + fileName.concat(".").concat(fileType));
+        return builder.body(FileUtils.readFileToByteArray(file));
+    }
 }

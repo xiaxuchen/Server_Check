@@ -8,7 +8,9 @@ public class Grade {
 	private Integer id;//班级编号
 	private String name;//班级名称
 	private College college;//所属学院
-	private Teacher manager;//班主任
+	private User manager;//班主任
+	private Boolean stuImport;//是否已导入用户信息
+	private Term lessonTerm;//导入的课程对应的学期
 	private ClassRoom room;//晚自习教室
 	
 	public Grade(){}
@@ -41,11 +43,11 @@ public class Grade {
 		this.college = college;
 	}
 
-	public Teacher getManager() {
+	public User getManager() {
 		return manager;
 	}
 
-	public void setManager(Teacher manager) {
+	public void setManager(User manager) {
 		this.manager = manager;
 	}
 

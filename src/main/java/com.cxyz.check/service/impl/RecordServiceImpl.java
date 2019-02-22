@@ -1,6 +1,7 @@
 package com.cxyz.check.service.impl;
 
 import com.cxyz.check.custom.ResultCustom;
+import com.cxyz.check.dao.PushDao;
 import com.cxyz.check.dao.RecordDao;
 import com.cxyz.check.dao.TaskCompletionDao;
 import com.cxyz.check.dao.TaskDao;
@@ -10,9 +11,11 @@ import com.cxyz.check.dto.AlterRecordDto;
 import com.cxyz.check.dto.CheckHistoryDto;
 import com.cxyz.check.dto.CheckRecordDto;
 import com.cxyz.check.dto.CommitCheckDto;
+import com.cxyz.check.dto.MyHistoryDto;
 import com.cxyz.check.dto.StatisticDto;
 import com.cxyz.check.dto.StatisticRecordDto;
 import com.cxyz.check.entity.CheckRecord;
+import com.cxyz.check.entity.Push;
 import com.cxyz.check.entity.TaskCompletion;
 import com.cxyz.check.entity.User;
 import com.cxyz.check.exception.record.NOHistoryException;
@@ -55,13 +58,23 @@ public class RecordServiceImpl implements RecordService {
     @Autowired
     private UpdateDao updateDao;
 
+    @Autowired
+    private PushDao dao;
+
 
     @Override
-    public CheckRecordDto getCheckRecord(String id, int type, int grade) {
-        List<CheckRecord> checkRecords = recordDao.getCheckRecords(id, 0, LEN);
-        List<CheckRecordDto.RecordInfo> recordInfos = AutoMapper.mappingList(checkRecords, CheckRecordDto.RecordInfo.class);
+    public List<MyHistoryDto> getMyHistory(String id, Integer result, int start) {
+        List<MyHistoryDto> myHistory = recordDao.getMyHistory(id, result, start, LEN);
+        if(myHistory.isEmpty())
+            throw new NoMoreHistoryException();
+        return myHistory;
+    }
+
+    @Override
+    public CheckRecordDto getRecordStatistic(String id, int type, int grade) {
+        List<ResultCustom> customs = recordDao.getRecordStatistic(id);
         CheckRecordDto checkRecordDto = new CheckRecordDto();
-        checkRecordDto.setRecordInfos(recordInfos);
+        checkRecordDto.setResults(customs);
         checkRecordDto.setAll(taskDao.getGradeCheck(grade));
         return checkRecordDto;
     }
@@ -141,8 +154,13 @@ public class RecordServiceImpl implements RecordService {
 
         String compSponsorId = completionDao.getCompSponsorId(compId);
         if (compSponsorId != null)
+        {
             //推送给任课老师
-            PushUtil.jpushAndroid("更新记录","compId",compId+"",compSponsorId);
+//            Push push = new Push();
+//            push.setReceiver(new User(compSponsorId,UserType.TEACHER));
+//            push.setInfo("");
+        }
+        //PushUtil.jpushAndroid("更新记录","compId",compId+"",compSponsorId);
     }
 
     @Override
@@ -159,4 +177,13 @@ public class RecordServiceImpl implements RecordService {
     public List<StatisticRecordDto> getStatisticRecords(String start, String end, Integer gradeId, Integer resultType) {
         return recordDao.getStatisticRecords(start,end,gradeId,resultType);
     }
+
+    @Override
+    public List<CheckHistoryDto> getLessonHistories(Integer id,int start) {
+        List<CheckHistoryDto> lessonHistories = recordDao.getLessonHistories(id, start, LEN);
+        if(lessonHistories.size() == 0)
+            throw new NoMoreHistoryException("没有更多历史记录了");
+        return lessonHistories;
+    }
+
 }

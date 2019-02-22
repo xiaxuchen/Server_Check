@@ -87,7 +87,7 @@ public class DefaultConfig extends Config {
     }
 
     @Override
-    public int width(int curSheet, int curCol) {
+    public float width(int curSheet, int curCol) {
         return 12;
     }
 

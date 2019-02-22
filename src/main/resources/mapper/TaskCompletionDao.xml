@@ -29,7 +29,7 @@
        t.end_time 'taskInfo.end',
        t.s_type 'taskInfo.sponsor.type',
        t.room_id 'taskInfo.room.id'
-       from tb_completion c,tb_taskinfo t
+       from tb_completion c,taskinfo t
        where c.taskinfo_id=t._id
        and t.grade_id=#{grade}
        and #{time} between t.start_time and t.end_time
@@ -49,7 +49,7 @@
     <insert id="addComp" parameterType="TaskInfo" >
       INSERT
       INTO tb_completion(state,update_time,`taskinfo.id`,week,`date`) VALUES
-      <foreach collection="taskinfos" item="task" close=";">
+      <foreach collection="taskinfos" item="task" separator="," close=";">
           <foreach collection="task.completions" item="comp" separator=",">
               (0,NOW(),#{task.id},#{comp.week},#{comp.date})
           </foreach>
@@ -59,7 +59,7 @@
     <select id="getCompSponsorId" resultType="String">
         SELECT
         t.`sponsor.id`
-        from tb_taskinfo t,tb_completion c
+        from taskinfo t,tb_completion c
         WHERE c.id=#{compId}
         AND t.id=c.`taskInfo.id`
     </select>

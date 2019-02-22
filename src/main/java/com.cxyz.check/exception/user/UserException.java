@@ -1,9 +1,11 @@
-package com.cxyz.check.exception;
+package com.cxyz.check.exception.user;
+
+import com.cxyz.check.exception.BaseException;
 
 /**
  * 用户操作时可能会抛出的异常
  */
-public class UserException extends BaseException{
+public class UserException extends BaseException {
     public UserException() {
     }
 

@@ -7,6 +7,7 @@ import com.cxyz.check.dto.CheckHistoryDto;
 import com.cxyz.check.dto.CheckRecordDto;
 import com.cxyz.check.dto.CheckResult;
 import com.cxyz.check.dto.CommitCheckDto;
+import com.cxyz.check.dto.MyHistoryDto;
 import com.cxyz.check.dto.StatisticDto;
 import com.cxyz.check.dto.StatisticRecordDto;
 import com.cxyz.check.exception.record.NOHistoryException;
@@ -46,16 +47,22 @@ public class RecordHandler {
      * @param grade 用户班级id
      * @return
      */
-    @RequestMapping(value = "/getRecords",
+    @RequestMapping(value = "/getRecordStatistic",
             method = RequestMethod.GET,
             produces = {"application/json;charset=UTF-8"})
     @ResponseBody
     public CheckResult<CheckRecordDto>
-    getRecords(@RequestParam String id,
+    getRecordStatistic(@RequestParam String id,
                @RequestParam int type,@RequestParam int grade)
     {
-        return new CheckResult<>(recordService
-                .getCheckRecord(id,type,grade));
+        CheckResult<CheckRecordDto> cr = new CheckResult<>();
+        try {
+            cr.setData(recordService.getRecordStatistic(id,type,grade));
+        }catch (Exception e)
+        {
+            cr.setError("服务器异常");
+        }
+        return cr;
     }
 
 
@@ -234,6 +241,65 @@ public class RecordHandler {
         {
             return new CheckResult<>("服务器异常");
         }
+    }
+
+    /**
+     * 获取个人考勤信息
+     * @param id
+     * @param result
+     * @param start
+     * @return
+     */
+    @RequestMapping(value = "/getMyHistory",
+        method = RequestMethod.GET,
+            produces = "application/json;charset=UTF-8;"
+    )
+    @ResponseBody
+    public CheckResult<List<MyHistoryDto>> getMyHistory
+            (@RequestParam String id,@RequestParam Integer result,@RequestParam Integer start) {
+        CheckResult<List<MyHistoryDto>> cr = new CheckResult<>();
+        try {
+            cr.setData(recordService.getMyHistory(id, result, start));
+        } catch (NoMoreHistoryException e)
+        {
+            cr.setError("没有更多数据了");
+        }
+        catch (Exception e)
+        {
+            cr.setError("服务器异常");
+        }
+        return cr;
+    }
+
+
+    @RequestMapping(value = "/getLessonHistories",
+            method = RequestMethod.GET,
+            produces = {"application/json;charset=utf-8"}
+    )
+    @ResponseBody
+    /**
+     * 获取课程的历史记录
+     * @param id 课程id
+     * @param start 起始位置
+     */
+    public CheckResult<List<CheckHistoryDto>> getLessonHistories(@RequestParam Integer id,@RequestParam(required = false) Integer start)
+    {
+        if(start == null)
+            start = 0;
+        CheckResult<List<CheckHistoryDto>> cr = new CheckResult<>();
+        try {
+            List<CheckHistoryDto> lessonHistories = recordService.getLessonHistories(id, start);
+            cr.setData(lessonHistories);
+        }catch (NoMoreHistoryException e)
+        {
+            e.printStackTrace();
+            cr.setError(e.getMessage());
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            cr.setError("服务器内部异常");
+        }
+        return cr;
     }
 
 }

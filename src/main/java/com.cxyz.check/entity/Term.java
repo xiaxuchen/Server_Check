@@ -20,6 +20,10 @@ public class Term {
     //每节课的时间
     private List<Times> times;
 
+    public Term(){}
+
+    public Term(Integer id){ setId(id); }
+
     public List<Times> getTimes() {
         return times;
     }

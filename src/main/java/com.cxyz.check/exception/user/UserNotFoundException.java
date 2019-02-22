@@ -1,4 +1,4 @@
-package com.cxyz.check.exception;
+package com.cxyz.check.exception.user;
 
 /**
  * 找不到用户抛出的异常

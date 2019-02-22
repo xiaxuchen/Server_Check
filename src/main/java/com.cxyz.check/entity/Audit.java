@@ -1,6 +1,10 @@
 package com.cxyz.check.entity;
 
-import com.cxyz.check.util.date.DateTime;
+
+import com.cxyz.check.json.CustomTimeStampSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import java.sql.Timestamp;
 
 public class Audit {
     //记录编号
@@ -10,9 +14,11 @@ public class Audit {
     //审核状态
     private Integer state;
     //上次更新时间
-    private DateTime updateTime;
-    //完成情况
-    private TaskCompletion completion;
+    private Timestamp updateTime;
+    //请假信息
+    private Vacate vac;
+
+    private String info;
 
     public Integer getId() {
         return id;
@@ -38,21 +44,31 @@ public class Audit {
         this.state = state;
     }
 
-    public DateTime getUpdateTime() {
+    @JsonSerialize(using = CustomTimeStampSerializer.class)
+    public Timestamp getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(DateTime updateTime) {
+    public void setUpdateTime(Timestamp updateTime) {
         this.updateTime = updateTime;
     }
 
-    public TaskCompletion getCompletion() {
-        return completion;
+    public Vacate getVac() {
+        return vac;
     }
 
-    public void setCompletion(TaskCompletion completion) {
-        this.completion = completion;
+    public void setVac(Vacate vac) {
+        this.vac = vac;
     }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
+    }
+
 
     @Override
     public String toString() {
@@ -61,7 +77,8 @@ public class Audit {
                 ", checker=" + checker +
                 ", state=" + state +
                 ", updateTime=" + updateTime +
-                ", completion=" + completion +
+                ", vac=" + vac +
+                ", info='" + info + '\'' +
                 '}';
     }
 }

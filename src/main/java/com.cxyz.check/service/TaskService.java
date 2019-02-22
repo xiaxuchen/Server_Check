@@ -1,19 +1,15 @@
 package com.cxyz.check.service;
 
-import com.cxyz.check.custom.ExcelRecordDto;
 import com.cxyz.check.dto.CheckTaskDto;
 import com.cxyz.check.dto.CommitCheckDto;
+import com.cxyz.check.dto.GradeLessonDto;
 import com.cxyz.check.dto.GradeStusDto;
 import com.cxyz.check.dto.SubjectDto;
 import com.cxyz.check.entity.TaskInfo;
 import com.cxyz.check.exception.task.NoTaskException;
 
-import org.apache.ibatis.annotations.Param;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.OutputStream;
 import java.util.List;
 
 /**
@@ -60,11 +56,17 @@ public interface TaskService {
 
     /**
      * 获取该老师在该班级的课程考勤汇总表
-     * @param gradeId 班级id
      * @param sponsorId 发起人(老师)
-     * @param taskName 任务名
+     * @param lessonId 课程id
      * @return
      */
-    Workbook getStatisticExcel(Integer gradeId, String sponsorId, Integer sponsorType, String taskName);
+    Workbook getStatisticExcel( String sponsorId, Integer sponsorType, Integer lessonId);
 
+    /**
+     * 获取用户各班级的课程
+     * @param sponsorId
+     * @param sponsorType
+     * @return
+     */
+    List<GradeLessonDto> getGradeTasks(String sponsorId, Integer sponsorType, Integer termId);
 }

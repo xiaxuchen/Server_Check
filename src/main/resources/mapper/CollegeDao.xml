@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxyz.check.dao.CollegeDao">
+
+    <select id="isUserImportEnable" resultType="boolean">
+        SELECT user_import
+        FROM tb_college
+        WHERE id=#{collegeId}
+    </select>
+
+    <select id="isLessonImportEnable" resultType="boolean">
+        SELECT lesson_import
+        FROM tb_college
+        WHERE id=#{collegeId}
+    </select>
+
+    <update id="toggleUserImport">
+        UPDATE tb_college SET user_import=CASE WHEN user_import=TRUE THEN FALSE ELSE TRUE END WHERE id=#{collegeId};
+    </update>
+
+    <update id="toggleLessonImport">
+        UPDATE tb_college SET lesson_import=CASE WHEN lesson_import=TRUE THEN FALSE ELSE TRUE END WHERE id=#{collegeId};
+    </update>
+
+</mapper>

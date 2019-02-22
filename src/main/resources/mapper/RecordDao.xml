@@ -4,30 +4,40 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cxyz.check.dao.RecordDao">
 
-    <resultMap id="test" type="CheckHistoryDto">
+    <resultMap id="CheckHistoryDtoMap" type="CheckHistoryDto" autoMapping="true">
         <id column="id" property="id" />
-        <result column="taskName" property="taskName" />
-        <result column="state" property="state"/>
-        <result column="commitTime" property="commitTime" />
+        <association property="checkerName" column="{id=checker.id,type=checker.type}" javaType="String" select="com.cxyz.check.dao.UserDao.getName" />
         <collection property="results" ofType="ResultCustom">
             <result property="resultType" column="results.resultType" />
             <result property="count" column="results.count" />
         </collection>
     </resultMap>
 
-    <select id="getCheckRecords" resultType="CheckRecord" >
+    <select id="getMyHistory" resultType="MyHistoryDto">
+        SELECT
+        t.name 'subject',
+        c.id 'compId',
+        r.result,
+        r.des,
+        c.update_time 'time'
+        FROM taskinfo t,tb_completion c,tb_record r
+        WHERE t.id=c.`taskinfo.id`
+        AND c.id=r.`completion.id`
+        <if test="result!=null">
+            AND r.result=#{result}
+        </if>
+        AND r.`stu.id` = #{id}
+        ORDER BY r.id DESC
+        LIMIT #{start},#{len}
+    </select>
+
+    <select id="getRecordStatistic" resultType="ResultCustom" >
       select
-      r.`completion.id`,
-      r.des,
-      r.result,
-      c.update_time 'completion.updateTime'
-      from tb_record r,tb_completion c
-      where r.`stu.id` = #{id}
-      and c.id=r.`completion.id`
-      order by r.id desc
-      <if test="start!=null and len!=null">
-              limit #{start},#{len}
-      </if>
+      r.result 'resultType',
+      count(*) 'count'
+      from tb_record r
+      where r.`stu.id`=#{id}
+      GROUP BY r.id DESC
     </select>
 
     <select id="getRecordsByCompId" resultType="CheckRecord">
@@ -57,17 +67,26 @@
         VALUES (#{id},#{des});
     </insert>
 
-    <select id="getHistory" resultMap="test" >
+    <select id="getHistory" resultMap="CheckHistoryDtoMap" >
      SELECT
      s.id,
-     s.name 'taskName',
+     s.name 'lessonName',
+     s.start,
+     s.end,
+     s.date,
      s.state,
      m.name 'roomName',
      s.update_time 'commitTime',
      r.result 'results.resultType',
+     #{id} as 'checker.id',
+     #{type} as 'checker.type',
      count(*) 'results.count'
-     FROM tb_record r RIGHT JOIN (SELECT c.id,t.name,c.state,c.update_time,t.`room.id` FROM tb_completion c,tb_taskinfo t
+     FROM tb_record r RIGHT JOIN (SELECT c.id,t.name,c.state,c.update_time,
+     t.`room.id`,c.date,m1.session 'start',m2.session 'end' FROM
+     tb_completion c,taskinfo t,tb_times m1,tb_times m2
      WHERE t.`checker.id`=#{id}
+     AND t.start = m1.id
+     AND t.end = m2.id
      AND t.`checker.type`=#{type}
      AND t.id = c.`taskinfo.id`
      AND c.state != 0
@@ -113,7 +132,7 @@
      SELECT
      r.result 'resultType',
      count(*) 'count'
-     FROM tb_record r,tb_completion c,tb_taskinfo t
+     FROM tb_record r,tb_completion c,taskinfo t
      WHERE r.`completion.id`=c.id
      AND c.date&gt;=#{start}
      AND c.date&lt;=#{end}
@@ -134,7 +153,7 @@
          c.update_time 'time',
          t.name 'subject',
          c.id 'compId'
-         FROM tb_record r,tb_completion c,tb_taskinfo t,tb_stu s
+         FROM tb_record r,tb_completion c,taskinfo t,tb_stu s
          WHERE r.`completion.id`=c.id
          AND c.date&gt;=#{start}
          AND c.date&lt;=#{end}
@@ -144,6 +163,32 @@
          AND s.id=r.`stu.id`
          AND c.state=1
          AND r.result=#{resultType}
+    </select>
+
+    <select id="getLessonHistories" resultMap="CheckHistoryDtoMap">
+     SELECT
+     s.id,
+     s.name 'lessonName',
+     s.start,
+     s.end,
+     s.date,
+     s.state,
+     m.name 'roomName',
+     s.update_time 'commitTime',
+     r.result 'results.resultType',
+     s.`checker.id`,
+     s.`checker.type`,
+     count(*) 'results.count'
+     FROM tb_record r RIGHT JOIN (SELECT c.id,t.`checker.id`,t.`checker.type`,t.name,c.state,c.update_time,
+     t.`room.id`,c.date,m1.session 'start',m2.session 'end' FROM
+     tb_completion c,taskinfo t,tb_times m1,tb_times m2
+     WHERE t.start = m1.id
+     AND t.end = m2.id
+     AND t.`lesson.id`=#{id}
+     AND t.id = c.`taskinfo.id`
+     AND c.state != 0
+     ORDER BY c.update_time DESC limit #{start},#{len}) s on s.id = r.`completion.id` LEFT JOIN tb_room m on s.`room.id`=r.id
+     GROUP BY s.id,s.name,s.state,r.result,s.update_time,m.name
     </select>
 
 

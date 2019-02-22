@@ -17,6 +17,13 @@ public class RecordServiceTest {
 
     @Autowired
     private RecordService service;
+
+    @Test
+    public void getCheckRecords()
+    {
+        System.out.println(service.getRecordStatistic("17478093",0,1702));
+    }
+
     @Test
     public void getCheckRecord() {
         System.out.println(service.getStatistic("2018-9-3","2018-10-1",1701));

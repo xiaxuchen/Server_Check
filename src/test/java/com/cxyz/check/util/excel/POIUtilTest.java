@@ -10,14 +10,18 @@ import com.cxyz.check.entity.User;
 import com.cxyz.check.typevalue.CheckRecordResult;
 import com.cxyz.check.util.date.Date;
 
+import org.apache.ibatis.annotations.Param;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -82,4 +86,30 @@ public class POIUtilTest {
 
     }
 
+    @Test
+    public void getMap() {
+        InputStream in = null;
+        try {
+            in = new FileInputStream("D:/lessonTemplate.xlsx");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            POIUtil.getBankListByExcel(in,"test.xlsx",9,2).
+                    forEach(t -> {
+                        t.forEach(s -> {
+                            System.out.println(s);
+                        });
+                    });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void createMultiExcel() throws IOException {
+        POIUtil.createMultiExcel(null,true,null).write(new FileOutputStream("D:/ta.xlsx"));
+    }
 }

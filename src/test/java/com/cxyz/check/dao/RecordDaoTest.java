@@ -6,6 +6,7 @@ import com.cxyz.check.entity.CheckRecord;
 import com.cxyz.check.entity.User;
 import com.cxyz.check.typevalue.CheckRecordResult;
 
+import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -24,7 +25,13 @@ public class RecordDaoTest {
     private RecordDao dao;
     @Test
     public void getCheckRecords() {
-        System.out.println(dao.getCheckRecords("17478093",0,10));
+        System.out.println(dao.getRecordStatistic("17478093"));
+    }
+
+    @Test
+    public void getHistory()
+    {
+        System.out.println(dao.getHistory("17478093",0,0,10));
     }
 
     @Test
@@ -51,7 +58,7 @@ public class RecordDaoTest {
          * 测试成功
          */
         //dao.addOtherState(1,"狗东西打了老师，老师罢课了");
-        System.out.println(dao.getHistory("17478093",0,0,1).size());
+        System.out.println(dao.getHistory("17478093",0,0,1));
     }
 
     @Test
@@ -92,5 +99,17 @@ public class RecordDaoTest {
     @Test
     public void getRecordsByCompId() {
         System.out.println(dao.getRecordsByCompId(237));
+    }
+
+    @Test
+    public void getMyHistory() {
+        Logger logger = Logger.getLogger(RecordDao.class);
+        logger.debug(dao.getMyHistory("17478093",null,0,10));
+    }
+
+    @Test
+    public void getLessonHistories()
+    {
+        System.out.println(dao.getLessonHistories(493,0,10));
     }
 }
