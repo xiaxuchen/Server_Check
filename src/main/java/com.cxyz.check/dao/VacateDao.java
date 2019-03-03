@@ -87,4 +87,14 @@ public interface VacateDao {
      */
     int uploadPhoto(@Param("photo") Photo photo,@Param("vacId")Integer vacId);
 
+    /**
+     * 获取班级的请假条，如果开始时间等于结束时间，则查询的是当天的
+     * @param gradeId 班级id
+     * @param from 开始日期
+     * @param to 结束日期
+     * @param withTime 是否附带时间
+     * @return
+     */
+    List<Vacate> getGradeVacateInDates(@Param("gradeId")Integer gradeId,@Param("from")String from,@Param("to")String to,@Param("withTime") boolean withTime);
+
 }

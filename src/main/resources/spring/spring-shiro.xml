@@ -33,16 +33,22 @@
         <property name="realm" ref="userRealm"/>
      </bean>
 
+
     <bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher" id="credentialsMatcher">
         <property name="hashAlgorithmName" value="md5" />
         <property name="hashIterations" value="1" />
      </bean>
 
-    <bean class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
 
     <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
         <property name="securityManager" ref="securityManager"/>
     </bean>
+
+    <!-- AOP式方法级权限检查  -->
+    <!--<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor">-->
+        <!--<property name="proxyTargetClass" value="true" />-->
+    <!--</bean>-->
 
     <bean class="com.cxyz.check.shiro.filter.CustomFilter" id="customFilter" />
 </beans>

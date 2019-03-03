@@ -15,9 +15,20 @@
         <collection property="dates" column="id" javaType="java.util.ArrayList" ofType="java.util.Date" select="com.cxyz.check.dao.VacateDao.getDates"/>
     </resultMap>
 
+    <resultMap id="VacateMap" type="Vacate" autoMapping="true">
+        <id column="id" property="id" />
+        <association property="sponsor" autoMapping="true" javaType="User">
+            <id column="sId" property="id" />
+            <result column="sName" property="name" />
+        </association>
+        <collection property="photos" javaType="java.util.ArrayList" ofType="Photo">
+            <result column="uri" property="uri" />
+        </collection>
+    </resultMap>
+
     <insert id="addVacate" useGeneratedKeys="true" keyProperty="vacate.id">
         INSERT INTO tb_vac(start,end,des,`sponsor.id`,`sponsor.type`,len,type,time_type)
-        VALUES (#{vacate.start},#{vacate.end},#{vacate.des},#{vacate.sponsor.id},#{vacate.sponsor.type},#{vacate.len},#{vacate.type},0);
+        VALUES (#{vacate.start},#{vacate.end},#{vacate.des},#{vacate.sponsor.id},#{vacate.sponsor.type},#{vacate.len},#{vacate.type},#{vacate.timeType});
     </insert>
 
     <select id="getVacates" resultMap="VacateDtoMap" >
@@ -103,5 +114,35 @@
       INSERT INTO tb_vac_photo(`vac.id`, uri)
         VALUES(#{vacId},#{photo.uri})
     </insert>
+
+    <select id="getGradeVacateInDates" resultMap="VacateMap">
+        SELECT
+        v.id,
+        p.uri,
+        s.name 'sName',
+        s.id 'sId',
+        s.photo
+        FROM tb_vac v,tb_vac_photo p,tb_stu s
+        WHERE s.`grade.id`=#{gradeId}
+        AND v.`sponsor.id`=s.id
+        AND v.`sponsor.type`=0 <!--发起人为学生-->
+        AND ((v.time_type=2 AND EXISTS (SELECT * FROM tb_vac_date d
+        WHERE d.`vac.id`=v.id AND d.date&gt;=DATE(#{from})
+        AND d.date&lt;=DATE(#{to})
+        )
+        <if test="withTime">
+            AND TIME(v.start)&lt;=TIME(#{from})
+            AND TIME(v.end)&gt;=TIME(#{to})
+        </if>
+        )
+        OR (
+        v.time_type=3
+        AND ((v.start&lt;=#{from} AND v.end&gt;=#{from})
+        OR (v.start&gt;=#{from} AND v.end&gt;=#{to} AND v.start&lt;=#{to})
+        OR (v.start&gt;=#{from} AND v.end&lt;=#{to})
+        )))
+        AND p.`vac.id`=v.id
+        AND p.active=0<!--没有被删除-->
+    </select>
 
 </mapper>

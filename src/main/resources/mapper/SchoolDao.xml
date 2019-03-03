@@ -11,4 +11,24 @@
         WHERE id=#{schoolId};
     </select>
 
+    <insert id="addSchool" parameterType="School" useGeneratedKeys="true" keyProperty="school.id">
+        INSERT INTO
+        tb_school(name)
+        VALUES (#{school.name})
+    </insert>
+
+    <update id="updateSchool">
+        UPDATE tb_school
+        <set>
+            <if test="school.name!=null">name = #{school.name},</if>
+            <if test="school.manager!=null">`manager.id` = #{school.manager.id},</if>
+            <if test="school.term!=null">`term.id` = #{school.term.id}</if>
+        </set>
+        WHERE id=#{school.id}
+    </update>
+
+    <delete id="deleteSchool" parameterType="int">
+        DELETE FROM tb_school WHERE id=#{id}
+    </delete>
+
 </mapper>

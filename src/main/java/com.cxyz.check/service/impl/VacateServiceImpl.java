@@ -61,6 +61,8 @@ public class VacateServiceImpl implements VacateService {
     @Transactional
     public void vacate(Vacate vacate) {
 
+        vacate.setTimeType(Vacate.TIME_LEN);
+
         //计算请假时长,推送给老师
         int count = vacateDao.addVacate(vacate);
 
@@ -195,4 +197,18 @@ public class VacateServiceImpl implements VacateService {
         }
         return photos;
     }
+
+    @Override
+    public List<Vacate> getVacatesInDates(Integer gradeId, String from, String to) {
+        if(from == null || to == null)
+        {
+            throw new RuntimeException("未知异常,时间不能为空");
+        }
+        boolean withTime = false;
+        if(from.contains(":") && to.contains(":"))
+            withTime = true;
+        return vacateDao.getGradeVacateInDates(gradeId,from,to,withTime);
+    }
+
+
 }

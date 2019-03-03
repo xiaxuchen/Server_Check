@@ -61,4 +61,6 @@ public interface VacateService {
      * @return
      */
     List<Photo> uploadPhotos(List<String> paths, Integer vacId);
+
+    List<Vacate> getVacatesInDates(Integer gradeId,String from,String to);
 }

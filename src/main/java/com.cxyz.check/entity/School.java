@@ -18,6 +18,10 @@ public class School {
     	setId(id);
     }
 
+	public School(String name) {
+		setName(name);
+	}
+
 	public String getName() {
 		return name;
 	}

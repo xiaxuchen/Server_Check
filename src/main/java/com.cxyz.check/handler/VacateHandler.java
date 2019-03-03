@@ -233,6 +233,7 @@ public class VacateHandler {
      * @return
      */
     @RequestMapping(value = "/uploadPhoto",
+            method = RequestMethod.POST,
             produces = "application/json;charset=utf-8"
     )
     @ResponseBody
@@ -273,6 +274,24 @@ public class VacateHandler {
                 e.printStackTrace();
                 cr.setError("上传失败");
             }
+        }
+        return cr;
+    }
+
+
+    @RequestMapping(value = "/getVacateInDates",
+            method = RequestMethod.GET,
+            produces = "application/json;charset=utf-8"
+    )
+    @ResponseBody
+    public CheckResult<List<Vacate>> getVacateInDates(@RequestParam Integer gradeId,@RequestParam String from,@RequestParam String to)
+    {
+        CheckResult<List<Vacate>> cr = new CheckResult<>();
+        try {
+            cr.setData(vacateService.getVacatesInDates(gradeId,from,to));
+        }catch (Exception e)
+        {
+            cr.setError("服务器内部异常");
         }
         return cr;
     }

@@ -9,6 +9,9 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.sql.Timestamp;
 
 import javax.annotation.Resource;
@@ -60,7 +63,69 @@ public class VacateDaoTest {
         p.setVac(new Vacate(31));
         p.setUri("cascafiiadsfg");
         System.out.println(p);
-        dao.uploadPhoto(p);
         System.out.println(p);
+    }
+
+    @Test
+    public void getGradeVacInDates() {
+        dao.getGradeVacateInDates(1702,"2018-12-12 20:31","2018-12-12 20:33",true)
+                .forEach(vacate -> {
+                    System.out.println(vacate);
+                });
+    }
+
+    @Test
+    public void testAop()
+    {
+        Class[] cs = new Class[]{Usb.class};
+        T t = new T();
+        InvokeHandler handler = new InvokeHandler(t);
+        ClassLoader loader = t.getClass().getClassLoader();
+        Usb usb = (Usb) Proxy.newProxyInstance(loader, cs, handler);
+        usb.connect("caonima");
+    }
+    interface Usb{
+
+        void connect(String name);
+    }
+
+    class T implements Usb
+    {
+
+        @Override
+        public void connect(String name) {
+        }
+    }
+
+    class InvokeHandler implements InvocationHandler{
+
+        Object target;
+
+        public InvokeHandler(Object target)
+        {
+            this.target = target;
+        }
+
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            //执行织入的日志，你可以控制哪些方法执行切入逻辑
+            if (method.getName().equals("connect")) {
+                StringBuilder builder = new StringBuilder();
+                builder.append("调用").append(target.getClass().getName()).append("的")
+                        .append(method.getName()).append("方法,参数为:");
+                int i = 0;
+                for(Object arg:args)
+                {
+                    builder.append(arg);
+                    if(i != args.length-1)
+                        builder.append(',');
+                    i++;
+                }
+                System.out.println(builder.toString());
+            }
+            //执行原有逻辑
+            Object recv = method.invoke(target, args);
+            return recv;
+        }
     }
 }

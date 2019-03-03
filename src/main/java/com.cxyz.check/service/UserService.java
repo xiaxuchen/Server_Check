@@ -95,4 +95,6 @@ public interface UserService {
      * @param acode 验证码
      */
     void confirmPwd(Integer type,String acode) throws ActiveException,TransactionalException;
+
+
 }
