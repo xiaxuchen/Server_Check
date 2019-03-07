@@ -24,4 +24,23 @@
         UPDATE tb_college SET lesson_import=CASE WHEN lesson_import=TRUE THEN FALSE ELSE TRUE END WHERE id=#{collegeId};
     </update>
 
+    <insert id="addCollege" useGeneratedKeys="true" keyProperty="college.id">
+        INSERT INTO
+        tb_college(name,`school.id`)
+        VALUES (#{college.name},#{schoolId})
+    </insert>
+
+    <update id="updateCollege" parameterType="College">
+        UPDATE tb_college
+        <set>
+            <if test="college.name!=null">name = #{college.name},</if>
+            <if test="college.manager!=null">`manager.id` = #{college.manager.id},</if>
+        </set>
+        WHERE id=#{college.id}
+    </update>
+
+    <delete id="deleteCollege" parameterType="int">
+        DELETE FROM tb_college WHERE id=#{id}
+    </delete>
+
 </mapper>

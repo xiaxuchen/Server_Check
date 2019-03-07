@@ -13,15 +13,15 @@
 
     <insert id="addSchool" parameterType="School" useGeneratedKeys="true" keyProperty="school.id">
         INSERT INTO
-        tb_school(name)
-        VALUES (#{school.name})
+        tb_school(name,manager_id,manager_pwd)
+        VALUES (#{school.name},#{school.managerId},#{school.managerPwd})
     </insert>
 
     <update id="updateSchool">
         UPDATE tb_school
         <set>
             <if test="school.name!=null">name = #{school.name},</if>
-            <if test="school.manager!=null">`manager.id` = #{school.manager.id},</if>
+            <if test="school.managerPwd!=null">manager_pwd = #{school.managerPwd},</if>
             <if test="school.term!=null">`term.id` = #{school.term.id}</if>
         </set>
         WHERE id=#{school.id}
@@ -30,5 +30,23 @@
     <delete id="deleteSchool" parameterType="int">
         DELETE FROM tb_school WHERE id=#{id}
     </delete>
+
+    <select id="getSchools" resultType="School">
+        SELECT * FROM
+        tb_school
+        <if test="field != null">
+            ORDER BY ${field}
+            <choose>
+                <when test="isAsc">ASC </when>
+                <otherwise>DESC </otherwise>
+            </choose>
+        </if>
+    </select>
+
+    <select id="getManager" parameterType="String" resultType="School">
+        SELECT manager_pwd
+        FROM tb_school
+        WHERE manager_id=#{id}
+    </select>
 
 </mapper>

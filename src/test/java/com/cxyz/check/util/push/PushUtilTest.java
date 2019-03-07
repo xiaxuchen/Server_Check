@@ -12,14 +12,15 @@ import com.cxyz.check.typevalue.UserType;
 import com.cxyz.check.util.date.DateTime;
 import com.cxyz.check.util.filepath.HashPathUtil;
 import com.cxyz.check.util.parse.GsonUtil;
-import com.google.gson.Gson;
+import com.cxyz.check.util.pinyin.PinYinUtil;
 import com.google.gson.reflect.TypeToken;
 
-import org.apache.log4j.Logger;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.mgt.DefaultSecurityManager;
-import org.apache.shiro.mgt.SecurityManager;
-import org.apache.shiro.subject.Subject;
+import net.sourceforge.pinyin4j.PinyinHelper;
+import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
+import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
+import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,6 +103,13 @@ public class PushUtilTest {
         if(!f.exists())
             f.mkdirs();
         System.out.println(f.exists());
+    }
+
+    @Test
+    public void hanYu()
+    {
+        String name = "萍乡学院";
+        System.out.println(Integer.MAX_VALUE);
     }
 
 }

@@ -4,6 +4,8 @@ import com.cxyz.check.entity.College;
 import com.cxyz.check.entity.Grade;
 import com.cxyz.check.entity.Term;
 import com.cxyz.check.entity.Times;
+import com.cxyz.check.entity.User;
+import com.cxyz.check.typevalue.PowerType;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -47,4 +49,23 @@ public interface EnvirDao {
      */
     Term getCurrentTerm(@Param("schoolId")Integer schoolId);
 
+    int addManager(@Param("user") User user,@Param("type") ManagerType type);
+
+    enum ManagerType{
+        schoolManager(PowerType.TEA_SCHOOL),collegeManager(PowerType.TEA_COLLEGE);
+
+        private int power;
+
+        ManagerType(int power) {
+            this.power = power;
+        }
+
+        public int getPower() {
+            return power;
+        }
+
+        public void setPower(int power) {
+            this.power = power;
+        }
+    }
 }

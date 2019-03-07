@@ -48,4 +48,5 @@
         WHERE s.id=#{schoolId}
         AND s.`term.id`=t.id
     </select>
+
 </mapper>

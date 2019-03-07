@@ -35,7 +35,7 @@ public class SchoolDaoTest {
         School school = new School();
         school.setId(1);
         school.setName(null);
-        school.setManager(new User());
+        school.setManagerPwd("12345678");
         school.setTerm(new Term());
         schoolDao.updateSchool(school);
     }

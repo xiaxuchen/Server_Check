@@ -1,7 +1,12 @@
 package com.cxyz.check.dao;
 
+import com.cxyz.check.entity.ClassRoom;
+import com.cxyz.check.entity.College;
+import com.cxyz.check.entity.Grade;
 import com.cxyz.check.entity.School;
+import com.cxyz.check.entity.User;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,5 +48,31 @@ public class GradeDaoTest {
     @Test
     public void isLessonImportEnable() {
         System.out.println(dao.isLessonImportEnable(1702,schoolDao.getCurrentTermId(dao.getGradeSchoolId(1702))));
+    }
+
+    Grade grade;
+
+    @Before
+    public void setUp() throws Exception {
+        grade = new Grade();
+        grade.setId(1705);
+        grade.setName("17软工二班");
+    }
+
+    @Test
+    public void addGrade(){
+        dao.addGrade(grade);
+        System.out.println(grade.getId());
+    }
+
+    //测试ok
+    @Test
+    public void updateGrade() {
+        dao.updateGrade(grade);
+    }
+
+    @Test
+    public void deleteGrade() {
+        System.out.println(dao.deleteGrade(1705));
     }
 }

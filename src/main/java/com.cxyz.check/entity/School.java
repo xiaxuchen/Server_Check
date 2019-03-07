@@ -8,7 +8,8 @@ package com.cxyz.check.entity;
 public class School {
 	
 	private String name;//学校姓名
-    private User manager;//学校管理员
+	private String managerId;//管理员id
+	private String managerPwd;//管理员密码
     private Integer id;//学校编号
 	private Term term;//当前学期
     
@@ -30,12 +31,20 @@ public class School {
 		this.name = name;
 	}
 
-	public User getManager() {
-		return manager;
+	public String getManagerId() {
+		return managerId;
 	}
 
-	public void setManager(User manager) {
-		this.manager = manager;
+	public void setManagerId(String managerId) {
+		this.managerId = managerId;
+	}
+
+	public String getManagerPwd() {
+		return managerPwd;
+	}
+
+	public void setManagerPwd(String managerPwd) {
+		this.managerPwd = managerPwd;
 	}
 
 	public Integer getId() {
@@ -58,7 +67,8 @@ public class School {
 	public String toString() {
 		return "School{" +
 				"name='" + name + '\'' +
-				", manager=" + manager +
+				", managerId='" + managerId + '\'' +
+				", managerPwd='" + managerPwd + '\'' +
 				", id=" + id +
 				", term=" + term +
 				'}';

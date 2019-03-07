@@ -80,4 +80,24 @@
          AND g.id=#{gradeId}
     </select>
 
+    <insert id="addGrade" parameterType="Grade" useGeneratedKeys="true" keyProperty="grade.id">
+        INSERT INTO tb_grade(name, `manager.id`, `room.id`, `college.id`)
+        VALUES(#{grade.name},#{grade.manager.id},#{grade.room.id},#{grade.college.id});
+    </insert>
+
+    <update id="updateGrade" parameterType="Grade">
+        UPDATE tb_grade
+        <set>
+            <if test="grade.name!=null">name=#{grade.name},</if>
+            <if test="grade.manager!=null">`manager.id`=#{grade.manager.id},</if>
+            <if test="grade.room!=null">`room.id`=#{grade.room.id},</if>
+            <if test="grade.college!=null">`college.id`=#{grade.college.id},</if>
+        </set>
+        WHERE id=#{grade.id}
+    </update>
+
+    <delete id="deleteGrade" parameterType="int">
+        DELETE FROM tb_grade
+        WHERE id=#{id}
+    </delete>
 </mapper>

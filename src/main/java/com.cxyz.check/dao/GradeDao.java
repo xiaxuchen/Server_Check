@@ -1,6 +1,7 @@
 package com.cxyz.check.dao;
 
 import com.cxyz.check.dto.GradeDto;
+import com.cxyz.check.entity.Grade;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -72,4 +73,25 @@ public interface GradeDao {
      */
     int isLessonImportEnable(@Param("gradeId")int gradeId,@Param("currentTerm")int currentTerm);
 
+    /**
+     * 添加一个班级
+     * @param grade 班级信息(必须要班级管理员对象，教室对象，学院对象，学院对象id不能为空)，添加完成将返回id在grade的id字段
+     * @return 记录修改条数
+     */
+    int addGrade(@Param("grade") Grade grade);
+
+    /**
+     * 更新一个班级信息
+     * @param grade 班级信息，必须有班级id
+     * @return 记录修改条数
+     */
+    int updateGrade(@Param("grade") Grade grade);
+
+    /**
+     * 删除一个班级
+     * @param id 班级id
+     * @return 记录修改条数
+     */
+    int deleteGrade(@Param("id") int id);
 }
+

@@ -1,6 +1,7 @@
 package com.cxyz.check.exception;
 
 public class BaseException extends RuntimeException {
+
     public BaseException() {
     }
 

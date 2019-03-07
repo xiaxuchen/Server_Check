@@ -84,7 +84,7 @@
             </when>
         </choose>
         <!--共有的字段-->
-        ,id,name,sex,phone,`college.name`)
+        ,id,name,sex,phone,photo,`college.name`)
         VALUES
         <!--循环添加多个用户-->
         <foreach collection="users" item="item" close=";" separator=",">
@@ -96,7 +96,7 @@
                     (#{item.college.id},
                 </when>
             </choose>
-            #{item.id},#{item.name},#{item.sex},#{item.phone}
+            #{item.id},#{item.name},#{item.sex},#{item.phone},#{item.photo}
             ,#{item.college.name})
         </foreach>
     </insert>

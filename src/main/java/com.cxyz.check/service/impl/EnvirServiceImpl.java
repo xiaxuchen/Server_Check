@@ -6,12 +6,18 @@ import com.cxyz.check.dao.GradeDao;
 import com.cxyz.check.dao.SchoolDao;
 import com.cxyz.check.dto.AddTermDto;
 import com.cxyz.check.dto.GradeDto;
+import com.cxyz.check.entity.College;
+import com.cxyz.check.entity.Grade;
 import com.cxyz.check.entity.School;
 import com.cxyz.check.entity.Term;
 import com.cxyz.check.entity.Times;
 import com.cxyz.check.exception.envir.LessonImportedException;
 import com.cxyz.check.exception.envir.TermExistException;
 import com.cxyz.check.exception.envir.UserImportedException;
+import com.cxyz.check.nexception.DataConflictException;
+import com.cxyz.check.nexception.DataNotFoundException;
+import com.cxyz.check.nexception.InternalServerException;
+import com.cxyz.check.nexception.ParameterInvalidException;
 import com.cxyz.check.service.EnvirService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -143,6 +149,97 @@ public class EnvirServiceImpl implements EnvirService {
     @Override
     public boolean isCollegeLessonImportEnable(int collegeId) {
         return collegeDao.isLessonImportEnable(collegeId);
+    }
+
+    @Override
+    public void addSchool(School school) {
+        if(school.getName().isEmpty())
+            throw new ParameterInvalidException("学校名不能为空");
+        schoolDao.addSchool(school);
+    }
+
+    @Override
+    public void updateSchool(School school) {
+        if(school.getId() == null)
+            throw new InternalServerException("服务器内部异常");
+        int count = schoolDao.updateSchool(school);
+        if(count == 0)
+            throw new DataConflictException("数据未更新");
+    }
+
+    @Override
+    public void deleteSchool(int id) {
+        int count = schoolDao.deleteSchool(id);
+        System.out.println(count);
+        if(count == 0)
+            throw new ParameterInvalidException("学校不存在或已删除");
+    }
+
+    @Override
+    public void addCollege(College college,int schoolId) {
+        if(college.getName() == null)
+            throw new ParameterInvalidException("学院名称不能为空");
+        collegeDao.addCollege(college,schoolId);
+    }
+
+    @Override
+    public void updateCollege(College college) throws ParameterInvalidException {
+        if(college.getId() == null)
+            throw new InternalServerException("服务器内部异常");
+        final int count = collegeDao.updateCollege(college);
+        if(count == 0)
+            throw new DataConflictException("数据未更新");
+    }
+
+    @Override
+    public void deleteCollege(int id) throws ParameterInvalidException {
+        int count = collegeDao.deleteCollege(id);
+        if(true)
+            throw new RuntimeException();
+        if(count == 0)
+            throw new ParameterInvalidException("学院不存在或已删除");
+    }
+
+    @Override
+    public void addGrade(Grade grade) throws ParameterInvalidException {
+        if(grade.getId() == null)
+            throw new ParameterInvalidException("未选择班级");
+        int count = gradeDao.addGrade(grade);
+        if(count == 0)
+            throw new InternalServerException("服务器内部异常");
+    }
+
+    @Override
+    public void updateGrade(Grade grade) throws ParameterInvalidException, DataConflictException {
+        if(grade.getId() == null)
+            throw new ParameterInvalidException("未选择班级");
+        int count = gradeDao.updateGrade(grade);
+        if(count == 0)
+            throw new DataConflictException("未发现信息更改");
+    }
+
+    @Override
+    public void deleteGrade(int id) throws ParameterInvalidException {
+        if(id<0)
+            throw new ParameterInvalidException("班级不存在");
+        int count = gradeDao.deleteGrade(id);
+        if(count == 0)
+            throw new ParameterInvalidException("班级不存在或已删除");
+    }
+
+    @Override
+    public List<School> getSchools(String field, boolean isAsc) {
+        return schoolDao.getSchools(field,isAsc);
+    }
+
+    @Override
+    public boolean schoolManagerLogin(String id, String pwd) {
+        School school = schoolDao.getManager(id);
+        if(school == null)
+            throw new DataNotFoundException("登录id无效");
+        if(school.getManagerPwd().equals(pwd))
+            return true;
+        return false;
     }
 
 }

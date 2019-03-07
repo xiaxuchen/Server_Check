@@ -48,4 +48,9 @@ public class EnvirServiceTest {
     @Test
     public void isCollegeLessonImportEnable() {
     }
+
+    @Test
+    public void schoolManagerLogin() {
+        System.out.println(service.schoolManagerLogin("pxxy","12345678"));
+    }
 }
